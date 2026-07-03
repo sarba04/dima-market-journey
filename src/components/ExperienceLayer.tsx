@@ -443,7 +443,6 @@ export function SceneTick() {
 export function ExperienceLayer() {
   return (
     <>
-      <IntroPreloader />
       <ScrollProgress />
       <SceneTick />
       <FloatingNav />
