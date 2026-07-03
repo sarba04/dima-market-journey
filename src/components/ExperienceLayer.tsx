@@ -346,42 +346,79 @@ export function CustomCursor() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Ambient Audio — WebAudio drone + tick on scene change               */
+/* Ambient Audio — WebAudio drone + tick, volume + persistence         */
 /* ------------------------------------------------------------------ */
+const AUDIO_STORAGE_KEY = "dima:audio:v1";
+type AudioPrefs = { muted: boolean; volume: number };
+
+function loadPrefs(): AudioPrefs {
+  if (typeof window === "undefined") return { muted: true, volume: 0.35 };
+  try {
+    const raw = window.localStorage.getItem(AUDIO_STORAGE_KEY);
+    if (!raw) return { muted: true, volume: 0.35 };
+    const p = JSON.parse(raw) as Partial<AudioPrefs>;
+    return {
+      muted: p.muted ?? true,
+      volume: Math.min(1, Math.max(0, p.volume ?? 0.35)),
+    };
+  } catch {
+    return { muted: true, volume: 0.35 };
+  }
+}
+
 export function AudioAmbience() {
-  const [muted, setMuted] = useState(true);
+  const [prefs, setPrefs] = useState<AudioPrefs>({ muted: true, volume: 0.35 });
+  const [hydrated, setHydrated] = useState(false);
+  const [open, setOpen] = useState(false);
   const ctxRef = useRef<AudioContext | null>(null);
   const gainRef = useRef<GainNode | null>(null);
-  const nodesRef = useRef<{ o1: OscillatorNode; o2: OscillatorNode; lfo: OscillatorNode; lfoGain: GainNode } | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+
+  // Master level cap — keeps the pad discreet even at max slider.
+  const targetLevel = (v: number) => v * 0.14;
+
+  useEffect(() => {
+    setPrefs(loadPrefs());
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      window.localStorage.setItem(AUDIO_STORAGE_KEY, JSON.stringify(prefs));
+    } catch {
+      /* ignore */
+    }
+  }, [prefs, hydrated]);
 
   const ensure = () => {
     if (ctxRef.current) return ctxRef.current;
-    const AC = (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext);
+    const AC =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     const ctx = new AC();
     const master = ctx.createGain();
     master.gain.value = 0;
     master.connect(ctx.destination);
 
-    // Two detuned sine oscillators — soft warm pad
     const o1 = ctx.createOscillator();
     o1.type = "sine";
     o1.frequency.value = 110;
     const o2 = ctx.createOscillator();
     o2.type = "sine";
-    o2.frequency.value = 138.6; // minor third
+    o2.frequency.value = 138.6;
     const filter = ctx.createBiquadFilter();
     filter.type = "lowpass";
-    filter.frequency.value = 600;
+    filter.frequency.value = 520;
     filter.Q.value = 0.7;
 
-    // Slow LFO on gain for breathing
     const lfo = ctx.createOscillator();
-    lfo.frequency.value = 0.08;
+    lfo.frequency.value = 0.07;
     const lfoGain = ctx.createGain();
-    lfoGain.gain.value = 0.35;
+    lfoGain.gain.value = 0.25;
     lfo.connect(lfoGain);
     const padGain = ctx.createGain();
-    padGain.gain.value = 0.5;
+    padGain.gain.value = 0.45;
     lfoGain.connect(padGain.gain);
 
     o1.connect(filter);
@@ -395,26 +432,35 @@ export function AudioAmbience() {
 
     ctxRef.current = ctx;
     gainRef.current = master;
-    nodesRef.current = { o1, o2, lfo, lfoGain };
     return ctx;
   };
 
+  const applyGain = (muted: boolean, volume: number, ramp = 0.5) => {
+    const g = gainRef.current;
+    const ctx = ctxRef.current;
+    if (!g || !ctx) return;
+    const now = ctx.currentTime;
+    g.gain.cancelScheduledValues(now);
+    g.gain.linearRampToValueAtTime(muted ? 0 : targetLevel(volume), now + ramp);
+  };
+
   const tick = () => {
-    if (muted) return;
+    if (prefs.muted) return;
     const ctx = ctxRef.current;
     if (!ctx) return;
     const o = ctx.createOscillator();
     const g = ctx.createGain();
-    o.type = "triangle";
-    o.frequency.value = 880;
+    o.type = "sine";
+    o.frequency.value = 1320;
     g.gain.value = 0;
     o.connect(g);
     g.connect(ctx.destination);
     const t = ctx.currentTime;
-    g.gain.linearRampToValueAtTime(0.03, t + 0.005);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+    const peak = 0.012 * prefs.volume;
+    g.gain.linearRampToValueAtTime(peak, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
     o.start(t);
-    o.stop(t + 0.22);
+    o.stop(t + 0.2);
   };
 
   useEffect(() => {
@@ -422,38 +468,143 @@ export function AudioAmbience() {
     window.addEventListener("dima:scene", onScene);
     return () => window.removeEventListener("dima:scene", onScene);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [muted]);
+  }, [prefs]);
 
-  const toggle = () => {
-    const next = !muted;
-    setMuted(next);
+  // Auto-pause when tab hidden
+  useEffect(() => {
+    const onVis = () => {
+      if (!ctxRef.current) return;
+      if (document.hidden) applyGain(true, prefs.volume, 0.2);
+      else applyGain(prefs.muted, prefs.volume, 0.4);
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefs]);
+
+  // Close panel on outside click
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+
+  const toggleMute = () => {
+    const next = !prefs.muted;
+    setPrefs((p) => ({ ...p, muted: next }));
     const ctx = ensure();
     if (ctx.state === "suspended") ctx.resume();
-    const g = gainRef.current!;
-    const now = ctx.currentTime;
-    g.gain.cancelScheduledValues(now);
-    g.gain.linearRampToValueAtTime(next ? 0 : 0.12, now + 0.6);
+    applyGain(next, prefs.volume, 0.6);
   };
 
+  const setVolume = (v: number) => {
+    setPrefs((p) => ({ ...p, volume: v }));
+    if (ctxRef.current && !prefs.muted) applyGain(false, v, 0.15);
+  };
+
+  const iconMuted = prefs.muted || prefs.volume === 0;
+
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      aria-label={muted ? "Activer le son" : "Couper le son"}
-      className="fixed left-6 top-6 z-[95] flex h-11 items-center gap-2 rounded-full border border-white/15 bg-background/60 px-4 backdrop-blur-md transition-colors hover:border-[color:var(--dima)] hover:text-[color:var(--dima)] md:left-10 md:top-8"
+    <div
+      ref={panelRef}
+      className="fixed left-6 top-6 z-[95] md:left-10 md:top-8"
     >
-      <span className="relative flex h-2 w-2">
-        <span
-          className={`absolute inset-0 rounded-full ${muted ? "bg-white/30" : "bg-[color:var(--dima)]"}`}
+      <div className="glass flex items-center gap-1 rounded-full p-1 pr-2 transition-colors hover:border-[color:var(--dima)]/40">
+        <button
+          type="button"
+          onClick={toggleMute}
+          aria-label={iconMuted ? "Activer le son" : "Couper le son"}
+          aria-pressed={!iconMuted}
+          className="flex h-9 items-center gap-2 rounded-full px-3 text-white/80 hover:text-[color:var(--dima)]"
+        >
+          <span className="relative flex h-2 w-2">
+            <span
+              className={`absolute inset-0 rounded-full ${
+                iconMuted ? "bg-white/30" : "bg-[color:var(--dima)]"
+              }`}
+            />
+            {!iconMuted && (
+              <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--dima)]/60" />
+            )}
+          </span>
+          <span className="font-mono-tight text-[10px] uppercase tracking-[0.35em]">
+            {iconMuted ? "Son off" : "Ambiance"}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-label="Réglages audio"
+          aria-expanded={open}
+          className="flex h-8 w-8 items-center justify-center rounded-full text-white/60 hover:bg-white/5 hover:text-[color:var(--dima)]"
+        >
+          <span className="text-xs leading-none">{open ? "×" : "···"}</span>
+        </button>
+      </div>
+
+      {/* Volume panel */}
+      <div
+        className={`glass absolute left-0 top-[calc(100%+8px)] w-64 rounded-2xl p-4 transition-all duration-300 ${
+          open ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-1 opacity-0"
+        }`}
+      >
+        <div className="flex items-center justify-between">
+          <span className="font-mono-tight text-[9px] uppercase tracking-[0.4em] text-white/50">
+            Volume
+          </span>
+          <span className="font-mono-tight text-[10px] tabular-nums text-white/70">
+            {Math.round(prefs.volume * 100)}
+          </span>
+        </div>
+        <input
+          type="range"
+          min={0}
+          max={1}
+          step={0.01}
+          value={prefs.volume}
+          onChange={(e) => setVolume(parseFloat(e.target.value))}
+          aria-label="Volume ambiance"
+          className="mt-3 h-1 w-full cursor-pointer appearance-none rounded-full accent-[color:var(--dima)]"
+          style={{
+            background: `linear-gradient(to right, var(--dima) 0%, var(--dima) ${
+              prefs.volume * 100
+            }%, rgba(255,255,255,0.1) ${prefs.volume * 100}%, rgba(255,255,255,0.1) 100%)`,
+          }}
         />
-        {!muted && (
-          <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--dima)]/60" />
-        )}
-      </span>
-      <span className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/80">
-        {muted ? "Son off" : "Ambiance"}
-      </span>
-    </button>
+        <div className="mt-4 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setVolume(0.15)}
+            className="font-mono-tight text-[9px] uppercase tracking-[0.3em] text-white/50 hover:text-[color:var(--dima)]"
+          >
+            Discret
+          </button>
+          <button
+            type="button"
+            onClick={() => setVolume(0.5)}
+            className="font-mono-tight text-[9px] uppercase tracking-[0.3em] text-white/50 hover:text-[color:var(--dima)]"
+          >
+            Confort
+          </button>
+          <button
+            type="button"
+            onClick={() => setVolume(0.85)}
+            className="font-mono-tight text-[9px] uppercase tracking-[0.3em] text-white/50 hover:text-[color:var(--dima)]"
+          >
+            Immersion
+          </button>
+        </div>
+        <p className="mt-3 font-mono-tight text-[9px] leading-relaxed text-white/40">
+          Ambiance générée en temps réel. Préférence mémorisée.
+        </p>
+      </div>
+    </div>
   );
 }
 
