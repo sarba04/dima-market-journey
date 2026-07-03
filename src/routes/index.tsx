@@ -1,24 +1,34 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { DimaHero } from "@/components/DimaHero";
+import { PostHero } from "@/components/PostHero";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "DIMA Market — Une supérette. Une expérience." },
+      {
+        name: "description",
+        content:
+          "DIMA Market — visite immersive d'une supérette moderne à Casablanca. Alimentation, boulangerie, produits importés, boissons et snacks, servis avec exigence.",
+      },
+      { property: "og:title", content: "DIMA Market — Une supérette. Une expérience." },
+      {
+        property: "og:description",
+        content:
+          "Entrez virtuellement dans DIMA Market : visite cinématique pilotée au scroll, rayons soignés, boulangerie fraîche chaque jour.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="bg-background text-foreground">
+      <DimaHero />
+      <PostHero />
+    </main>
   );
 }
