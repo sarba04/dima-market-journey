@@ -552,12 +552,15 @@ function GalleryTile({ src, className = "" }: { src: string; className?: string 
         src={src}
         alt=""
         loading="lazy"
-        className="h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
+        data-parallax="0.18"
+        className="absolute inset-x-0 -top-[10%] h-[120%] w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.08]"
       />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/40 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
     </div>
   );
 }
+
 
 function Arrow({ dark = false }: { dark?: boolean }) {
   return (
