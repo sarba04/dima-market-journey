@@ -1,5 +1,7 @@
 import { LogoMark } from "./DimaHero";
 import { IMG } from "@/lib/images";
+import { CinematicScroll } from "./CinematicScroll";
+
 
 const RAYONS = [
   { name: "Alimentation", ar: "المواد الغذائية", img: IMG.aisleEpicerie, desc: "Épicerie salée & sucrée, produits frais, essentiels du quotidien soigneusement sélectionnés." },
