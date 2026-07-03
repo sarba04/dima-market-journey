@@ -38,22 +38,22 @@ export function PostHero() {
       {/* Manifesto */}
       <section id="manifeste" className="relative border-t border-white/5 px-6 py-32 md:px-16 md:py-48">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-10 flex items-center gap-3">
+          <div className="reveal mb-10 flex items-center gap-3">
             <span className="h-px w-10 bg-[color:var(--dima)]" />
             <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/60">
               Le manifeste
             </span>
           </div>
-          <h2 className="font-display text-[clamp(2.5rem,7vw,7rem)] leading-[0.95] tracking-[-0.03em]">
+          <h2 className="reveal reveal-delay-1 font-display text-[clamp(2.5rem,7vw,7rem)] leading-[0.95] tracking-[-0.03em]">
             Une supérette ne devrait <em className="not-italic dima-glow-text">jamais</em> être ordinaire.
           </h2>
           <div className="mt-16 grid gap-12 md:grid-cols-2">
-            <p className="text-lg leading-relaxed text-white/70 md:text-xl">
+            <p className="reveal reveal-delay-2 text-lg leading-relaxed text-white/70 md:text-xl">
               DIMA Market est né d’une conviction simple : le quotidien mérite mieux qu’un
               néon blafard et des rayons anonymes. Nous avons pensé chaque détail comme
               une expérience — la lumière, la circulation, la sélection, le service.
             </p>
-            <p className="text-lg leading-relaxed text-white/70 md:text-xl">
+            <p className="reveal reveal-delay-3 text-lg leading-relaxed text-white/70 md:text-xl">
               Le résultat est un lieu à part. Une supérette où l’on entre pour un pain
               et où l’on ressort avec l’envie de revenir. Bienvenue chez DIMA — bienvenue
               chez vous.
@@ -104,10 +104,10 @@ export function PostHero() {
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {RAYONS.map((r) => (
+            {RAYONS.map((r, i) => (
               <article
                 key={r.name}
-                className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] transition-colors hover:border-[color:var(--dima)]/40"
+                className={`reveal reveal-delay-${(i % 4) + 1} card-lift group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] hover:border-[color:var(--dima)]/40`}
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <img
@@ -147,13 +147,13 @@ export function PostHero() {
             </h2>
           </div>
           <div className="grid gap-px overflow-hidden rounded-2xl bg-white/10 md:grid-cols-2 lg:grid-cols-4">
-            {ENGAGEMENTS.map((e) => (
-              <div key={e.n} className="group bg-background p-8 transition-colors hover:bg-white/[0.03]">
+            {ENGAGEMENTS.map((e, i) => (
+              <div key={e.n} className={`reveal reveal-delay-${(i % 4) + 1} group bg-background p-8 transition-colors hover:bg-white/[0.03]`}>
                 <div className="mb-8 flex items-center justify-between">
                   <span className="font-mono-tight text-xs tracking-[0.3em] text-[color:var(--dima)]">
                     {e.n}
                   </span>
-                  <span className="h-2 w-2 rounded-full bg-[color:var(--dima)] shadow-[0_0_18px_var(--dima)]" />
+                  <span className="h-2 w-2 rounded-full bg-[color:var(--dima)] shadow-[0_0_18px_var(--dima)] transition-transform duration-500 group-hover:scale-150" />
                 </div>
                 <h3 className="font-display text-2xl leading-tight tracking-[-0.02em]">{e.t}</h3>
                 <p className="mt-4 text-sm leading-relaxed text-white/60">{e.d}</p>

@@ -305,7 +305,12 @@ export function CustomCursor() {
   const ringRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (window.matchMedia("(pointer: coarse)").matches) return;
+    const isTouch =
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(hover: none)").matches ||
+      window.innerWidth < 900 ||
+      "ontouchstart" in window;
+    if (isTouch) return;
 
     let mx = window.innerWidth / 2;
     let my = window.innerHeight / 2;
@@ -390,18 +395,25 @@ export function SceneTick() {
       return ctxRef.current;
     };
 
-    // Warm-up on first user gesture (required by browser autoplay policy)
+    // Warm-up on first user gesture (required by browser autoplay policy).
+    // Scroll/wheel/touch all count — the hero is scroll-driven, so this fires immediately.
     const warm = () => {
       const ctx = ensure();
       if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
     };
-    window.addEventListener("pointerdown", warm, { once: true, passive: true });
-    window.addEventListener("touchstart", warm, { once: true, passive: true });
+    const warmOpts = { once: true, passive: true } as AddEventListenerOptions;
+    window.addEventListener("pointerdown", warm, warmOpts);
+    window.addEventListener("touchstart", warm, warmOpts);
+    window.addEventListener("wheel", warm, warmOpts);
+    window.addEventListener("scroll", warm, warmOpts);
     window.addEventListener("keydown", warm, { once: true });
 
     const onScene = () => {
-      const ctx = ctxRef.current;
-      if (!ctx || ctx.state !== "running") return;
+      // Lazily ensure + resume in case gesture happened before mount
+      const ctx = ensure();
+      if (!ctx) return;
+      if (ctx.state === "suspended") ctx.resume().catch(() => {});
+      if (ctx.state !== "running") return;
       const t = ctx.currentTime;
       const o = ctx.createOscillator();
       const g = ctx.createGain();
@@ -430,10 +442,42 @@ export function SceneTick() {
       document.removeEventListener("visibilitychange", onVis);
       window.removeEventListener("pointerdown", warm);
       window.removeEventListener("touchstart", warm);
+      window.removeEventListener("wheel", warm);
+      window.removeEventListener("scroll", warm);
       window.removeEventListener("keydown", warm);
     };
   }, []);
 
+  return null;
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll Reveal observer — adds .is-visible to any .reveal element    */
+/* ------------------------------------------------------------------ */
+export function ScrollReveal() {
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+    );
+    const scan = () => {
+      document.querySelectorAll<HTMLElement>(".reveal:not(.is-visible)").forEach((el) => io.observe(el));
+    };
+    scan();
+    const mo = new MutationObserver(scan);
+    mo.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      io.disconnect();
+      mo.disconnect();
+    };
+  }, []);
   return null;
 }
 
@@ -445,6 +489,7 @@ export function ExperienceLayer() {
     <>
       <ScrollProgress />
       <SceneTick />
+      <ScrollReveal />
       <FloatingNav />
       <SceneHUD />
       <CustomCursor />
