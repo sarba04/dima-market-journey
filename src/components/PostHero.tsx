@@ -104,10 +104,10 @@ export function PostHero() {
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {RAYONS.map((r) => (
+            {RAYONS.map((r, i) => (
               <article
                 key={r.name}
-                className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] transition-colors hover:border-[color:var(--dima)]/40"
+                className={`reveal reveal-delay-${(i % 4) + 1} card-lift group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] hover:border-[color:var(--dima)]/40`}
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <img
