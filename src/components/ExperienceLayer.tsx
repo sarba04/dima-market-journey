@@ -145,14 +145,20 @@ const NAV_ITEMS = [
 
 export function FloatingNav() {
   const [visible, setVisible] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      setVisible(window.scrollY > window.innerHeight * 0.6);
+    const onDone = () => setVisible(true);
+    const onScene = (e: Event) => {
+      const d = (e as CustomEvent).detail as { idx: number };
+      if (d.idx >= SCENE_COUNT - 1) setVisible(true);
     };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("dima:heroDone", onDone);
+    window.addEventListener("dima:scene", onScene);
+    return () => {
+      window.removeEventListener("dima:heroDone", onDone);
+      window.removeEventListener("dima:scene", onScene);
+    };
   }, []);
 
   return (
@@ -176,12 +182,43 @@ export function FloatingNav() {
             <LogoMark className="h-5 w-5" />
           </a>
           <div className="mx-1 hidden h-5 w-px bg-white/10 sm:block" />
-          <div className="flex min-w-0 items-center gap-0.5 overflow-x-auto scrollbar-none">
+          <div className="hidden min-w-0 items-center gap-0.5 sm:flex">
             {NAV_ITEMS.map((it) => (
               <a
                 key={it.href}
                 href={it.href}
                 className="shrink-0 rounded-full px-3 py-2 font-mono-tight text-[10px] uppercase tracking-[0.25em] text-white/70 transition-colors hover:bg-white/5 hover:text-white sm:px-4"
+              >
+                {it.label}
+              </a>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            aria-label="Ouvrir le menu"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/80 hover:bg-white/5 sm:hidden"
+          >
+            <span className="relative block h-3 w-4">
+              <span className={`absolute left-0 top-0 h-px w-4 bg-current transition-transform duration-300 ${open ? "translate-y-[6px] rotate-45" : ""}`} />
+              <span className={`absolute left-0 top-1/2 h-px w-4 -translate-y-1/2 bg-current transition-opacity duration-200 ${open ? "opacity-0" : "opacity-100"}`} />
+              <span className={`absolute bottom-0 left-0 h-px w-4 bg-current transition-transform duration-300 ${open ? "-translate-y-[6px] -rotate-45" : ""}`} />
+            </span>
+          </button>
+        </div>
+        <div
+          className={`glass mt-2 overflow-hidden rounded-2xl sm:hidden ${
+            open ? "max-h-96 opacity-100" : "pointer-events-none max-h-0 opacity-0"
+          } transition-all duration-300`}
+        >
+          <div className="flex flex-col p-2">
+            {NAV_ITEMS.map((it) => (
+              <a
+                key={it.href}
+                href={it.href}
+                onClick={() => setOpen(false)}
+                className="rounded-xl px-4 py-3 font-mono-tight text-[11px] uppercase tracking-[0.3em] text-white/80 hover:bg-white/5 hover:text-white"
               >
                 {it.label}
               </a>
