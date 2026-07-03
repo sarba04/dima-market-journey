@@ -26,7 +26,8 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <main className="bg-background text-foreground">
+    <main id="top" className="bg-background text-foreground">
+      <ExperienceLayer />
       <DimaHero />
       <PostHero />
     </main>
