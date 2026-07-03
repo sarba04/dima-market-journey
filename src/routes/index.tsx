@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DimaHero } from "@/components/DimaHero";
 import { PostHero } from "@/components/PostHero";
+import { ExperienceLayer } from "@/components/ExperienceLayer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
