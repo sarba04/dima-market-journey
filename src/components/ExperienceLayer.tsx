@@ -452,6 +452,36 @@ export function SceneTick() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Scroll Reveal observer — adds .is-visible to any .reveal element    */
+/* ------------------------------------------------------------------ */
+export function ScrollReveal() {
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+    );
+    const scan = () => {
+      document.querySelectorAll<HTMLElement>(".reveal:not(.is-visible)").forEach((el) => io.observe(el));
+    };
+    scan();
+    const mo = new MutationObserver(scan);
+    mo.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      io.disconnect();
+      mo.disconnect();
+    };
+  }, []);
+  return null;
+}
+
+/* ------------------------------------------------------------------ */
 /* Composite                                                           */
 /* ------------------------------------------------------------------ */
 export function ExperienceLayer() {
@@ -459,6 +489,7 @@ export function ExperienceLayer() {
     <>
       <ScrollProgress />
       <SceneTick />
+      <ScrollReveal />
       <FloatingNav />
       <SceneHUD />
       <CustomCursor />
