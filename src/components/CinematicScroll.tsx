@@ -50,29 +50,29 @@ export function CinematicScroll() {
           const inner = document.createElement("span");
           inner.className = "inline-block will-change-transform";
           inner.textContent = chunk;
-          inner.style.transform = "translateY(110%)";
-          inner.style.opacity = "0";
-          inner.style.filter = "blur(6px)";
           w.appendChild(inner);
           frag.appendChild(w);
         });
         el.appendChild(frag);
 
         const words = el.querySelectorAll<HTMLElement>("span > span");
-        const t = gsap.to(words, {
-          y: 0,
-          yPercent: 0,
-          opacity: 1,
-          filter: "blur(0px)",
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.045,
-          scrollTrigger: {
-            trigger: el,
-            start: "top 82%",
-            once: true,
-          },
-        });
+        const t = gsap.fromTo(
+          words,
+          { yPercent: 115, opacity: 0, filter: "blur(8px)" },
+          {
+            yPercent: 0,
+            opacity: 1,
+            filter: "blur(0px)",
+            duration: 0.9,
+            ease: "power3.out",
+            stagger: 0.045,
+            scrollTrigger: {
+              trigger: el,
+              start: "top 82%",
+              once: true,
+            },
+          }
+        );
         triggers.push({ kill: () => t.scrollTrigger?.kill() });
       });
 
