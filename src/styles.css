@@ -109,16 +109,22 @@
   text-shadow: 0 0 40px color-mix(in oklab, var(--dima-glow) 45%, transparent);
 }
 
-@utility grain::after {
+.grain {
+  position: relative;
+}
+.grain::after {
   content: "";
   position: absolute; inset: 0;
   pointer-events: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.55'/></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
   opacity: var(--grain-opacity);
   mix-blend-mode: overlay;
 }
 
-@utility vignette::before {
+.vignette {
+  position: relative;
+}
+.vignette::before {
   content: "";
   position: absolute; inset: 0;
   pointer-events: none;
