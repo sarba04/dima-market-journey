@@ -38,22 +38,22 @@ export function PostHero() {
       {/* Manifesto */}
       <section id="manifeste" className="relative border-t border-white/5 px-6 py-32 md:px-16 md:py-48">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-10 flex items-center gap-3">
+          <div className="reveal mb-10 flex items-center gap-3">
             <span className="h-px w-10 bg-[color:var(--dima)]" />
             <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/60">
               Le manifeste
             </span>
           </div>
-          <h2 className="font-display text-[clamp(2.5rem,7vw,7rem)] leading-[0.95] tracking-[-0.03em]">
+          <h2 className="reveal reveal-delay-1 font-display text-[clamp(2.5rem,7vw,7rem)] leading-[0.95] tracking-[-0.03em]">
             Une supérette ne devrait <em className="not-italic dima-glow-text">jamais</em> être ordinaire.
           </h2>
           <div className="mt-16 grid gap-12 md:grid-cols-2">
-            <p className="text-lg leading-relaxed text-white/70 md:text-xl">
+            <p className="reveal reveal-delay-2 text-lg leading-relaxed text-white/70 md:text-xl">
               DIMA Market est né d’une conviction simple : le quotidien mérite mieux qu’un
               néon blafard et des rayons anonymes. Nous avons pensé chaque détail comme
               une expérience — la lumière, la circulation, la sélection, le service.
             </p>
-            <p className="text-lg leading-relaxed text-white/70 md:text-xl">
+            <p className="reveal reveal-delay-3 text-lg leading-relaxed text-white/70 md:text-xl">
               Le résultat est un lieu à part. Une supérette où l’on entre pour un pain
               et où l’on ressort avec l’envie de revenir. Bienvenue chez DIMA — bienvenue
               chez vous.
