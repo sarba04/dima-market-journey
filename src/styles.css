@@ -91,11 +91,17 @@
 @utility font-mono-tight { font-family: var(--font-mono); letter-spacing: -0.02em; }
 
 @utility text-huge {
-  font-size: clamp(3.5rem, 12vw, 14rem);
+  font-size: clamp(2.75rem, 12vw, 14rem);
   line-height: 0.9;
   letter-spacing: -0.045em;
   font-weight: 500;
 }
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+@utility scrollbar-none::-webkit-scrollbar { display: none; }
 
 @utility glass {
   background: color-mix(in oklab, var(--background) 55%, transparent);
