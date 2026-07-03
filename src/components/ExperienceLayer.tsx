@@ -395,18 +395,25 @@ export function SceneTick() {
       return ctxRef.current;
     };
 
-    // Warm-up on first user gesture (required by browser autoplay policy)
+    // Warm-up on first user gesture (required by browser autoplay policy).
+    // Scroll/wheel/touch all count — the hero is scroll-driven, so this fires immediately.
     const warm = () => {
       const ctx = ensure();
       if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
     };
-    window.addEventListener("pointerdown", warm, { once: true, passive: true });
-    window.addEventListener("touchstart", warm, { once: true, passive: true });
+    const warmOpts = { once: true, passive: true } as AddEventListenerOptions;
+    window.addEventListener("pointerdown", warm, warmOpts);
+    window.addEventListener("touchstart", warm, warmOpts);
+    window.addEventListener("wheel", warm, warmOpts);
+    window.addEventListener("scroll", warm, warmOpts);
     window.addEventListener("keydown", warm, { once: true });
 
     const onScene = () => {
-      const ctx = ctxRef.current;
-      if (!ctx || ctx.state !== "running") return;
+      // Lazily ensure + resume in case gesture happened before mount
+      const ctx = ensure();
+      if (!ctx) return;
+      if (ctx.state === "suspended") ctx.resume().catch(() => {});
+      if (ctx.state !== "running") return;
       const t = ctx.currentTime;
       const o = ctx.createOscillator();
       const g = ctx.createGain();
