@@ -66,20 +66,54 @@ export function PostHero() {
         </div>
       </section>
 
-      {/* Numbers */}
-      <section className="relative overflow-hidden border-y border-white/5 py-16">
-        <div className="marquee-track flex w-max items-center gap-16 whitespace-nowrap font-display text-[clamp(3rem,10vw,10rem)] leading-none tracking-[-0.04em] text-white/10">
+      {/* Chapter II — parallax quote + animated stats */}
+      <section className="relative overflow-hidden border-y border-white/5">
+        <div className="relative h-[70vh] min-h-[520px] w-full overflow-hidden">
+          <img
+            src={IMG.interiorAisle}
+            alt=""
+            data-parallax="0.35"
+            className="absolute inset-x-0 -top-[15%] h-[130%] w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/40 to-background" />
+          <div className="absolute inset-0 grain opacity-70" />
+          <div className="relative z-10 mx-auto flex h-full max-w-6xl items-center px-6 md:px-16">
+            <div>
+              <div className="mb-6 flex items-center gap-3">
+                <span className="h-px w-10 bg-[color:var(--dima)]" />
+                <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/70">
+                  Chapitre II — La signature
+                </span>
+              </div>
+              <p
+                data-reveal="split"
+                className="font-display text-[clamp(1.75rem,4.5vw,4rem)] leading-[1.05] tracking-[-0.02em] text-white/95"
+              >
+                Ce que l'on ressent en poussant la porte n'est pas un hasard. C'est une intention.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mx-auto grid max-w-7xl gap-y-14 gap-x-8 px-6 py-24 md:grid-cols-4 md:px-16 md:py-28">
+          <Stat n={4.9} decimals={1} suffix="/5" label="Note moyenne" />
+          <Stat n={340} suffix="+" label="Avis clients" />
+          <Stat n={6} label="Univers de rayons" />
+          <Stat n={16} suffix="h" label="Amplitude d'ouverture" />
+        </div>
+
+        <div className="marquee-track flex w-max items-center gap-16 whitespace-nowrap border-t border-white/5 py-10 font-display text-[clamp(2.5rem,8vw,8rem)] leading-none tracking-[-0.04em] text-white/10">
           {Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="flex items-center gap-16">
               <span>DIMA Market</span>
               <Dot />
               <span className="dima-glow-text">Alimentation</span>
               <Dot />
-              <span>Bricolage</span>
+              <span>Boulangerie</span>
               <Dot />
               <span className="dima-glow-text">Hygiène</span>
               <Dot />
-              <span>Boulangerie</span>
+              <span>Boissons</span>
               <Dot />
               <span className="dima-glow-text">دائماً</span>
               <Dot />
@@ -88,30 +122,103 @@ export function PostHero() {
         </div>
       </section>
 
-      {/* Rayons */}
-      <section id="rayons" className="relative px-6 py-32 md:px-16 md:py-48">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-16 flex flex-wrap items-end justify-between gap-8">
-            <div>
-              <div className="mb-4 flex items-center gap-3">
-                <span className="h-px w-10 bg-[color:var(--dima)]" />
-                <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/60">
-                  Nos rayons
-                </span>
-              </div>
-              <h2 className="font-display text-[clamp(2.5rem,6vw,6rem)] leading-[0.95] tracking-[-0.03em]">
-                Tout, sous un même toit.
-              </h2>
+      {/* Rayons — desktop: horizontal pinned scroll */}
+      <section
+        id="rayons"
+        data-hscroll
+        className="relative hidden h-screen overflow-hidden bg-background lg:block"
+      >
+        <div className="hscroll-track flex h-full items-center gap-8 pl-16 pr-24 will-change-transform">
+          <div className="flex h-full w-[70vw] max-w-[720px] shrink-0 flex-col justify-center pr-10">
+            <div className="mb-6 flex items-center gap-3">
+              <span className="h-px w-10 bg-[color:var(--dima)]" />
+              <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/60">
+                Nos rayons — chapitre III
+              </span>
             </div>
-            <p className="max-w-md text-white/60">
-              Six univers pensés pour vous faire gagner du temps sans sacrifier la qualité.
+            <h2 className="font-display text-[clamp(3rem,6vw,7rem)] leading-[0.9] tracking-[-0.03em]">
+              Tout, <br />
+              <em className="not-italic dima-glow-text">sous un même toit.</em>
+            </h2>
+            <p className="mt-8 max-w-md text-lg text-white/60">
+              Six univers pensés pour vous faire gagner du temps sans sacrifier la
+              qualité. Faites glisser pour explorer.
             </p>
+            <div className="mt-10 flex items-center gap-4">
+              <span className="h-px w-16 bg-[color:var(--dima)]" />
+              <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-[color:var(--dima)]">
+                Défilez →
+              </span>
+            </div>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+          {RAYONS.map((r, i) => (
+            <article
+              key={r.name}
+              className="group relative flex h-[75vh] w-[42vw] max-w-[540px] shrink-0 flex-col overflow-hidden rounded-3xl border border-white/5 bg-white/[0.02]"
+            >
+              <div className="relative flex-1 overflow-hidden">
+                <img
+                  src={r.img}
+                  alt={r.name}
+                  loading="lazy"
+                  data-parallax="0.15"
+                  className="absolute inset-x-0 -top-[10%] h-[120%] w-full object-cover transition-transform duration-[1600ms] ease-out group-hover:scale-[1.06]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+                <div className="absolute left-6 top-6 flex items-center gap-3">
+                  <span className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-[color:var(--dima)]">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="h-px w-8 bg-[color:var(--dima)]/60" />
+                  <span className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/60">
+                    {r.ar}
+                  </span>
+                </div>
+              </div>
+              <div className="p-8">
+                <h3 className="font-display text-4xl tracking-[-0.02em]">{r.name}</h3>
+                <p className="mt-4 text-sm leading-relaxed text-white/60">{r.desc}</p>
+              </div>
+            </article>
+          ))}
+
+          <div className="flex h-full w-[40vw] max-w-[500px] shrink-0 flex-col justify-center">
+            <div className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/40">
+              Fin du chapitre III
+            </div>
+            <h3 className="mt-4 font-display text-[clamp(2rem,4vw,4rem)] leading-[0.95] tracking-[-0.03em]">
+              Et bien plus <br /> <em className="not-italic dima-glow-text">en rayon.</em>
+            </h3>
+            <a
+              href="#visiter"
+              className="mt-8 inline-flex w-fit items-center gap-3 rounded-full border border-white/20 px-5 py-3 text-sm transition-colors hover:border-[color:var(--dima)] hover:text-[color:var(--dima)]"
+            >
+              Venir voir en vrai <Arrow />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Rayons — mobile / tablet grid */}
+      <section id="rayons-mobile" className="relative px-6 py-24 lg:hidden">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12">
+            <div className="mb-4 flex items-center gap-3">
+              <span className="h-px w-10 bg-[color:var(--dima)]" />
+              <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/60">
+                Nos rayons
+              </span>
+            </div>
+            <h2 className="font-display text-[clamp(2.25rem,7vw,4.5rem)] leading-[0.95] tracking-[-0.03em]">
+              Tout, sous un même toit.
+            </h2>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2">
             {RAYONS.map((r, i) => (
               <article
                 key={r.name}
-                className={`reveal reveal-delay-${(i % 4) + 1} card-lift group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] hover:border-[color:var(--dima)]/40`}
+                className={`reveal reveal-delay-${(i % 4) + 1} card-lift group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02]`}
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <img
@@ -126,13 +233,14 @@ export function PostHero() {
                   </div>
                 </div>
                 <div className="p-6">
-                  <h3 className="font-display text-3xl tracking-[-0.02em]">{r.name}</h3>
+                  <h3 className="font-display text-2xl tracking-[-0.02em]">{r.name}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-white/60">{r.desc}</p>
                 </div>
               </article>
             ))}
           </div>
         </div>
+
       </section>
 
       {/* Engagements */}
