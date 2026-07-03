@@ -442,6 +442,8 @@ export function SceneTick() {
       document.removeEventListener("visibilitychange", onVis);
       window.removeEventListener("pointerdown", warm);
       window.removeEventListener("touchstart", warm);
+      window.removeEventListener("wheel", warm);
+      window.removeEventListener("scroll", warm);
       window.removeEventListener("keydown", warm);
     };
   }, []);
