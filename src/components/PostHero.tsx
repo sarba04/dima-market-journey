@@ -147,13 +147,13 @@ export function PostHero() {
             </h2>
           </div>
           <div className="grid gap-px overflow-hidden rounded-2xl bg-white/10 md:grid-cols-2 lg:grid-cols-4">
-            {ENGAGEMENTS.map((e) => (
-              <div key={e.n} className="group bg-background p-8 transition-colors hover:bg-white/[0.03]">
+            {ENGAGEMENTS.map((e, i) => (
+              <div key={e.n} className={`reveal reveal-delay-${(i % 4) + 1} group bg-background p-8 transition-colors hover:bg-white/[0.03]`}>
                 <div className="mb-8 flex items-center justify-between">
                   <span className="font-mono-tight text-xs tracking-[0.3em] text-[color:var(--dima)]">
                     {e.n}
                   </span>
-                  <span className="h-2 w-2 rounded-full bg-[color:var(--dima)] shadow-[0_0_18px_var(--dima)]" />
+                  <span className="h-2 w-2 rounded-full bg-[color:var(--dima)] shadow-[0_0_18px_var(--dima)] transition-transform duration-500 group-hover:scale-150" />
                 </div>
                 <h3 className="font-display text-2xl leading-tight tracking-[-0.02em]">{e.t}</h3>
                 <p className="mt-4 text-sm leading-relaxed text-white/60">{e.d}</p>
