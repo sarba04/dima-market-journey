@@ -355,16 +355,77 @@ export function PostHero() {
         </div>
       </section>
 
-      <footer className="border-t border-white/10 px-6 py-12 md:px-16">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <LogoMark className="h-7 w-7 text-[color:var(--dima)]" />
-            <span className="font-mono-tight text-[11px] uppercase tracking-[0.3em] text-white/60">
-              DIMA Market — © {new Date().getFullYear()}
-            </span>
+      <footer className="relative border-t border-white/10 bg-background">
+        <div className="mx-auto max-w-7xl px-6 py-16 md:px-16 md:py-20">
+          <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+            <div>
+              <div className="flex items-center gap-3">
+                <LogoMark className="h-8 w-8 text-[color:var(--dima)]" />
+                <span className="font-display text-2xl tracking-[-0.02em]">DIMA Market</span>
+              </div>
+              <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/60">
+                Une supérette moderne à Casablanca. Alimentation, boulangerie,
+                produits importés — servis avec exigence, chaque jour.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a
+                  href="tel:+212000000000"
+                  className="inline-flex items-center gap-2 rounded-full bg-[color:var(--dima)] px-4 py-2 text-xs font-medium text-[color:var(--ink)] transition-transform hover:scale-[1.03]"
+                >
+                  Appeler
+                </a>
+                <a
+                  href="#visiter"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-xs font-medium transition-colors hover:bg-white/10"
+                >
+                  Itinéraire
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <div className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/40">
+                Explorer
+              </div>
+              <ul className="mt-5 space-y-3 text-sm text-white/70">
+                <li><a href="#manifeste" className="hover:text-[color:var(--dima)]">Manifeste</a></li>
+                <li><a href="#rayons" className="hover:text-[color:var(--dima)]">Rayons</a></li>
+                <li><a href="#engagements" className="hover:text-[color:var(--dima)]">Engagements</a></li>
+                <li><a href="#visiter" className="hover:text-[color:var(--dima)]">Nous rendre visite</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <div className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/40">
+                Horaires
+              </div>
+              <ul className="mt-5 space-y-3 text-sm text-white/70">
+                <li className="flex justify-between gap-4"><span>Lun — Ven</span><span className="text-white/50">07:30 — 23:00</span></li>
+                <li className="flex justify-between gap-4"><span>Samedi</span><span className="text-white/50">07:30 — 23:30</span></li>
+                <li className="flex justify-between gap-4"><span>Dimanche</span><span className="text-white/50">08:00 — 22:00</span></li>
+                <li className="flex justify-between gap-4"><span>Boulangerie</span><span className="text-[color:var(--dima)]">Dès 06:30</span></li>
+              </ul>
+            </div>
+
+            <div>
+              <div className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/40">
+                Contact
+              </div>
+              <ul className="mt-5 space-y-3 text-sm text-white/70">
+                <li>Casablanca, Maroc</li>
+                <li><a href="tel:+212000000000" className="hover:text-[color:var(--dima)]">+212 — DIMA</a></li>
+                <li><a href="mailto:hello@dima.market" className="hover:text-[color:var(--dima)]">hello@dima.market</a></li>
+              </ul>
+            </div>
           </div>
-          <div className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/40">
-            Une expérience. Pas juste une supérette.
+
+          <div className="mt-14 flex flex-col-reverse items-start justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center">
+            <span className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/40">
+              © {new Date().getFullYear()} DIMA Market — Tous droits réservés
+            </span>
+            <span className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/40">
+              Une expérience. Pas juste une supérette.
+            </span>
           </div>
         </div>
       </footer>
