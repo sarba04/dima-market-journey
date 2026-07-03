@@ -126,6 +126,9 @@ const SCENES: Scene[] = [
   },
 ];
 
+export const SCENE_NAMES = SCENES.map((s) => s.text?.top ?? "");
+export const SCENE_COUNT = SCENES.length;
+
 const SCENE_DURATION = 1; // relative
 const HERO_VH = 900; // total scroll length in vh — ~9000px on 1000px viewport
 
