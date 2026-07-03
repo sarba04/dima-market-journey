@@ -570,3 +570,30 @@ function Arrow({ dark = false }: { dark?: boolean }) {
 function Dot() {
   return <span className="inline-block h-2 w-2 rounded-full bg-[color:var(--dima)]" />;
 }
+
+function Stat({
+  n,
+  suffix = "",
+  label,
+  decimals = 0,
+}: {
+  n: number;
+  suffix?: string;
+  label: string;
+  decimals?: number;
+}) {
+  return (
+    <div className="reveal border-l border-white/10 pl-6 md:border-l-2">
+      <div className="font-display text-[clamp(3rem,6vw,5.5rem)] leading-none tracking-[-0.03em] dima-glow-text">
+        <span data-count={n} data-count-decimals={decimals}>
+          {n.toFixed(decimals)}
+        </span>
+        <span className="text-white/40">{suffix}</span>
+      </div>
+      <div className="mt-4 font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/50">
+        {label}
+      </div>
+    </div>
+  );
+}
+
