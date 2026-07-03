@@ -96,10 +96,10 @@ export function PostHero() {
         </div>
 
         <div className="mx-auto grid max-w-7xl gap-y-14 gap-x-8 px-6 py-24 md:grid-cols-4 md:px-16 md:py-28">
-          <Stat n={4.9} decimals={1} suffix="/5" label="Note moyenne" />
-          <Stat n={340} suffix="+" label="Avis clients" />
-          <Stat n={6} label="Univers de rayons" />
-          <Stat n={16} suffix="h" label="Amplitude d'ouverture" />
+          <StaticStat value="4.9/5" label="Note moyenne" />
+          <StaticStat value="340+" label="Avis clients" />
+          <StaticStat value="6" label="Univers de rayons" />
+          <StaticStat value="16h" label="Amplitude d'ouverture" />
         </div>
 
         <div className="marquee-track flex w-max items-center gap-16 whitespace-nowrap border-t border-white/5 py-10 font-display text-[clamp(2.5rem,8vw,8rem)] leading-none tracking-[-0.04em] text-white/10">
@@ -122,99 +122,21 @@ export function PostHero() {
         </div>
       </section>
 
-      {/* Rayons — desktop: horizontal pinned scroll */}
-      <section
-        id="rayons"
-        data-hscroll
-        className="relative hidden h-screen overflow-hidden bg-background lg:block"
-      >
-        <div className="hscroll-track flex h-full items-center gap-8 pl-16 pr-24 will-change-transform">
-          <div className="flex h-full w-[70vw] max-w-[720px] shrink-0 flex-col justify-center pr-10">
-            <div className="mb-6 flex items-center gap-3">
+      {/* Rayons — grid */}
+      <section id="rayons" className="relative px-6 py-32 md:px-16 md:py-40">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-16">
+            <div className="reveal mb-4 flex items-center gap-3">
               <span className="h-px w-10 bg-[color:var(--dima)]" />
               <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/60">
                 Nos rayons — chapitre III
               </span>
             </div>
-            <h2 className="font-display text-[clamp(3rem,6vw,7rem)] leading-[0.9] tracking-[-0.03em]">
-              Tout, <br />
-              <em className="not-italic dima-glow-text">sous un même toit.</em>
-            </h2>
-            <p className="mt-8 max-w-md text-lg text-white/60">
-              Six univers pensés pour vous faire gagner du temps sans sacrifier la
-              qualité. Faites glisser pour explorer.
-            </p>
-            <div className="mt-10 flex items-center gap-4">
-              <span className="h-px w-16 bg-[color:var(--dima)]" />
-              <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-[color:var(--dima)]">
-                Défilez →
-              </span>
-            </div>
-          </div>
-
-          {RAYONS.map((r, i) => (
-            <article
-              key={r.name}
-              className="group relative flex h-[75vh] w-[42vw] max-w-[540px] shrink-0 flex-col overflow-hidden rounded-3xl border border-white/5 bg-white/[0.02]"
-            >
-              <div className="relative flex-1 overflow-hidden">
-                <img
-                  src={r.img}
-                  alt={r.name}
-                  loading="lazy"
-                  data-parallax="0.15"
-                  className="absolute inset-x-0 -top-[10%] h-[120%] w-full object-cover transition-transform duration-[1600ms] ease-out group-hover:scale-[1.06]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-                <div className="absolute left-6 top-6 flex items-center gap-3">
-                  <span className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-[color:var(--dima)]">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="h-px w-8 bg-[color:var(--dima)]/60" />
-                  <span className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/60">
-                    {r.ar}
-                  </span>
-                </div>
-              </div>
-              <div className="p-8">
-                <h3 className="font-display text-4xl tracking-[-0.02em]">{r.name}</h3>
-                <p className="mt-4 text-sm leading-relaxed text-white/60">{r.desc}</p>
-              </div>
-            </article>
-          ))}
-
-          <div className="flex h-full w-[40vw] max-w-[500px] shrink-0 flex-col justify-center">
-            <div className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/40">
-              Fin du chapitre III
-            </div>
-            <h3 className="mt-4 font-display text-[clamp(2rem,4vw,4rem)] leading-[0.95] tracking-[-0.03em]">
-              Et bien plus <br /> <em className="not-italic dima-glow-text">en rayon.</em>
-            </h3>
-            <a
-              href="#visiter"
-              className="mt-8 inline-flex w-fit items-center gap-3 rounded-full border border-white/20 px-5 py-3 text-sm transition-colors hover:border-[color:var(--dima)] hover:text-[color:var(--dima)]"
-            >
-              Venir voir en vrai <Arrow />
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Rayons — mobile / tablet grid */}
-      <section id="rayons-mobile" className="relative px-6 py-24 lg:hidden">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-12">
-            <div className="mb-4 flex items-center gap-3">
-              <span className="h-px w-10 bg-[color:var(--dima)]" />
-              <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/60">
-                Nos rayons
-              </span>
-            </div>
-            <h2 className="font-display text-[clamp(2.25rem,7vw,4.5rem)] leading-[0.95] tracking-[-0.03em]">
-              Tout, sous un même toit.
+            <h2 className="reveal reveal-delay-1 font-display text-[clamp(2.25rem,7vw,5.5rem)] leading-[0.95] tracking-[-0.03em]">
+              Tout, <em className="not-italic dima-glow-text">sous un même toit.</em>
             </h2>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {RAYONS.map((r, i) => (
               <article
                 key={r.name}
@@ -228,8 +150,14 @@ export function PostHero() {
                     className="h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-                  <div className="absolute left-5 top-5 font-mono-tight text-[10px] uppercase tracking-[0.35em] text-[color:var(--dima)]">
-                    {r.ar}
+                  <div className="absolute left-5 top-5 flex items-center gap-3">
+                    <span className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-[color:var(--dima)]">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="h-px w-6 bg-[color:var(--dima)]/60" />
+                    <span className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/60">
+                      {r.ar}
+                    </span>
                   </div>
                 </div>
                 <div className="p-6">
@@ -240,7 +168,6 @@ export function PostHero() {
             ))}
           </div>
         </div>
-
       </section>
 
       {/* Engagements */}
@@ -574,24 +501,11 @@ function Dot() {
   return <span className="inline-block h-2 w-2 rounded-full bg-[color:var(--dima)]" />;
 }
 
-function Stat({
-  n,
-  suffix = "",
-  label,
-  decimals = 0,
-}: {
-  n: number;
-  suffix?: string;
-  label: string;
-  decimals?: number;
-}) {
+function StaticStat({ value, label }: { value: string; label: string }) {
   return (
     <div className="reveal border-l border-white/10 pl-6 md:border-l-2">
       <div className="font-display text-[clamp(3rem,6vw,5.5rem)] leading-none tracking-[-0.03em] dima-glow-text">
-        <span data-count={n} data-count-decimals={decimals}>
-          {n.toFixed(decimals)}
-        </span>
-        <span className="text-white/40">{suffix}</span>
+        {value}
       </div>
       <div className="mt-4 font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/50">
         {label}
