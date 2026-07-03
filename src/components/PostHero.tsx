@@ -132,7 +132,7 @@ export function PostHero() {
       </section>
 
       {/* Engagements */}
-      <section className="relative border-y border-white/5 bg-white/[0.015] px-6 py-32 md:px-16 md:py-48">
+      <section id="engagements" className="relative border-y border-white/5 bg-white/[0.015] px-6 py-32 md:px-16 md:py-48">
         <div className="mx-auto max-w-7xl">
           <div className="mb-16">
             <div className="mb-4 flex items-center gap-3">
