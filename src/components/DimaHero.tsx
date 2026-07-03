@@ -126,6 +126,9 @@ const SCENES: Scene[] = [
   },
 ];
 
+export const SCENE_NAMES = SCENES.map((s) => s.text?.top ?? "");
+export const SCENE_COUNT = SCENES.length;
+
 const SCENE_DURATION = 1; // relative
 const HERO_VH = 900; // total scroll length in vh — ~9000px on 1000px viewport
 
@@ -230,8 +233,22 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
               if (progressRef.current) progressRef.current.style.transform = `scaleX(${self.progress})`;
               const idx = Math.min(SCENES.length - 1, Math.floor(self.progress * SCENES.length));
               if (stepLabelRef.current) stepLabelRef.current.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(SCENES.length).padStart(2, "0")}`;
+              if (typeof window !== "undefined") {
+                const w = window as unknown as { __dimaScene?: number };
+                if (w.__dimaScene !== idx) {
+                  w.__dimaScene = idx;
+                  window.dispatchEvent(new CustomEvent("dima:scene", { detail: { idx, total: SCENES.length, name: SCENE_NAMES[idx] } }));
+                }
+                window.dispatchEvent(new CustomEvent("dima:heroProgress", { detail: { progress: self.progress } }));
+              }
             },
-            onLeave: () => onComplete?.(),
+            onLeave: () => {
+              onComplete?.();
+              if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("dima:heroDone"));
+            },
+            onEnterBack: () => {
+              if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("dima:heroEnter"));
+            },
           },
         });
 
