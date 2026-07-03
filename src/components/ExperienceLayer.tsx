@@ -305,7 +305,12 @@ export function CustomCursor() {
   const ringRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (window.matchMedia("(pointer: coarse)").matches) return;
+    const isTouch =
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(hover: none)").matches ||
+      window.innerWidth < 900 ||
+      "ontouchstart" in window;
+    if (isTouch) return;
 
     let mx = window.innerWidth / 2;
     let my = window.innerHeight / 2;
