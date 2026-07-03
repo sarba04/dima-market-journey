@@ -37,7 +37,9 @@ const FAQ = [
 export function PostHero() {
   return (
     <div className="relative bg-background text-foreground">
+      <CinematicScroll />
       {/* Manifesto */}
+
       <section id="manifeste" className="relative border-t border-white/5 px-6 py-32 md:px-16 md:py-48">
         <div className="mx-auto max-w-6xl">
           <div className="reveal mb-10 flex items-center gap-3">
