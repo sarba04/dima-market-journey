@@ -6,8 +6,8 @@ const RAYONS = [
   { name: "Boissons", ar: "مشروبات", img: IMG.aisleDrinks, desc: "Eaux minérales, jus pressés, sodas et boissons chaudes servis à la bonne température." },
   { name: "Biscuits & Confiserie", ar: "حلويات وبسكويت", img: IMG.aisleBiscuits, desc: "Marques marocaines et importées, chocolats fins, gourmandises pour toutes les envies." },
   { name: "Boulangerie", ar: "مخبوزات", img: IMG.bakery, desc: "Pain frais, viennoiseries dorées et pâtisseries préparées sur place chaque matin." },
-  { name: "Produits importés", ar: "منتجات مستوردة", img: IMG.staffEpicerie, desc: "Le meilleur d’ailleurs : sauces, spécialités, épiceries fines des cinq continents." },
-  { name: "Hygiène & Loisirs", ar: "نظافة وألعاب", img: IMG.staffHygiene, desc: "Soins, hygiène quotidienne, jouets et loisirs — une équipe qui vous guide vers le bon choix." },
+  { name: "Produits importés", ar: "منتجات مستوردة", img: IMG.aisleEpicerie, desc: "Le meilleur d’ailleurs : sauces, spécialités, épiceries fines des cinq continents." },
+  { name: "Snacks & Grignotage", ar: "وجبات خفيفة", img: IMG.aisleSnacks, desc: "Chips, gaufrettes, encas salés et sucrés — pour les petits plaisirs improvisés." },
 ];
 
 const ENGAGEMENTS = [
