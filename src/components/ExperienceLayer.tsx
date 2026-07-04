@@ -16,6 +16,13 @@ export function IntroPreloader() {
   useEffect(() => {
     let cancelled = false;
     let count = 0;
+    const finish = () => {
+      if (cancelled) return;
+      setReady(true);
+      setLoaded(ALL_IMAGES.length);
+    };
+    // Hard cap so a slow image never traps the visitor on the splash.
+    const hardTimeout = setTimeout(finish, 2500);
     ALL_IMAGES.forEach((src) => {
       const im = new Image();
       im.decoding = "async";
@@ -24,15 +31,25 @@ export function IntroPreloader() {
         count++;
         setLoaded(count);
         if (count >= ALL_IMAGES.length) {
-          setTimeout(() => setReady(true), 300);
+          clearTimeout(hardTimeout);
+          setTimeout(finish, 200);
         }
       };
       im.src = src;
     });
+    // Auto-dismiss shortly after ready — no click needed.
     return () => {
       cancelled = true;
+      clearTimeout(hardTimeout);
     };
   }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    const t = setTimeout(() => setDismissed(true), 600);
+    return () => clearTimeout(t);
+  }, [ready]);
+
 
   useEffect(() => {
     if (!dismissed) {
