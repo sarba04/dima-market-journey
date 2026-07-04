@@ -86,12 +86,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:title", content: "DIMA M Market - Supermarché de quartier à Tabriquet, Salé" },
       { name: "twitter:title", content: "DIMA M Market - Supermarché de quartier à Tabriquet, Salé" },
-      { name: "description", content: "Tout ce qu'il te faut. À une minute du tram.
-Supermarché moderne, humain et local à Tabriquet, Salé." },
-      { property: "og:description", content: "Tout ce qu'il te faut. À une minute du tram.
-Supermarché moderne, humain et local à Tabriquet, Salé." },
-      { name: "twitter:description", content: "Tout ce qu'il te faut. À une minute du tram.
-Supermarché moderne, humain et local à Tabriquet, Salé." },
+      {
+        name: "description",
+        content: "Tout ce qu'il te faut. À une minute du tram. Supermarché moderne, humain et local à Tabriquet, Salé.",
+      },
+      {
+        property: "og:description",
+        content: "Tout ce qu'il te faut. À une minute du tram. Supermarché moderne, humain et local à Tabriquet, Salé.",
+      },
+      {
+        name: "twitter:description",
+        content: "Tout ce qu'il te faut. À une minute du tram. Supermarché moderne, humain et local à Tabriquet, Salé.",
+      },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8632e8c2-8356-48f0-9a61-c89ffd91428b/id-preview-9399af60--1decd097-79db-486a-8de2-827491d871a7.lovable.app-1783113497493.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8632e8c2-8356-48f0-9a61-c89ffd91428b/id-preview-9399af60--1decd097-79db-486a-8de2-827491d871a7.lovable.app-1783113497493.png" },
       { name: "twitter:card", content: "summary_large_image" },
