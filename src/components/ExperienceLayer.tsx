@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { Phone, MessageCircle } from "lucide-react";
 import { ALL_IMAGES } from "@/lib/images";
+import { BUSINESS, whatsappHref } from "@/lib/business";
 import { SCENE_COUNT, LogoMark } from "./DimaHero";
 
 /* ------------------------------------------------------------------ */
@@ -374,6 +376,47 @@ export function CustomCursor() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Quick Contact — persistent call/WhatsApp escape hatch, visible from */
+/* the very start so an impatient visitor is never trapped in the      */
+/* cinematic scroll without a way to act.                              */
+/* ------------------------------------------------------------------ */
+export function QuickContact() {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShow(true), 1400);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <div
+      className={`fixed bottom-5 left-5 z-[90] flex gap-2 transition-all duration-700 sm:bottom-6 sm:left-6 ${
+        show ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-3"
+      }`}
+    >
+      <a
+        href={BUSINESS.phoneHref}
+        aria-label="Appeler DIMA Market"
+        data-cursor="hover"
+        className="glass flex h-11 w-11 items-center justify-center rounded-full text-white/80 transition-colors hover:text-[color:var(--dima)] sm:h-12 sm:w-12"
+      >
+        <Phone className="h-4 w-4" strokeWidth={1.75} />
+      </a>
+      <a
+        href={whatsappHref("Bonjour, je vous contacte depuis le site DIMA Market.")}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Contacter DIMA Market sur WhatsApp"
+        data-cursor="hover"
+        className="glass flex h-11 w-11 items-center justify-center rounded-full text-white/80 transition-colors hover:text-[color:var(--dima)] sm:h-12 sm:w-12"
+      >
+        <MessageCircle className="h-4 w-4" strokeWidth={1.75} />
+      </a>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Auto Scene Tick — silent WebAudio, no UI, tiny click on each scene  */
 /* ------------------------------------------------------------------ */
 export function SceneTick() {
@@ -487,11 +530,14 @@ export function ScrollReveal() {
 export function ExperienceLayer() {
   return (
     <>
+      <div className="grain-body" aria-hidden />
+      <IntroPreloader />
       <ScrollProgress />
       <SceneTick />
       <ScrollReveal />
       <FloatingNav />
       <SceneHUD />
+      <QuickContact />
       <CustomCursor />
     </>
   );

@@ -1,5 +1,7 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { IMG, ALL_IMAGES } from "@/lib/images";
+import { useLayoutEffect, useRef } from "react";
+import { IMG } from "@/lib/images";
+import { useReducedMotion } from "@/lib/useReducedMotion";
+import { splitChars } from "@/lib/splitText";
 
 type Scene = {
   img: keyof typeof IMG;
@@ -136,18 +138,12 @@ export const SCENE_NAMES = SCENES.map((s) => s.text?.top ?? "");
 export const SCENE_COUNT = SCENES.length;
 
 const SCENE_DURATION = 1; // relative
-const HERO_VH = 900; // total scroll length in vh — ~9000px on 1000px viewport
 
-function useReducedMotion() {
-  const [rm, setRm] = useState(false);
-  useEffect(() => {
-    const m = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const on = () => setRm(m.matches);
-    on();
-    m.addEventListener("change", on);
-    return () => m.removeEventListener("change", on);
-  }, []);
-  return rm;
+// Total scroll length in vh. Shorter on small/mobile viewports — 15 scenes of
+// scroll-jacking is a lot of dead scrolling to ask from a phone visitor.
+function heroScrollVh() {
+  if (typeof window === "undefined") return 900;
+  return window.innerWidth < 640 ? 620 : 900;
 }
 
 export function DimaHero({ onComplete }: { onComplete?: () => void }) {
@@ -158,32 +154,19 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
   const progressRef = useRef<HTMLDivElement | null>(null);
   const flashRef = useRef<HTMLDivElement | null>(null);
   const stepLabelRef = useRef<HTMLDivElement | null>(null);
+  const skipCleanupRef = useRef<() => void>(() => {});
   const reducedMotion = useReducedMotion();
-  const [loaded, setLoaded] = useState(0);
-
-  // Preload images
-  useEffect(() => {
-    let cancelled = false;
-    let count = 0;
-    ALL_IMAGES.forEach((src) => {
-      const im = new Image();
-      im.decoding = "async";
-      im.onload = im.onerror = () => {
-        if (cancelled) return;
-        count++;
-        setLoaded(count);
-      };
-      im.src = src;
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
-    let ctx: { revert: () => void } | null = null;
-    let lenis: { destroy: () => void } | null = null;
+
+    // Vestibular-safe fallback: no scroll-jacking, no parallax camera moves.
+    if (reducedMotion) {
+      onComplete?.();
+      window.dispatchEvent(new CustomEvent("dima:heroDone"));
+      return;
+    }
+
     let cleanup = () => {};
 
     (async () => {
@@ -194,6 +177,10 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
       const ScrollTrigger = (stMod as any).ScrollTrigger ?? (stMod as any).default;
       const Lenis = (LenisMod as any).default ?? LenisMod;
       gsap.registerPlugin(ScrollTrigger);
+      // Prevent the iOS/Android address-bar show/hide resize from
+      // re-triggering ScrollTrigger.refresh() mid-pin, which is the classic
+      // cause of the pinned hero jumping or re-snapping on mobile scroll.
+      ScrollTrigger.config({ ignoreMobileResize: true });
 
       // Lenis smooth scroll
       const l = new Lenis({
@@ -202,7 +189,6 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
         wheelMultiplier: 1,
         touchMultiplier: 1.1,
       });
-      lenis = l;
       l.on("scroll", ScrollTrigger.update);
       const rafId = { id: 0 };
       const raf = (t: number) => {
@@ -229,7 +215,7 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
           scrollTrigger: {
             trigger: rootRef.current,
             start: "top top",
-            end: () => `+=${HERO_VH * window.innerHeight / 100}`,
+            end: () => `+=${heroScrollVh() * window.innerHeight / 100}`,
             scrub: 1.1,
             pin: true,
             pinSpacing: true,
@@ -257,6 +243,13 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
             },
           },
         });
+
+        const onSkip = () => {
+          const st = tl.scrollTrigger;
+          if (st) l.scrollTo(st.end + 4, { duration: 1.1 });
+        };
+        window.addEventListener("dima:skipIntro", onSkip);
+        skipCleanupRef.current = () => window.removeEventListener("dima:skipIntro", onSkip);
 
         SCENES.forEach((scene, i) => {
           const el = layers[i];
@@ -338,25 +331,41 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
           }
         });
       }, rootRef);
-      ctx = c;
 
       cleanup = () => {
         cancelAnimationFrame(rafId.id);
+        skipCleanupRef.current();
+        // c.revert() already kills/reverts every ScrollTrigger created inside
+        // this gsap.context — a blanket ScrollTrigger.getAll().kill() here
+        // would also wipe out unrelated ScrollTriggers elsewhere on the page
+        // (parallax cards, the cinematic gallery, etc).
         c.revert();
         l.destroy();
-        ScrollTrigger.getAll().forEach((s: any) => s.kill());
       };
     })();
 
     return () => cleanup();
   }, [onComplete, reducedMotion]);
 
-  const splitText = (t: string) =>
-    t.split("").map((ch, i) => (
-      <span key={i} className="split-char">
-        {ch === " " ? "\u00A0" : ch}
-      </span>
-    ));
+  if (reducedMotion) {
+    return (
+      <section
+        ref={rootRef}
+        className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background px-6 py-24 text-center"
+        aria-label="DIMA Market \u2014 sup\u00E9rette moderne \u00E0 Casablanca"
+      >
+        <img src={IMG.facadeWide} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background via-background/75 to-background" />
+        <div className="relative z-10 flex max-w-3xl flex-col items-center gap-6">
+          <LogoMark className="h-12 w-12 text-[color:var(--dima)]" />
+          <h1 className="font-display text-huge text-white">DIMA Market</h1>
+          <p className="text-base text-white/70 md:text-lg">
+            Votre sup\u00E9rette moderne \u00E0 Casablanca \u2014 alimentation, boulangerie, produits import\u00E9s et boissons, servis avec exigence.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -403,8 +412,18 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
             DIMA • Market
           </div>
         </div>
-        <div ref={stepLabelRef} className="font-mono-tight text-[11px] uppercase tracking-[0.35em] text-white/70">
-          01 / {String(SCENES.length).padStart(2, "0")}
+        <div className="flex items-center gap-5">
+          <div ref={stepLabelRef} className="font-mono-tight text-[11px] uppercase tracking-[0.35em] text-white/70">
+            01 / {String(SCENES.length).padStart(2, "0")}
+          </div>
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("dima:skipIntro"))}
+            className="pointer-events-auto group flex items-center gap-2 font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/50 transition-colors hover:text-[color:var(--dima)]"
+          >
+            Passer
+            <span className="transition-transform group-hover:translate-x-0.5">→</span>
+          </button>
         </div>
       </div>
 
@@ -452,7 +471,7 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
                   <span className="inline-block" aria-hidden>
                     {line.split(" ").map((w, k) => (
                       <span key={k} className="mr-[0.25em] inline-block whitespace-nowrap overflow-hidden align-bottom">
-                        {splitText(w)}
+                        {splitChars(w)}
                       </span>
                     ))}
                   </span>
@@ -468,24 +487,6 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
           </div>
         ))}
       </div>
-
-      {/* Loading gate */}
-      {loaded < ALL_IMAGES.length && (
-        <div className="absolute inset-0 z-40 flex items-center justify-center bg-background">
-          <div className="text-center">
-            <LogoMark className="mx-auto h-12 w-12 text-[color:var(--dima)] dima-logo-pulse" />
-            <div className="mt-6 font-mono-tight text-[11px] uppercase tracking-[0.4em] text-white/60">
-              Préparation de la visite
-            </div>
-            <div className="mx-auto mt-4 h-[2px] w-40 overflow-hidden bg-white/10">
-              <div
-                className="h-full bg-[color:var(--dima)] transition-[width] duration-300"
-                style={{ width: `${(loaded / ALL_IMAGES.length) * 100}%` }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
