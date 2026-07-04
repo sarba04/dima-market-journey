@@ -34,7 +34,7 @@ type Scene = {
 const SCENES: Scene[] = [
   {
     img: "facadeWide",
-    cam: { fromScale: 1.15, toScale: 1.28, fromY: 20, toY: -10 },
+    cam: { fromScale: 1.15, toScale: 3, fromY: 20, toY: -100 },
     transition: "fade",
     text: { top: "Chapitre 01 — Arrivée", big: ["DIMA", "Market"], small: "Votre supérette moderne." },
   },
@@ -46,7 +46,7 @@ const SCENES: Scene[] = [
   },
   {
     img: "facadeEntrance",
-    cam: { fromScale: 1.35, toScale: 1.8, toBrightness: 1.35, toBlur: 2 },
+    cam: { fromScale: 1.35, toScale: 2.8, toBrightness: 1.35, toBlur: 2 },
     transition: "flash",
     text: { top: "03 — Seuil", small: "Poussez la porte." },
   },
