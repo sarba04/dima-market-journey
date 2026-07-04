@@ -91,10 +91,10 @@ const SCENES: Scene[] = [
     text: { top: "09 — Macro", small: "Les produits prennent vie." },
   },
   {
-    img: "aisleEpicerie",
-    cam: { fromScale: 1.05, toScale: 1.18, fromX: -25, toX: 30 },
+    img: "staffEpicerie",
+    cam: { fromScale: 1.1, toScale: 1.02, fromX: 10, toX: -10 },
     transition: "fade",
-    text: { top: "10 — Épicerie", small: "Le quotidien, mieux choisi." },
+    text: { top: "10 — Notre équipe", big: ["Des visages.", "Des conseils."], small: "Une équipe qui connaît chaque référence." },
   },
   {
     img: "aisleEpicerie",
@@ -110,9 +110,15 @@ const SCENES: Scene[] = [
   },
   {
     img: "customers",
-    cam: { fromScale: 1.05, toScale: 1.15, fromX: 0, toX: -20 },
+    cam: { fromScale: 1.05, toScale: 1.12, fromX: 0, toX: -15 },
     transition: "wipeUp",
-    text: { top: "13 — Vue d’ensemble", small: "Un lieu où l’on se retrouve." },
+    text: { top: "13 — Conseil & proximité", small: "On prend le temps, comme au marché." },
+  },
+  {
+    img: "staffHygiene",
+    cam: { fromScale: 1.08, toScale: 1.18, fromX: -10, toX: 15 },
+    transition: "wipeRight",
+    text: { top: "14 — Hygiène & loisirs", small: "Soins du quotidien, jouets et détente." },
   },
   {
     img: "interiorCounter",
