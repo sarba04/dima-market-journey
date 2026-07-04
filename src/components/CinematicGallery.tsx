@@ -1,26 +1,34 @@
 import { useLayoutEffect, useRef } from "react";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { IMG } from "@/lib/images";
+import { useLanguage } from "@/lib/language";
 
 const PANELS = [
-  { src: IMG.facadeWide, label: "La façade" },
-  { src: IMG.facadeEntrance, label: "L'entrée" },
-  { src: IMG.staffEpicerie, label: "L'équipe" },
-  { src: IMG.bakery, label: "La boulangerie" },
-  { src: IMG.customers, label: "Nos clients" },
-  { src: IMG.staffHygiene, label: "Hygiène & loisirs" },
-  { src: IMG.aisleDrinks, label: "Rayon boissons" },
+  { src: IMG.facadeWide, label: { fr: "La façade", ar: "الواجهة" } },
+  { src: IMG.facadeEntrance, label: { fr: "L'entrée", ar: "المدخل" } },
+  { src: IMG.staffEpicerie, label: { fr: "L'équipe", ar: "الفريق" } },
+  { src: IMG.bakery, label: { fr: "La boulangerie", ar: "المخبزة" } },
+  { src: IMG.customers, label: { fr: "Nos clients", ar: "زبناؤنا" } },
+  { src: IMG.staffHygiene, label: { fr: "Hygiène & loisirs", ar: "نظافة وترفيه" } },
+  { src: IMG.aisleDrinks, label: { fr: "Rayon boissons", ar: "قسم المشروبات" } },
 ];
 
+const TEXT = {
+  fr: { label: "Galerie", heading: "Le magasin en images." },
+  ar: { label: "معرض الصور", heading: "المتجر في صور." },
+} as const;
+
 function GalleryHeading() {
+  const { lang } = useLanguage();
+  const t = TEXT[lang];
   return (
-    <div className="reveal max-w-2xl">
+    <div className="reveal max-w-2xl" dir={lang === "ar" ? "rtl" : "ltr"}>
       <div className="mb-4 flex items-center gap-3">
         <span className="h-px w-10 bg-[color:var(--dima)]" />
-        <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/60">Galerie</span>
+        <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/60">{t.label}</span>
       </div>
       <h2 className="font-display text-[clamp(2rem,5vw,4rem)] leading-[0.95] tracking-[-0.03em] text-white">
-        Le magasin en images.
+        {t.heading}
       </h2>
     </div>
   );
@@ -28,11 +36,14 @@ function GalleryHeading() {
 
 // A pinned, horizontally-scrolling sequence — the body's one big cinematic
 // set-piece, echoing the hero's scroll-driven camera language instead of a
-// static grid of photos.
+// static grid of photos. Kept in a forced LTR wrapper: the pinned track's
+// GSAP transform math assumes a fixed physical scroll direction, so it must
+// not inherit the page's RTL flow when the Arabic language is active.
 export function CinematicGallery() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const reducedMotion = useReducedMotion();
+  const { lang } = useLanguage();
 
   useLayoutEffect(() => {
     if (reducedMotion || typeof window === "undefined") return;
@@ -77,8 +88,8 @@ export function CinematicGallery() {
           <GalleryHeading />
           <div className="mt-16 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
             {PANELS.map((p) => (
-              <div key={p.label} className="relative aspect-[4/5] overflow-hidden rounded-2xl">
-                <img src={p.src} alt={p.label} loading="lazy" className="h-full w-full object-cover" />
+              <div key={p.label.fr} className="relative aspect-[4/5] overflow-hidden rounded-2xl">
+                <img src={p.src} alt={p.label[lang]} loading="lazy" className="h-full w-full object-cover" />
               </div>
             ))}
           </div>
@@ -88,30 +99,30 @@ export function CinematicGallery() {
   }
 
   return (
-    <section ref={sectionRef} className="relative h-screen w-full overflow-hidden bg-background">
+    <section ref={sectionRef} dir="ltr" className="relative h-screen w-full overflow-hidden bg-background">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 px-6 pt-16 md:px-16 md:pt-20">
         <GalleryHeading />
       </div>
       <div ref={trackRef} className="flex h-full w-max items-center gap-4 px-6 will-change-transform md:gap-6 md:px-16">
         {PANELS.map((p, i) => (
           <div
-            key={p.label}
+            key={p.label.fr}
             className="relative h-[58vh] w-[74vw] shrink-0 overflow-hidden rounded-2xl border border-white/10 sm:w-[46vw] md:h-[62vh] md:w-[32vw]"
           >
             <img
               src={p.src}
-              alt={p.label}
+              alt={p.label[lang]}
               loading={i < 2 ? "eager" : "lazy"}
               decoding="async"
               className="h-full w-full object-cover"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-            <div className="absolute bottom-5 left-5 flex items-center gap-3">
+            <div className="absolute bottom-5 left-5 flex items-center gap-3" dir={lang === "ar" ? "rtl" : "ltr"}>
               <span className="font-mono-tight text-[10px] tracking-[0.3em] text-[color:var(--dima)]">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/70">
-                {p.label}
+                {p.label[lang]}
               </span>
             </div>
           </div>

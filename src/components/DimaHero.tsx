@@ -2,143 +2,155 @@ import { useLayoutEffect, useRef } from "react";
 import { IMG } from "@/lib/images";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { splitChars } from "@/lib/splitText";
+import { useLanguage, type Lang } from "@/lib/language";
 import dimaMLogo from "@/assets/dima-m-logo-transparent.png";
 
-type Scene = {
-  img: keyof typeof IMG;
-  // Camera transform for the image layer during this scene
-  cam: {
-    fromScale: number;
-    toScale: number;
-    fromX?: number;
-    toX?: number;
-    fromY?: number;
-    toY?: number;
-    fromRot?: number;
-    toRot?: number;
-    fromBlur?: number;
-    toBlur?: number;
-    fromBrightness?: number;
-    toBrightness?: number;
-  };
-  // Transition mode into this scene
-  transition:
-    | "fade"
-    | "flash"
-    | "wipeRight"
-    | "wipeUp"
-    | "zoomIn"
-    | "irisIn"
-    | "blur";
-  // Text lines shown during this scene
-  text?: { top?: string; big?: string[]; small?: string; align?: "center" | "left" | "right" };
+type SceneCam = {
+  fromScale: number;
+  toScale: number;
+  fromX?: number;
+  toX?: number;
+  fromY?: number;
+  toY?: number;
+  fromRot?: number;
+  toRot?: number;
+  fromBlur?: number;
+  toBlur?: number;
+  fromBrightness?: number;
+  toBrightness?: number;
 };
 
-const SCENES: Scene[] = [
-  {
-    img: "facadeWide",
-    cam: { fromScale: 1.15, toScale: 3, fromY: 20, toY: -100 },
-    transition: "fade",
-    text: { top: "Chapitre 01 — Arrivée", big: ["DIMA M", "Market"], small: "Votre supérette moderne." },
-  },
-  {
-    img: "facadeEntrance",
-    cam: { fromScale: 1.05, toScale: 1.35, fromY: 0, toY: 10, fromBlur: 4, toBlur: 0 },
-    transition: "zoomIn",
-    text: { top: "02 — Approche", small: "Un pas de plus vers l’expérience." },
-  },
-  {
-    img: "facadeEntrance",
-    cam: { fromScale: 1.35, toScale: 2.8, toBrightness: 1.35, toBlur: 2 },
-    transition: "flash",
-    text: { top: "03 — Seuil", small: "Poussez la porte." },
-  },
-  {
-    img: "interiorCounter",
-    cam: { fromScale: 1.25, toScale: 1.05, fromX: 30, toX: -10, fromBrightness: 1.4, toBrightness: 1 },
-    transition: "flash",
-    text: {
+type SceneMeta = {
+  img: keyof typeof IMG;
+  cam: SceneCam;
+  transition: "fade" | "flash" | "wipeRight" | "wipeUp" | "zoomIn" | "irisIn" | "blur";
+};
+
+type SceneText = { top?: string; big?: string[]; small?: string };
+
+// The hero's "big" titles are split character-by-character for the stagger
+// animation, and each character becomes its own inline-block box. Inline-block
+// boxes are atomic to the bidi algorithm, so a run of them inherits the
+// paragraph's base direction rather than the script of the text inside —
+// under a global RTL page, a plain-Latin word like "DIMA" would visually
+// reverse into "AMID". Splitting each line into same-script runs and tagging
+// every run with its own `dir` keeps Latin runs (like the brand name) always
+// reading left-to-right, and Arabic runs right-to-left, regardless of which
+// language is currently active.
+const RTL_CHAR_RE = /[؀-ۿݐ-ݿ]/;
+
+function splitIntoRuns(line: string): { text: string; dir: "ltr" | "rtl" }[] {
+  const runs: { words: string[]; dir: "ltr" | "rtl" }[] = [];
+  for (const word of line.split(" ")) {
+    const dir: "ltr" | "rtl" = RTL_CHAR_RE.test(word) ? "rtl" : "ltr";
+    const last = runs[runs.length - 1];
+    if (last && last.dir === dir) last.words.push(word);
+    else runs.push({ words: [word], dir });
+  }
+  return runs.map((r) => ({ text: r.words.join(" "), dir: r.dir }));
+}
+
+const SCENES: SceneMeta[] = [
+  { img: "facadeWide", cam: { fromScale: 1.15, toScale: 3, fromY: 20, toY: -100 }, transition: "fade" },
+  { img: "facadeEntrance", cam: { fromScale: 1.05, toScale: 1.35, fromY: 0, toY: 10, fromBlur: 4, toBlur: 0 }, transition: "zoomIn" },
+  { img: "facadeEntrance", cam: { fromScale: 1.35, toScale: 2.8, toBrightness: 1.35, toBlur: 2 }, transition: "flash" },
+  { img: "interiorCounter", cam: { fromScale: 1.25, toScale: 1.05, fromX: 30, toX: -10, fromBrightness: 1.4, toBrightness: 1 }, transition: "flash" },
+  { img: "interiorAisle", cam: { fromScale: 1.15, toScale: 1.08, fromX: -20, toX: 25, fromRot: -1, toRot: 0.5 }, transition: "wipeRight" },
+  { img: "aisleDrinks", cam: { fromScale: 1.4, toScale: 1.1, fromX: 40, toX: -15 }, transition: "zoomIn" },
+  { img: "aisleDrinks", cam: { fromScale: 1.1, toScale: 1.15, fromX: -15, toX: -70 }, transition: "wipeRight" },
+  { img: "aisleBiscuits", cam: { fromScale: 1.2, toScale: 1.0, fromX: 30, toX: -10, fromRot: 1, toRot: 0 }, transition: "wipeUp" },
+  { img: "aisleSnacks", cam: { fromScale: 1.5, toScale: 1.15, fromX: 20, toX: -5, fromBlur: 3, toBlur: 0 }, transition: "blur" },
+  { img: "staffEpicerie", cam: { fromScale: 1.1, toScale: 1.02, fromX: 10, toX: -10 }, transition: "fade" },
+  { img: "aisleEpicerie", cam: { fromScale: 1.18, toScale: 1.28, fromY: 0, toY: -20 }, transition: "irisIn" },
+  { img: "bakery", cam: { fromScale: 1.25, toScale: 1.0, fromBrightness: 0.8, toBrightness: 1.1 }, transition: "flash" },
+  { img: "customers", cam: { fromScale: 1.05, toScale: 1.12, fromX: 0, toX: -15 }, transition: "wipeUp" },
+  { img: "staffHygiene", cam: { fromScale: 1.08, toScale: 1.18, fromX: -10, toX: 15 }, transition: "wipeRight" },
+  { img: "interiorCounter", cam: { fromScale: 1.2, toScale: 1.05, fromBlur: 8, toBlur: 0, fromBrightness: 0.4, toBrightness: 0.9 }, transition: "flash" },
+];
+
+const SCENE_TEXT: Record<Lang, SceneText[]> = {
+  fr: [
+    { top: "Chapitre 01 — Arrivée", big: ["DIMA M", "Market"], small: "Votre supérette moderne." },
+    { top: "02 — Approche", small: "Un pas de plus vers l’expérience." },
+    { top: "03 — Seuil", small: "Poussez la porte." },
+    {
       top: "04 — Intérieur",
       big: ["Bienvenue", "chez DIMA M."],
       small: "Des centaines de références soigneusement sélectionnées.",
     },
-  },
-  {
-    img: "interiorAisle",
-    cam: { fromScale: 1.15, toScale: 1.08, fromX: -20, toX: 25, fromRot: -1, toRot: 0.5 },
-    transition: "wipeRight",
-    text: { top: "05 — Allée principale", small: "Chaque rayon, une histoire." },
-  },
-  {
-    img: "aisleDrinks",
-    cam: { fromScale: 1.4, toScale: 1.1, fromX: 40, toX: -15 },
-    transition: "zoomIn",
-    text: { top: "06 — Rayon boissons", big: ["Eaux.", "Boissons.", "Jus."] },
-  },
-  {
-    img: "aisleDrinks",
-    cam: { fromScale: 1.1, toScale: 1.15, fromX: -15, toX: -70 },
-    transition: "wipeRight",
-    text: { top: "07 — Travelling", small: "La profondeur du rayon." },
-  },
-  {
-    img: "aisleBiscuits",
-    cam: { fromScale: 1.2, toScale: 1.0, fromX: 30, toX: -10, fromRot: 1, toRot: 0 },
-    transition: "wipeUp",
-    text: { top: "08 — Biscuits & confiseries", small: "Sucre, croquant, souvenirs." },
-  },
-  {
-    img: "aisleSnacks",
-    cam: { fromScale: 1.5, toScale: 1.15, fromX: 20, toX: -5, fromBlur: 3, toBlur: 0 },
-    transition: "blur",
-    text: { top: "09 — Macro", small: "Les produits prennent vie." },
-  },
-  {
-    img: "staffEpicerie",
-    cam: { fromScale: 1.1, toScale: 1.02, fromX: 10, toX: -10 },
-    transition: "fade",
-    text: { top: "10 — Notre équipe", big: ["Des visages.", "Des conseils."], small: "Une équipe qui connaît chaque référence." },
-  },
-  {
-    img: "aisleEpicerie",
-    cam: { fromScale: 1.18, toScale: 1.28, fromY: 0, toY: -20 },
-    transition: "irisIn",
-    text: { top: "11 — Produits importés", big: ["Le meilleur", "du Maroc.", "Le meilleur", "d’ailleurs."] },
-  },
-  {
-    img: "bakery",
-    cam: { fromScale: 1.25, toScale: 1.0, fromBrightness: 0.8, toBrightness: 1.1 },
-    transition: "flash",
-    text: { top: "12 — Boulangerie", big: ["Du pain frais.", "Chaque jour."], small: "Viennoiseries dorées, sortie du four." },
-  },
-  {
-    img: "customers",
-    cam: { fromScale: 1.05, toScale: 1.12, fromX: 0, toX: -15 },
-    transition: "wipeUp",
-    text: { top: "13 — Conseil & proximité", small: "On prend le temps, comme au marché." },
-  },
-  {
-    img: "staffHygiene",
-    cam: { fromScale: 1.08, toScale: 1.18, fromX: -10, toX: 15 },
-    transition: "wipeRight",
-    text: { top: "14 — Hygiène & loisirs", small: "Soins du quotidien, jouets et détente." },
-  },
-  {
-    img: "interiorCounter",
-    cam: { fromScale: 1.2, toScale: 1.05, fromBlur: 8, toBlur: 0, fromBrightness: 0.4, toBrightness: 0.9 },
-    transition: "flash",
-    text: {
+    { top: "05 — Allée principale", small: "Chaque rayon, une histoire." },
+    { top: "06 — Rayon boissons", big: ["Eaux.", "Boissons.", "Jus."] },
+    { top: "07 — Travelling", small: "La profondeur du rayon." },
+    { top: "08 — Biscuits & confiseries", small: "Sucre, croquant, souvenirs." },
+    { top: "09 — Macro", small: "Les produits prennent vie." },
+    { top: "10 — Notre équipe", big: ["Des visages.", "Des conseils."], small: "Une équipe qui connaît chaque référence." },
+    { top: "11 — Produits importés", big: ["Le meilleur", "du Maroc.", "Le meilleur", "d’ailleurs."] },
+    { top: "12 — Boulangerie", big: ["Du pain frais.", "Chaque jour."], small: "Viennoiseries dorées, sortie du four." },
+    { top: "13 — Conseil & proximité", small: "On prend le temps, comme au marché." },
+    { top: "14 — Hygiène & loisirs", small: "Soins du quotidien, jouets et détente." },
+    {
       top: "15 — DIMA M",
       big: ["Bienvenue", "chez vous."],
       small: "Descendez pour découvrir nos services.",
     },
-  },
-];
+  ],
+  ar: [
+    { top: "الفصل 01 — الوصول", big: ["DIMA M", "Market"], small: "متجركم العصري." },
+    { top: "02 — الاقتراب", small: "خطوة أخرى نحو التجربة." },
+    { top: "03 — العتبة", small: "ادفعوا الباب." },
+    {
+      top: "04 — الداخل",
+      big: ["مرحباً بكم", "في DIMA M."],
+      small: "مئات المنتجات المُنتقاة بعناية.",
+    },
+    { top: "05 — الممر الرئيسي", small: "كل قسم له حكايته." },
+    { top: "06 — قسم المشروبات", big: ["مياه.", "مشروبات.", "عصائر."] },
+    { top: "07 — تنقل الكاميرا", small: "عمق القسم." },
+    { top: "08 — حلويات وبسكويت", small: "سكر، قرمشة، ذكريات." },
+    { top: "09 — تصوير مقرّب", small: "المنتجات تنبض بالحياة." },
+    { top: "10 — فريقنا", big: ["وجوه.", "نصائح."], small: "فريق يعرف كل منتج." },
+    { top: "11 — منتجات مستوردة", big: ["الأفضل", "من المغرب.", "الأفضل", "من الخارج."] },
+    { top: "12 — المخبزة", big: ["خبز طازج.", "كل يوم."], small: "معجنات ذهبية، طازجة من الفرن." },
+    { top: "13 — نصيحة وقرب", small: "نأخذ وقتنا، كما في السوق." },
+    { top: "14 — نظافة وترفيه", small: "عناية يومية، ألعاب واسترخاء." },
+    {
+      top: "15 — DIMA M",
+      big: ["مرحباً", "بكم في بيتكم."],
+      small: "انزلوا لاكتشاف خدماتنا.",
+    },
+  ],
+};
 
-export const SCENE_NAMES = SCENES.map((s) => s.text?.top ?? "");
 export const SCENE_COUNT = SCENES.length;
+export const SCENE_NAMES: Record<Lang, string[]> = {
+  fr: SCENE_TEXT.fr.map((s) => s.top ?? ""),
+  ar: SCENE_TEXT.ar.map((s) => s.top ?? ""),
+};
 
 const SCENE_DURATION = 1; // relative
+
+const HERO_TEXT = {
+  fr: {
+    reducedMotionAria: "DIMA M Market, superette moderne a Tabriquet, Sale",
+    title: "DIMA M Market",
+    reducedMotionDesc:
+      "Votre superette moderne a Tabriquet, Sale, alimentation, boulangerie, produits importes et boissons, servis avec exigence.",
+    heroAria: "Visite immersive DIMA M Market",
+    skip: "Passer",
+    scrollHint: "Scroll — pilotez la caméra",
+    locationTag: "Tabriquet, Salé • MA",
+  },
+  ar: {
+    reducedMotionAria: "DIMA M Market, superette moderne a Tabriquet, Sale",
+    title: "DIMA M Market",
+    reducedMotionDesc:
+      "متجركم العصري في Tabriquet, Salé — مواد غذائية، مخبزة، منتجات مستوردة ومشروبات، بخدمة متميزة.",
+    heroAria: "جولة تفاعلية في DIMA M Market",
+    skip: "تخطي",
+    scrollHint: "مرروا الشاشة — تحكموا بالكاميرا",
+    locationTag: "Tabriquet, Salé • MA",
+  },
+} as const;
 
 // Total scroll length in vh. Shorter on small/mobile viewports — 15 scenes of
 // scroll-jacking is a lot of dead scrolling to ask from a phone visitor.
@@ -157,6 +169,9 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
   const stepLabelRef = useRef<HTMLDivElement | null>(null);
   const skipCleanupRef = useRef<() => void>(() => {});
   const reducedMotion = useReducedMotion();
+  const { lang } = useLanguage();
+  const sceneText = SCENE_TEXT[lang];
+  const ht = HERO_TEXT[lang];
 
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
@@ -230,7 +245,7 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
                 const w = window as unknown as { __dimaScene?: number };
                 if (w.__dimaScene !== idx) {
                   w.__dimaScene = idx;
-                  window.dispatchEvent(new CustomEvent("dima:scene", { detail: { idx, total: SCENES.length, name: SCENE_NAMES[idx] } }));
+                  window.dispatchEvent(new CustomEvent("dima:scene", { detail: { idx, total: SCENES.length, name: SCENE_NAMES[lang][idx] } }));
                 }
                 window.dispatchEvent(new CustomEvent("dima:heroProgress", { detail: { progress: self.progress } }));
               }
@@ -346,23 +361,24 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
     })();
 
     return () => cleanup();
-  }, [onComplete, reducedMotion]);
+    // Rebuilding on `lang` change is intentional: scene text (and its
+    // per-character split spans) changes shape, so the GSAP timeline and its
+    // stagger targets must be rebuilt against the freshly rendered DOM.
+  }, [onComplete, reducedMotion, lang]);
 
   if (reducedMotion) {
     return (
       <section
         ref={rootRef}
         className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background px-6 py-24 text-center"
-        aria-label="DIMA M Market, superette moderne a Tabriquet, Sale"
+        aria-label={ht.reducedMotionAria}
       >
         <img src={IMG.facadeWide} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background via-background/75 to-background" />
         <div className="relative z-10 flex max-w-3xl flex-col items-center gap-6">
           <img src={dimaMLogo} alt="" className="h-20 w-20" />
-          <h1 className="sr-only">DIMA M Market</h1>
-          <p className="text-base text-white/70 md:text-lg">
-            Votre superette moderne a Tabriquet, Sale, alimentation, boulangerie, produits importes et boissons, servis avec exigence.
-          </p>
+          <h1 className="sr-only">{ht.title}</h1>
+          <p className="text-base text-white/70 md:text-lg">{ht.reducedMotionDesc}</p>
         </div>
       </section>
     );
@@ -372,7 +388,7 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
     <section
       ref={rootRef}
       className="relative h-screen w-full overflow-hidden bg-background"
-      aria-label="Visite immersive DIMA M Market"
+      aria-label={ht.heroAria}
     >
       {/* Stage */}
       <div ref={stageRef} className="absolute inset-0">
@@ -411,7 +427,7 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
           <img src={dimaMLogo} alt="DIMA M Market" className="dima-logo-pulse h-11 w-11" />
         </div>
         <div className="flex items-center gap-5">
-          <div ref={stepLabelRef} className="font-mono-tight text-[11px] uppercase tracking-[0.35em] text-white/70">
+          <div ref={stepLabelRef} className="font-mono-tight text-[11px] uppercase tracking-[0.35em] text-white/70" dir="ltr">
             01 / {String(SCENES.length).padStart(2, "0")}
           </div>
           <button
@@ -419,7 +435,7 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
             onClick={() => window.dispatchEvent(new CustomEvent("dima:skipIntro"))}
             className="pointer-events-auto group flex items-center gap-2 font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/50 transition-colors hover:text-[color:var(--dima)]"
           >
-            Passer
+            {ht.skip}
             <span className="transition-transform group-hover:translate-x-0.5">→</span>
           </button>
         </div>
@@ -429,10 +445,10 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-6 pb-6 md:px-10 md:pb-8">
         <div className="mb-3 flex items-end justify-between">
           <div className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/60">
-            Scroll — pilotez la caméra
+            {ht.scrollHint}
           </div>
           <div className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/60">
-            Tabriquet, Salé • MA
+            {ht.locationTag}
           </div>
         </div>
         <div className="h-[2px] w-full origin-left bg-white/10">
@@ -442,7 +458,7 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
 
       {/* Scene text overlays */}
       <div className="pointer-events-none absolute inset-0 z-10">
-        {SCENES.map((scene, i) => (
+        {sceneText.map((text, i) => (
           <div
             key={i}
             ref={(el) => {
@@ -450,35 +466,40 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
             }}
             className="absolute inset-0 flex items-center justify-center px-6 opacity-0"
           >
-            <div className={`max-w-6xl ${scene.text?.align === "left" ? "text-left mr-auto" : scene.text?.align === "right" ? "text-right ml-auto" : "text-center mx-auto"}`}>
-              {scene.text?.top && (
+            <div className="mx-auto max-w-6xl text-center">
+              {text.top && (
                 <div className="mb-6 flex items-center justify-center gap-3">
                   <span className="h-px w-10 bg-[color:var(--dima)]" />
                   <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/70">
-                    {scene.text.top}
+                    {text.top}
                   </span>
                   <span className="h-px w-10 bg-[color:var(--dima)]" />
                 </div>
               )}
-              {scene.text?.big?.map((line, j) => (
+              {text.big?.map((line, j) => (
                 <h2
                   key={j}
+                  dir={lang === "ar" ? "rtl" : "ltr"}
                   className="font-display text-huge overflow-hidden text-white"
                   style={j === 0 ? {} : { marginTop: "-0.05em" }}
                 >
                   <span className="inline-block" aria-hidden>
-                    {line.split(" ").map((w, k) => (
-                      <span key={k} className="mr-[0.25em] inline-block whitespace-nowrap overflow-hidden align-bottom">
-                        {splitChars(w)}
+                    {splitIntoRuns(line).map((run, ri) => (
+                      <span key={ri} dir={run.dir} className="inline-block">
+                        {run.text.split(" ").map((w, k) => (
+                          <span key={k} className="mr-[0.25em] inline-block whitespace-nowrap overflow-hidden align-bottom">
+                            {splitChars(w)}
+                          </span>
+                        ))}
                       </span>
                     ))}
                   </span>
                   <span className="sr-only">{line}</span>
                 </h2>
               ))}
-              {scene.text?.small && (
+              {text.small && (
                 <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-white/70 md:text-base">
-                  {scene.text.small}
+                  {text.small}
                 </p>
               )}
             </div>

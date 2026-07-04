@@ -1,9 +1,67 @@
 import { useEffect, useRef, useState } from "react";
-import { Phone, MessageCircle } from "lucide-react";
+import { Phone, MessageCircle, Languages } from "lucide-react";
 import { ALL_IMAGES } from "@/lib/images";
 import { BUSINESS, whatsappHref } from "@/lib/business";
-import { SCENE_COUNT } from "./DimaHero";
+import { SCENE_COUNT, SCENE_NAMES } from "./DimaHero";
+import { useLanguage } from "@/lib/language";
 import dimaMLogo from "@/assets/dima-m-logo-transparent.png";
+
+const UI_TEXT = {
+  fr: {
+    ready: "Prêt",
+    preparing: "Préparation de la visite",
+    enter: "Entrer dans l'expérience",
+    navAria: "Navigation principale",
+    backToStartAria: "Retour au début",
+    openMenuAria: "Ouvrir le menu",
+    backToTopAria: "Revenir au début",
+    callAria: "Appeler DIMA M Market",
+    whatsappAria: "Contacter DIMA M Market sur WhatsApp",
+    whatsappMsg: "Bonjour, je vous contacte depuis le site DIMA M Market.",
+    langSwitchLabel: "العربية",
+    langSwitchAria: "Passer au site en arabe",
+  },
+  ar: {
+    ready: "جاهز",
+    preparing: "تحضير الجولة",
+    enter: "ادخل إلى التجربة",
+    navAria: "القائمة الرئيسية",
+    backToStartAria: "العودة إلى البداية",
+    openMenuAria: "فتح القائمة",
+    backToTopAria: "العودة إلى الأعلى",
+    callAria: "الاتصال بـ DIMA M Market",
+    whatsappAria: "التواصل مع DIMA M Market عبر واتساب",
+    whatsappMsg: "مرحباً، أتواصل معكم من موقع DIMA M Market.",
+    langSwitchLabel: "Français",
+    langSwitchAria: "Switch site to French",
+  },
+} as const;
+
+const NAV_ITEMS = [
+  { label: { fr: "Manifeste", ar: "فلسفتنا" }, href: "#manifeste" },
+  { label: { fr: "Rayons", ar: "أقسامنا" }, href: "#rayons" },
+  { label: { fr: "Engagements", ar: "التزاماتنا" }, href: "#engagements" },
+  { label: { fr: "Visiter", ar: "زيارة" }, href: "#visiter" },
+];
+
+/* ------------------------------------------------------------------ */
+/* Language toggle — small persistent switch between FR / AR           */
+/* ------------------------------------------------------------------ */
+export function LanguageToggle({ className = "" }: { className?: string }) {
+  const { lang, toggleLang } = useLanguage();
+  const ui = UI_TEXT[lang];
+  return (
+    <button
+      type="button"
+      onClick={toggleLang}
+      aria-label={ui.langSwitchAria}
+      className={`pointer-events-auto inline-flex items-center gap-1.5 font-mono-tight text-[10px] uppercase tracking-[0.25em] text-white/70 transition-colors hover:text-[color:var(--dima)] ${className}`}
+    >
+      <Languages className="h-3.5 w-3.5" strokeWidth={1.75} />
+      {ui.langSwitchLabel}
+    </button>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /* Intro Preloader — cinematic splash, no counter                      */
@@ -12,6 +70,8 @@ export function IntroPreloader() {
   const [loaded, setLoaded] = useState(0);
   const [ready, setReady] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const { lang } = useLanguage();
+  const ui = UI_TEXT[lang];
 
   useEffect(() => {
     let cancelled = false;
@@ -81,6 +141,8 @@ export function IntroPreloader() {
         }}
       />
 
+      <LanguageToggle className="absolute right-6 top-6 sm:right-8 sm:top-8" />
+
       <div className="relative flex flex-col items-center px-6">
         <img src={dimaMLogo} alt="DIMA M Market" className="dima-logo-pulse h-20 w-20" />
 
@@ -92,7 +154,7 @@ export function IntroPreloader() {
         </div>
 
         <div className="mt-5 font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/40">
-          {ready ? "Prêt" : "Préparation de la visite"}
+          {ready ? ui.ready : ui.preparing}
         </div>
 
         <div
@@ -102,7 +164,7 @@ export function IntroPreloader() {
         >
           <div className="group flex items-center gap-4 border border-white/20 px-6 py-3 hover:border-[color:var(--dima)] sm:px-8 sm:py-4">
             <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/80 group-hover:text-[color:var(--dima)]">
-              Entrer dans l&apos;expérience
+              {ui.enter}
             </span>
             <span className="h-px w-6 bg-white/40 group-hover:bg-[color:var(--dima)] sm:w-8" />
             <span className="text-white/80 group-hover:text-[color:var(--dima)]">→</span>
@@ -152,16 +214,11 @@ export function ScrollProgress() {
 /* ------------------------------------------------------------------ */
 /* Floating Nav — appears after hero                                   */
 /* ------------------------------------------------------------------ */
-const NAV_ITEMS = [
-  { label: "Manifeste", href: "#manifeste" },
-  { label: "Rayons", href: "#rayons" },
-  { label: "Engagements", href: "#engagements" },
-  { label: "Visiter", href: "#visiter" },
-];
-
 export function FloatingNav() {
   const [visible, setVisible] = useState(false);
   const [open, setOpen] = useState(false);
+  const { lang } = useLanguage();
+  const ui = UI_TEXT[lang];
 
   useEffect(() => {
     const onDone = () => setVisible(true);
@@ -180,8 +237,8 @@ export function FloatingNav() {
   return (
     <>
       <nav
-        aria-label="Navigation principale"
-        className={`fixed left-1/2 top-4 z-[90] w-[calc(100%-1.5rem)] max-w-[min(96vw,720px)] -translate-x-1/2 transition-all duration-500 sm:top-6 ${
+        aria-label={ui.navAria}
+        className={`fixed left-1/2 top-4 z-[90] w-[calc(100%-1.5rem)] max-w-[min(96vw,760px)] -translate-x-1/2 transition-all duration-500 sm:top-6 ${
           visible ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-4"
         }`}
       >
@@ -193,7 +250,7 @@ export function FloatingNav() {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-[color:var(--dima)] hover:bg-white/5"
-            aria-label="Retour au début"
+            aria-label={ui.backToStartAria}
           >
             <img src={dimaMLogo} alt="DIMA M Market" className="h-7 w-7 object-contain" />
           </a>
@@ -205,15 +262,18 @@ export function FloatingNav() {
                 href={it.href}
                 className="shrink-0 rounded-full px-3 py-2 font-mono-tight text-[10px] uppercase tracking-[0.25em] text-white/70 transition-colors hover:bg-white/5 hover:text-white sm:px-4"
               >
-                {it.label}
+                {it.label[lang]}
               </a>
             ))}
+          </div>
+          <div className="hidden items-center gap-0.5 sm:flex">
+            <LanguageToggle className="px-3 py-2" />
           </div>
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
-            aria-label="Ouvrir le menu"
+            aria-label={ui.openMenuAria}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/80 hover:bg-white/5 sm:hidden"
           >
             <span className="relative block h-3 w-4">
@@ -236,9 +296,12 @@ export function FloatingNav() {
                 onClick={() => setOpen(false)}
                 className="rounded-xl px-4 py-3 font-mono-tight text-[11px] uppercase tracking-[0.3em] text-white/80 hover:bg-white/5 hover:text-white"
               >
-                {it.label}
+                {it.label[lang]}
               </a>
             ))}
+            <div className="mt-1 border-t border-white/10 px-4 py-3">
+              <LanguageToggle />
+            </div>
           </div>
         </div>
       </nav>
@@ -246,7 +309,7 @@ export function FloatingNav() {
       <button
         type="button"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        aria-label="Revenir au début"
+        aria-label={ui.backToTopAria}
         className={`fixed bottom-5 right-5 z-[90] flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-background/70 backdrop-blur-md transition-all duration-500 hover:border-[color:var(--dima)] hover:text-[color:var(--dima)] sm:bottom-6 sm:right-6 sm:h-12 sm:w-12 ${
           visible ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
@@ -261,11 +324,16 @@ export function FloatingNav() {
 /* Scene HUD                                                           */
 /* ------------------------------------------------------------------ */
 export function SceneHUD() {
-  const [scene, setScene] = useState<{ idx: number; name: string } | null>({
+  const { lang } = useLanguage();
+  const [scene, setScene] = useState<{ idx: number; name: string }>({
     idx: 0,
-    name: "Chapitre 01 — Arrivée",
+    name: SCENE_NAMES[lang][0],
   });
   const [inHero, setInHero] = useState(true);
+
+  useEffect(() => {
+    setScene((s) => (s.idx === 0 ? { idx: 0, name: SCENE_NAMES[lang][0] } : s));
+  }, [lang]);
 
   useEffect(() => {
     const onScene = (e: Event) => {
@@ -283,8 +351,6 @@ export function SceneHUD() {
       window.removeEventListener("dima:heroEnter", onEnter);
     };
   }, []);
-
-  if (!scene) return null;
 
   return (
     <div
@@ -396,6 +462,8 @@ export function CustomCursor() {
 /* ------------------------------------------------------------------ */
 export function QuickContact() {
   const [show, setShow] = useState(false);
+  const { lang } = useLanguage();
+  const ui = UI_TEXT[lang];
 
   useEffect(() => {
     const t = setTimeout(() => setShow(true), 1400);
@@ -410,17 +478,17 @@ export function QuickContact() {
     >
       <a
         href={BUSINESS.phoneHref}
-        aria-label="Appeler DIMA M Market"
+        aria-label={ui.callAria}
         data-cursor="hover"
         className="glass flex h-11 w-11 items-center justify-center rounded-full text-white/80 transition-colors hover:text-[color:var(--dima)] sm:h-12 sm:w-12"
       >
         <Phone className="h-4 w-4" strokeWidth={1.75} />
       </a>
       <a
-        href={whatsappHref("Bonjour, je vous contacte depuis le site DIMA M Market.")}
+        href={whatsappHref(ui.whatsappMsg)}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Contacter DIMA M Market sur WhatsApp"
+        aria-label={ui.whatsappAria}
         data-cursor="hover"
         className="glass flex h-11 w-11 items-center justify-center rounded-full text-white/80 transition-colors hover:text-[color:var(--dima)] sm:h-12 sm:w-12"
       >

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DimaHero } from "@/components/DimaHero";
 import { PostHero } from "@/components/PostHero";
 import { ExperienceLayer } from "@/components/ExperienceLayer";
+import { LanguageProvider } from "@/lib/language";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,10 +28,12 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <main id="top" className="bg-background text-foreground">
-      <ExperienceLayer />
-      <DimaHero />
-      <PostHero />
-    </main>
+    <LanguageProvider>
+      <main id="top" className="bg-background text-foreground">
+        <ExperienceLayer />
+        <DimaHero />
+        <PostHero />
+      </main>
+    </LanguageProvider>
   );
 }
