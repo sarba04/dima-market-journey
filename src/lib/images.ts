@@ -9,6 +9,8 @@ import aisleDrinks from "@/assets/aisle-drinks.jpg.asset.json";
 import aisleSnacks from "@/assets/aisle-snacks.jpg.asset.json";
 import bakery from "@/assets/bakery.jpg.asset.json";
 import customers from "@/assets/customers.jpg.asset.json";
+import staffEpicerie from "@/assets/staff-epicerie.jpg.asset.json";
+import staffHygiene from "@/assets/staff-hygiene.jpg.asset.json";
 
 export const IMG = {
   facadeWide: facadeWide.url,
@@ -21,6 +23,8 @@ export const IMG = {
   aisleSnacks: aisleSnacks.url,
   bakery: bakery.url,
   customers: customers.url,
+  staffEpicerie: staffEpicerie.url,
+  staffHygiene: staffHygiene.url,
 };
 
 export const ALL_IMAGES = Object.values(IMG);
