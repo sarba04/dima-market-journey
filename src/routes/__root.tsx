@@ -82,7 +82,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "DIMA Market : visite immersive d'une supérette moderne à Casablanca. Alimentation, boulangerie, produits importés — servis avec exigence.",
+          "DIMA M Market : visite immersive d'une supérette moderne à Tabriquet, Salé. Alimentation, boulangerie, produits importés — servis avec exigence.",
       },
       { property: "og:title", content: "DIMA M MARKET - Supermarché quartier à Tabriquet, Salé" },
       { name: "twitter:title", content: "DIMA M MARKET - Supermarché quartier à Tabriquet, Salé" },
@@ -96,7 +96,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/dima-m-logo.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/dima-m-logo.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

@@ -1,13 +1,12 @@
-// Single source of truth for DIMA Market's real-world contact info.
-// TODO: replace placeholders with the real phone/WhatsApp/address before launch.
+// Single source of truth for DIMA M Market's real-world contact info.
 export const BUSINESS = {
-  phoneDisplay: "+212 — DIMA",
-  phoneHref: "tel:+212000000000",
-  whatsappNumber: "212600000000", // digits only, no +, no leading 0
+  phoneDisplay: "+212 751 700 790",
+  phoneHref: "tel:+212751700790",
+  whatsappNumber: "212751700790", // digits only, no +, no leading 0
   email: "hello@dima.market",
-  addressLabel: "Casablanca, Maroc",
+  addressLabel: "Tabriquet, Salé — à 1 min de la poste de Tabriquet",
   mapsEmbedSrc:
-    "https://www.openstreetmap.org/export/embed.html?bbox=-7.65%2C33.55%2C-7.55%2C33.62&layer=mapnik",
+    "https://www.openstreetmap.org/export/embed.html?bbox=-6.87%2C34.01%2C-6.77%2C34.08&layer=mapnik&marker=34.048%2C-6.816",
   ratingValue: 4.9,
   reviewCountValue: 340,
   hours: [

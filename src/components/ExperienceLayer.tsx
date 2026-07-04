@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Phone, MessageCircle } from "lucide-react";
 import { ALL_IMAGES } from "@/lib/images";
 import { BUSINESS, whatsappHref } from "@/lib/business";
-import { SCENE_COUNT, LogoMark } from "./DimaHero";
+import { SCENE_COUNT } from "./DimaHero";
+import dimaMLogo from "@/assets/dima-m-logo-transparent.png";
 
 /* ------------------------------------------------------------------ */
 /* Intro Preloader — cinematic splash, no counter                      */
@@ -64,11 +65,7 @@ export function IntroPreloader() {
       />
 
       <div className="relative flex flex-col items-center px-6">
-        <LogoMark className="dima-logo-pulse h-14 w-14 text-[color:var(--dima)]" />
-
-        <div className="mt-8 font-mono-tight text-[10px] uppercase tracking-[0.5em] text-white/60">
-          DIMA • Market
-        </div>
+        <img src={dimaMLogo} alt="DIMA M Market" className="dima-logo-pulse h-20 w-20" />
 
         <div className="mt-14 h-[2px] w-56 overflow-hidden bg-white/10 sm:w-72">
           <div
@@ -178,10 +175,10 @@ export function FloatingNav() {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[color:var(--dima)] hover:bg-white/5"
+            className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-[color:var(--dima)] hover:bg-white/5"
             aria-label="Retour au début"
           >
-            <LogoMark className="h-5 w-5" />
+            <img src={dimaMLogo} alt="DIMA M Market" className="h-7 w-7 object-contain" />
           </a>
           <div className="mx-1 hidden h-5 w-px bg-white/10 sm:block" />
           <div className="hidden min-w-0 items-center gap-0.5 sm:flex">
@@ -396,17 +393,17 @@ export function QuickContact() {
     >
       <a
         href={BUSINESS.phoneHref}
-        aria-label="Appeler DIMA Market"
+        aria-label="Appeler DIMA M Market"
         data-cursor="hover"
         className="glass flex h-11 w-11 items-center justify-center rounded-full text-white/80 transition-colors hover:text-[color:var(--dima)] sm:h-12 sm:w-12"
       >
         <Phone className="h-4 w-4" strokeWidth={1.75} />
       </a>
       <a
-        href={whatsappHref("Bonjour, je vous contacte depuis le site DIMA Market.")}
+        href={whatsappHref("Bonjour, je vous contacte depuis le site DIMA M Market.")}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Contacter DIMA Market sur WhatsApp"
+        aria-label="Contacter DIMA M Market sur WhatsApp"
         data-cursor="hover"
         className="glass flex h-11 w-11 items-center justify-center rounded-full text-white/80 transition-colors hover:text-[color:var(--dima)] sm:h-12 sm:w-12"
       >

@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from "react";
 import { IMG } from "@/lib/images";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { splitChars } from "@/lib/splitText";
+import dimaMLogo from "@/assets/dima-m-logo-transparent.png";
 
 type Scene = {
   img: keyof typeof IMG;
@@ -38,7 +39,7 @@ const SCENES: Scene[] = [
     img: "facadeWide",
     cam: { fromScale: 1.15, toScale: 3, fromY: 20, toY: -100 },
     transition: "fade",
-    text: { top: "Chapitre 01 — Arrivée", big: ["DIMA", "Market"], small: "Votre supérette moderne." },
+    text: { top: "Chapitre 01 — Arrivée", big: ["DIMA M", "Market"], small: "Votre supérette moderne." },
   },
   {
     img: "facadeEntrance",
@@ -58,7 +59,7 @@ const SCENES: Scene[] = [
     transition: "flash",
     text: {
       top: "04 — Intérieur",
-      big: ["Bienvenue", "chez DIMA."],
+      big: ["Bienvenue", "chez DIMA M."],
       small: "Des centaines de références soigneusement sélectionnées.",
     },
   },
@@ -127,7 +128,7 @@ const SCENES: Scene[] = [
     cam: { fromScale: 1.2, toScale: 1.05, fromBlur: 8, toBlur: 0, fromBrightness: 0.4, toBrightness: 0.9 },
     transition: "flash",
     text: {
-      top: "15 — DIMA",
+      top: "15 — DIMA M",
       big: ["Bienvenue", "chez vous."],
       small: "Descendez pour découvrir nos services.",
     },
@@ -352,15 +353,15 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
       <section
         ref={rootRef}
         className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background px-6 py-24 text-center"
-        aria-label="DIMA Market \u2014 sup\u00E9rette moderne \u00E0 Casablanca"
+        aria-label="DIMA M Market, superette moderne a Tabriquet, Sale"
       >
         <img src={IMG.facadeWide} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background via-background/75 to-background" />
         <div className="relative z-10 flex max-w-3xl flex-col items-center gap-6">
-          <LogoMark className="h-12 w-12 text-[color:var(--dima)]" />
-          <h1 className="font-display text-huge text-white">DIMA Market</h1>
+          <img src={dimaMLogo} alt="" className="h-20 w-20" />
+          <h1 className="sr-only">DIMA M Market</h1>
           <p className="text-base text-white/70 md:text-lg">
-            Votre sup\u00E9rette moderne \u00E0 Casablanca \u2014 alimentation, boulangerie, produits import\u00E9s et boissons, servis avec exigence.
+            Votre superette moderne a Tabriquet, Sale, alimentation, boulangerie, produits importes et boissons, servis avec exigence.
           </p>
         </div>
       </section>
@@ -371,7 +372,7 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
     <section
       ref={rootRef}
       className="relative h-screen w-full overflow-hidden bg-background"
-      aria-label="Visite immersive DIMA Market"
+      aria-label="Visite immersive DIMA M Market"
     >
       {/* Stage */}
       <div ref={stageRef} className="absolute inset-0">
@@ -407,10 +408,7 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
       {/* Top HUD */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between px-6 py-5 md:px-10">
         <div className="flex items-center gap-3">
-          <LogoMark className="dima-logo-pulse h-9 w-9 text-[color:var(--dima)]" />
-          <div className="font-mono-tight text-[11px] uppercase tracking-[0.25em] text-white/80">
-            DIMA • Market
-          </div>
+          <img src={dimaMLogo} alt="DIMA M Market" className="dima-logo-pulse h-11 w-11" />
         </div>
         <div className="flex items-center gap-5">
           <div ref={stepLabelRef} className="font-mono-tight text-[11px] uppercase tracking-[0.35em] text-white/70">
@@ -434,7 +432,7 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
             Scroll — pilotez la caméra
           </div>
           <div className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/60">
-            Casablanca • MA
+            Tabriquet, Salé • MA
           </div>
         </div>
         <div className="h-[2px] w-full origin-left bg-white/10">

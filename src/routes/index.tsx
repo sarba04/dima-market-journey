@@ -6,17 +6,17 @@ import { ExperienceLayer } from "@/components/ExperienceLayer";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "DIMA Market — Une supérette. Une expérience." },
+      { title: "DIMA M Market — Une supérette. Une expérience." },
       {
         name: "description",
         content:
-          "DIMA Market — visite immersive d'une supérette moderne à Casablanca. Alimentation, boulangerie, produits importés, boissons et snacks, servis avec exigence.",
+          "DIMA M Market — visite immersive d'une supérette moderne à Tabriquet, Salé. Alimentation, boulangerie, produits importés, boissons et snacks, servis avec exigence.",
       },
-      { property: "og:title", content: "DIMA Market — Une supérette. Une expérience." },
+      { property: "og:title", content: "DIMA M Market — Une supérette. Une expérience." },
       {
         property: "og:description",
         content:
-          "Entrez virtuellement dans DIMA Market : visite cinématique pilotée au scroll, rayons soignés, boulangerie fraîche chaque jour.",
+          "Entrez virtuellement dans DIMA M Market : visite cinématique pilotée au scroll, rayons soignés, boulangerie fraîche chaque jour.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
