@@ -78,17 +78,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#050807" },
-      { title: "DIMA M MARKET - Supermarché quartier à Tabriquet, Salé" },
+      { title: "DIMA M Market - Supermarché de quartier à Tabriquet, Salé" },
       {
         name: "description",
         content:
           "DIMA M Market : visite immersive d'une supérette moderne à Tabriquet, Salé. Alimentation, boulangerie, produits importés — servis avec exigence.",
       },
-      { property: "og:title", content: "DIMA M MARKET - Supermarché quartier à Tabriquet, Salé" },
-      { name: "twitter:title", content: "DIMA M MARKET - Supermarché quartier à Tabriquet, Salé" },
-      { name: "description", content: "Tout ce qu'il te faut. À une minute du tram. Supermarché moderne, humain et local à Tabriquet, Salé." },
-      { property: "og:description", content: "Tout ce qu'il te faut. À une minute du tram. Supermarché moderne, humain et local à Tabriquet, Salé." },
-      { name: "twitter:description", content: "Tout ce qu'il te faut. À une minute du tram. Supermarché moderne, humain et local à Tabriquet, Salé." },
+      { property: "og:title", content: "DIMA M Market - Supermarché de quartier à Tabriquet, Salé" },
+      { name: "twitter:title", content: "DIMA M Market - Supermarché de quartier à Tabriquet, Salé" },
+      { name: "description", content: "Tout ce qu'il te faut. À une minute du tram.
+Supermarché moderne, humain et local à Tabriquet, Salé." },
+      { property: "og:description", content: "Tout ce qu'il te faut. À une minute du tram.
+Supermarché moderne, humain et local à Tabriquet, Salé." },
+      { name: "twitter:description", content: "Tout ce qu'il te faut. À une minute du tram.
+Supermarché moderne, humain et local à Tabriquet, Salé." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8632e8c2-8356-48f0-9a61-c89ffd91428b/id-preview-9399af60--1decd097-79db-486a-8de2-827491d871a7.lovable.app-1783113497493.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8632e8c2-8356-48f0-9a61-c89ffd91428b/id-preview-9399af60--1decd097-79db-486a-8de2-827491d871a7.lovable.app-1783113497493.png" },
       { name: "twitter:card", content: "summary_large_image" },
