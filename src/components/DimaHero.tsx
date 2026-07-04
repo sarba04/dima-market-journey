@@ -125,7 +125,7 @@ const SCENES: Scene[] = [
     cam: { fromScale: 1.2, toScale: 1.05, fromBlur: 8, toBlur: 0, fromBrightness: 0.4, toBrightness: 0.9 },
     transition: "flash",
     text: {
-      top: "14 — DIMA",
+      top: "15 — DIMA",
       big: ["Bienvenue", "chez vous."],
       small: "Descendez pour découvrir nos services.",
     },
