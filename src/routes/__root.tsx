@@ -102,13 +102,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/51kxZHJctdZTRNvRgEDXt607aC92/social-images/social-1783191612660-facade-entrance.webp" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
-      { name: "description", content: "Tout ce qu'il te faut. À une minute du tram.
-Supermarché moderne, humain et local à Tabriquet, Salé." },
-      { property: "og:description", content: "Tout ce qu'il te faut. À une minute du tram.
-Supermarché moderne, humain et local à Tabriquet, Salé." },
-      { name: "twitter:description", content: "Tout ce qu'il te faut. À une minute du tram.
-Supermarché moderne, humain et local à Tabriquet, Salé." },
-    ],
+
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/dima-m-logo.png", type: "image/png" },
