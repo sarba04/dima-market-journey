@@ -98,10 +98,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "twitter:description",
         content: "Tout ce qu'il te faut. À une minute du tram. Supermarché moderne, humain et local à Tabriquet, Salé.",
       },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8632e8c2-8356-48f0-9a61-c89ffd91428b/id-preview-9399af60--1decd097-79db-486a-8de2-827491d871a7.lovable.app-1783113497493.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8632e8c2-8356-48f0-9a61-c89ffd91428b/id-preview-9399af60--1decd097-79db-486a-8de2-827491d871a7.lovable.app-1783113497493.png" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/51kxZHJctdZTRNvRgEDXt607aC92/social-images/social-1783191612660-facade-entrance.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/51kxZHJctdZTRNvRgEDXt607aC92/social-images/social-1783191612660-facade-entrance.webp" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
+      { name: "description", content: "Tout ce qu'il te faut. À une minute du tram.
+Supermarché moderne, humain et local à Tabriquet, Salé." },
+      { property: "og:description", content: "Tout ce qu'il te faut. À une minute du tram.
+Supermarché moderne, humain et local à Tabriquet, Salé." },
+      { name: "twitter:description", content: "Tout ce qu'il te faut. À une minute du tram.
+Supermarché moderne, humain et local à Tabriquet, Salé." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
