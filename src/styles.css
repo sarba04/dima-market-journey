@@ -145,6 +145,12 @@
   will-change: transform, opacity, filter, clip-path;
   transform: translateZ(0);
 }
+@media (max-width: 768px) {
+  .scene-img {
+    object-fit: contain;
+    background: #000;
+  }
+}
 
 .split-char {
   display: inline-block;
