@@ -78,14 +78,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#050807" },
-      { title: "DIMA M Market - Supermarché de quartier à Tabriquet, Salé" },
+      { title: "DIMA M Market — Une supérette. Une expérience." },
       {
         name: "description",
         content:
           "DIMA M Market : visite immersive d'une supérette moderne à Tabriquet, Salé. Alimentation, boulangerie, produits importés — servis avec exigence.",
       },
-      { property: "og:title", content: "DIMA M Market - Supermarché de quartier à Tabriquet, Salé" },
-      { name: "twitter:title", content: "DIMA M Market - Supermarché de quartier à Tabriquet, Salé" },
+      { property: "og:title", content: "DIMA M Market — Une supérette. Une expérience." },
+      { name: "twitter:title", content: "DIMA M Market — Une supérette. Une expérience." },
       {
         name: "description",
         content: "Tout ce qu'il te faut. À une minute du tram. Supermarché moderne, humain et local à Tabriquet, Salé.",
@@ -102,6 +102,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/51kxZHJctdZTRNvRgEDXt607aC92/social-images/social-1783191612660-facade-entrance.webp" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
+      { name: "description", content: "DIMA M Market — visite immersive d'une supérette moderne à Tabriquet, Salé. Alimentation, boulangerie, produits importés, boissons et snacks, servis avec exigence." },
+      { property: "og:description", content: "DIMA M Market — visite immersive d'une supérette moderne à Tabriquet, Salé. Alimentation, boulangerie, produits importés, boissons et snacks, servis avec exigence." },
+      { name: "twitter:description", content: "DIMA M Market — visite immersive d'une supérette moderne à Tabriquet, Salé. Alimentation, boulangerie, produits importés, boissons et snacks, servis avec exigence." },
     ],
 
 
