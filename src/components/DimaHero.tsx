@@ -25,6 +25,9 @@ type SceneMeta = {
   img: keyof typeof IMG;
   cam: SceneCam;
   transition: "fade" | "flash" | "wipeRight" | "wipeUp" | "zoomIn" | "irisIn" | "blur";
+  /** object-position focal points: [desktop, mobile]. Mobile viewports are
+   *  portrait, so the landscape photos need their own crop anchor. */
+  focus?: { desktop?: string; mobile?: string };
 };
 
 type SceneText = { top?: string; big?: string[]; small?: string };
@@ -52,21 +55,21 @@ function splitIntoRuns(line: string): { text: string; dir: "ltr" | "rtl" }[] {
 }
 
 const SCENES: SceneMeta[] = [
-  { img: "facadeWide", cam: { fromScale: 1.15, toScale: 3, fromY: 20, toY: -100 }, transition: "fade" },
-  { img: "facadeEntrance", cam: { fromScale: 1.05, toScale: 1.35, fromY: 0, toY: 10, fromBlur: 4, toBlur: 0 }, transition: "zoomIn" },
-  { img: "facadeEntrance", cam: { fromScale: 1.35, toScale: 2.8, toBrightness: 1.35, toBlur: 2 }, transition: "flash" },
-  { img: "interiorCounter", cam: { fromScale: 1.25, toScale: 1.05, fromX: 30, toX: -10, fromBrightness: 1.4, toBrightness: 1 }, transition: "flash" },
-  { img: "interiorAisle", cam: { fromScale: 1.15, toScale: 1.08, fromX: -20, toX: 25, fromRot: -1, toRot: 0.5 }, transition: "wipeRight" },
-  { img: "aisleDrinks", cam: { fromScale: 1.4, toScale: 1.1, fromX: 40, toX: -15 }, transition: "zoomIn" },
-  { img: "aisleDrinks", cam: { fromScale: 1.1, toScale: 1.15, fromX: -15, toX: -70 }, transition: "wipeRight" },
-  { img: "aisleBiscuits", cam: { fromScale: 1.2, toScale: 1.0, fromX: 30, toX: -10, fromRot: 1, toRot: 0 }, transition: "wipeUp" },
-  { img: "aisleSnacks", cam: { fromScale: 1.5, toScale: 1.15, fromX: 20, toX: -5, fromBlur: 3, toBlur: 0 }, transition: "blur" },
-  { img: "staffEpicerie", cam: { fromScale: 1.1, toScale: 1.02, fromX: 10, toX: -10 }, transition: "fade" },
-  { img: "aisleEpicerie", cam: { fromScale: 1.18, toScale: 1.28, fromY: 0, toY: -20 }, transition: "irisIn" },
-  { img: "bakery", cam: { fromScale: 1.25, toScale: 1.0, fromBrightness: 0.8, toBrightness: 1.1 }, transition: "flash" },
-  { img: "customers", cam: { fromScale: 1.05, toScale: 1.12, fromX: 0, toX: -15 }, transition: "wipeUp" },
-  { img: "staffHygiene", cam: { fromScale: 1.08, toScale: 1.18, fromX: -10, toX: 15 }, transition: "wipeRight" },
-  { img: "interiorCounter", cam: { fromScale: 1.2, toScale: 1.05, fromBlur: 8, toBlur: 0, fromBrightness: 0.4, toBrightness: 0.9 }, transition: "flash" },
+  { img: "facadeWide", cam: { fromScale: 1.15, toScale: 3, fromY: 20, toY: -100 }, transition: "fade" , focus: { desktop: "50% 55%", mobile: "50% 60%" } },
+  { img: "facadeEntrance", cam: { fromScale: 1.05, toScale: 1.35, fromY: 0, toY: 10, fromBlur: 4, toBlur: 0 }, transition: "zoomIn" , focus: { desktop: "50% 50%", mobile: "55% 55%" } },
+  { img: "facadeEntrance", cam: { fromScale: 1.35, toScale: 2.8, toBrightness: 1.35, toBlur: 2 }, transition: "flash" , focus: { desktop: "50% 50%", mobile: "55% 55%" } },
+  { img: "interiorCounter", cam: { fromScale: 1.25, toScale: 1.05, fromX: 30, toX: -10, fromBrightness: 1.4, toBrightness: 1 }, transition: "flash" , focus: { desktop: "50% 50%", mobile: "40% 55%" } },
+  { img: "interiorAisle", cam: { fromScale: 1.15, toScale: 1.08, fromX: -20, toX: 25, fromRot: -1, toRot: 0.5 }, transition: "wipeRight" , focus: { desktop: "50% 50%", mobile: "50% 60%" } },
+  { img: "aisleDrinks", cam: { fromScale: 1.4, toScale: 1.1, fromX: 40, toX: -15 }, transition: "zoomIn" , focus: { desktop: "50% 50%", mobile: "55% 50%" } },
+  { img: "aisleDrinks", cam: { fromScale: 1.1, toScale: 1.15, fromX: -15, toX: -70 }, transition: "wipeRight" , focus: { desktop: "50% 50%", mobile: "55% 50%" } },
+  { img: "aisleBiscuits", cam: { fromScale: 1.2, toScale: 1.0, fromX: 30, toX: -10, fromRot: 1, toRot: 0 }, transition: "wipeUp" , focus: { desktop: "50% 50%", mobile: "50% 50%" } },
+  { img: "aisleSnacks", cam: { fromScale: 1.5, toScale: 1.15, fromX: 20, toX: -5, fromBlur: 3, toBlur: 0 }, transition: "blur" , focus: { desktop: "50% 50%", mobile: "50% 45%" } },
+  { img: "staffEpicerie", cam: { fromScale: 1.1, toScale: 1.02, fromX: 10, toX: -10 }, transition: "fade" , focus: { desktop: "50% 40%", mobile: "50% 35%" } },
+  { img: "aisleEpicerie", cam: { fromScale: 1.18, toScale: 1.28, fromY: 0, toY: -20 }, transition: "irisIn" , focus: { desktop: "50% 50%", mobile: "50% 50%" } },
+  { img: "bakery", cam: { fromScale: 1.25, toScale: 1.0, fromBrightness: 0.8, toBrightness: 1.1 }, transition: "flash" , focus: { desktop: "50% 45%", mobile: "50% 40%" } },
+  { img: "customers", cam: { fromScale: 1.05, toScale: 1.12, fromX: 0, toX: -15 }, transition: "wipeUp" , focus: { desktop: "50% 45%", mobile: "50% 40%" } },
+  { img: "staffHygiene", cam: { fromScale: 1.08, toScale: 1.18, fromX: -10, toX: 15 }, transition: "wipeRight" , focus: { desktop: "50% 40%", mobile: "50% 35%" } },
+  { img: "interiorCounter", cam: { fromScale: 1.2, toScale: 1.05, fromBlur: 8, toBlur: 0, fromBrightness: 0.4, toBrightness: 0.9 }, transition: "flash" , focus: { desktop: "50% 50%", mobile: "40% 55%" } },
 ];
 
 const SCENE_TEXT: Record<Lang, SceneText[]> = {
@@ -406,6 +409,10 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
               src={IMG[scene.img]}
               alt=""
               className="scene-img"
+              style={{
+                ["--focus-desktop" as string]: scene.focus?.desktop ?? "50% 50%",
+                ["--focus-mobile" as string]: scene.focus?.mobile ?? "50% 50%",
+              } as React.CSSProperties}
               draggable={false}
               loading={i < 3 ? "eager" : "lazy"}
               decoding="async"
