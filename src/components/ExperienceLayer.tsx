@@ -45,23 +45,53 @@ const NAV_ITEMS = [
 ];
 
 /* ------------------------------------------------------------------ */
-/* Language toggle — small persistent switch between FR / AR           */
+/* Flags                                                               */
+/* ------------------------------------------------------------------ */
+function FlagFR({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 9 6" className={className} aria-hidden="true">
+      <rect width="3" height="6" fill="#0055A4" />
+      <rect x="3" width="3" height="6" fill="#FFFFFF" />
+      <rect x="6" width="3" height="6" fill="#EF4135" />
+    </svg>
+  );
+}
+
+function FlagMA({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 9 6" className={className} aria-hidden="true">
+      <rect width="9" height="6" fill="#C1272D" />
+      <path
+        d="M4.5 1.9l.44 1.35h1.42l-1.15.83.44 1.35-1.15-.83-1.15.83.44-1.35-1.15-.83h1.42z"
+        fill="none"
+        stroke="#006233"
+        strokeWidth="0.28"
+      />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Language toggle — flag-based, unmistakable                          */
 /* ------------------------------------------------------------------ */
 export function LanguageToggle({ className = "" }: { className?: string }) {
   const { lang, toggleLang } = useLanguage();
   const ui = UI_TEXT[lang];
+  const Flag = lang === "fr" ? FlagMA : FlagFR;
   return (
     <button
       type="button"
       onClick={toggleLang}
       aria-label={ui.langSwitchAria}
-      className={`pointer-events-auto inline-flex items-center gap-1.5 font-mono-tight text-[10px] uppercase tracking-[0.25em] text-white/70 transition-colors hover:text-[color:var(--dima)] ${className}`}
+      data-cursor="hover"
+      className={`pointer-events-auto inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 font-mono-tight text-[11px] font-bold uppercase tracking-[0.2em] text-white transition-colors hover:border-[color:var(--dima)] hover:text-[color:var(--dima)] ${className}`}
     >
-      <Languages className="h-3.5 w-3.5" strokeWidth={1.75} />
+      <Flag className="h-3.5 w-5 rounded-[2px] shadow-[0_0_0_1px_rgba(255,255,255,0.25)]" />
       {ui.langSwitchLabel}
     </button>
   );
 }
+
 
 /* ------------------------------------------------------------------ */
 /* Intro Preloader — cinematic splash, no counter                      */
