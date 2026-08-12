@@ -9,6 +9,8 @@ import { useTilt } from "@/hooks/use-tilt";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useLanguage } from "@/lib/language";
 import dimaMLogo from "@/assets/dima-m-logo-transparent.png";
+import meemLogo from "@/assets/meem-logo.png";
+
 
 const RAYONS = [
   {
