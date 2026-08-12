@@ -904,14 +904,36 @@ export function PostHero() {
             </div>
           </div>
 
-          <div className="mt-14 flex flex-col-reverse items-start justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center">
-            <span className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/40">
-              {t.copyright(new Date().getFullYear())}
-            </span>
-            <span className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/40">
-              {t.tagline}
-            </span>
+          <div className="mt-14 flex flex-col items-start gap-6 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <a
+              href="https://www.agencemeem.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-3"
+              dir="ltr"
+            >
+              <span className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/40 transition-colors group-hover:text-white/70">
+                {lang === "ar" ? "الموقع من إنجاز" : "Site créé par"}
+              </span>
+              <img
+                src={meemLogo}
+                alt="Agence MEEM"
+                loading="lazy"
+                decoding="async"
+                className="h-6 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100 md:h-7"
+              />
+            </a>
+
+            <div className="flex flex-col items-start gap-2 sm:items-end">
+              <span className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/40">
+                {t.copyright(new Date().getFullYear())}
+              </span>
+              <span className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/40">
+                {t.tagline}
+              </span>
+            </div>
           </div>
+
         </div>
       </footer>
     </div>
