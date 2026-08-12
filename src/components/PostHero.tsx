@@ -665,26 +665,30 @@ export function PostHero() {
               </a>
             </div>
           </div>
-          <a
-            href={BUSINESS.mapsLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative block overflow-hidden rounded-3xl border border-black/10"
-          >
+          <div className="group relative overflow-hidden rounded-3xl border border-black/10">
             <iframe
               title={t.mapLabel}
               src={BUSINESS.mapsEmbedSrc}
-              className="h-full min-h-[420px] w-full grayscale-[0.6] contrast-[1.1] transition-transform duration-700 group-hover:scale-[1.03]"
+              className="h-full min-h-[420px] w-full grayscale-[0.6] contrast-[1.1]"
               loading="lazy"
             />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
-            <div className="pointer-events-none absolute bottom-6 left-6 rounded-xl glass px-4 py-3">
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent" />
+            <div className="pointer-events-none absolute left-6 top-6 rounded-xl glass px-4 py-3">
               <div className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/60">
                 {t.mapLabel}
               </div>
               <div className="font-display text-lg text-white">{t.addressLabel}</div>
             </div>
-          </a>
+            <a
+              href={BUSINESS.mapsLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/btn absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-full bg-[color:var(--dima)] px-5 py-3 font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white shadow-lg transition-transform hover:scale-105"
+            >
+              {t.itineraire}
+              <Arrow />
+            </a>
+          </div>
         </div>
       </section>
 
