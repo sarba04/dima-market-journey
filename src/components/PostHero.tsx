@@ -525,27 +525,30 @@ export function PostHero() {
       </section>
 
       {/* Rayons */}
-      <section id="rayons" className="relative px-6 py-32 md:px-16 md:py-48">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-16 flex flex-wrap items-end justify-between gap-8">
+      <section id="rayons" className="relative flex min-h-[100svh] flex-col justify-center px-5 py-14 md:px-16 md:py-20">
+        <div className="mx-auto w-full max-w-7xl">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4 md:mb-8">
             <div>
-              <div className="reveal mb-4 flex items-center gap-3">
+              <div className="reveal mb-2 flex items-center gap-3">
                 <span className="h-px w-10 bg-[color:var(--dima)]" />
                 <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-neutral-500">
                   {t.rayonsLabel}
                 </span>
               </div>
-              <h2 className="reveal reveal-cinematic font-display text-[clamp(2.5rem,6vw,6rem)] leading-[0.95] tracking-[-0.03em] text-neutral-900">
+              <h2 className="reveal reveal-cinematic font-display text-[clamp(2rem,4.2vw,3.6rem)] leading-[0.95] tracking-[-0.03em] text-neutral-900">
                 {t.rayonsHeading}
               </h2>
             </div>
-            <p className="reveal reveal-delay-2 max-w-md text-neutral-600">{t.rayonsSubtitle}</p>
+            <p className="reveal reveal-delay-2 max-w-md text-sm text-neutral-600">{t.rayonsSubtitle}</p>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
             {RAYONS.map((r, i) => (
               <RayonCard key={r.name.fr} r={r} i={i} />
             ))}
           </div>
+        </div>
+      </section>
+
         </div>
       </section>
 
