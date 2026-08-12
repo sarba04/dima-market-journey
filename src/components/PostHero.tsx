@@ -665,11 +665,16 @@ export function PostHero() {
               </a>
             </div>
           </div>
-          <div className="relative overflow-hidden rounded-3xl border border-black/10">
+          <a
+            href={BUSINESS.mapsLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative block overflow-hidden rounded-3xl border border-black/10"
+          >
             <iframe
               title={t.mapLabel}
               src={BUSINESS.mapsEmbedSrc}
-              className="h-full min-h-[420px] w-full grayscale-[0.6] contrast-[1.1]"
+              className="h-full min-h-[420px] w-full grayscale-[0.6] contrast-[1.1] transition-transform duration-700 group-hover:scale-[1.03]"
               loading="lazy"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
@@ -679,7 +684,7 @@ export function PostHero() {
               </div>
               <div className="font-display text-lg text-white">{t.addressLabel}</div>
             </div>
-          </div>
+          </a>
         </div>
       </section>
 
