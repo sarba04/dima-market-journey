@@ -4,6 +4,7 @@ import { useReducedMotion } from "@/lib/useReducedMotion";
 import { splitChars } from "@/lib/splitText";
 import { useLanguage, type Lang } from "@/lib/language";
 import dimaMLogo from "@/assets/dima-m-logo-transparent.png";
+import { LanguageToggle } from "@/components/ExperienceLayer";
 
 type SceneCam = {
   fromScale: number;
