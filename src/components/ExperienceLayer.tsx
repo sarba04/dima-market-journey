@@ -272,33 +272,34 @@ export function FloatingNav() {
           visible ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-4"
         }`}
       >
-        <div className="glass flex items-center justify-between gap-1 rounded-full px-2 py-2">
+        <div className="glass-strong flex items-center justify-between gap-1 rounded-full px-2 py-2">
           <a
             href="#top"
             onClick={(e) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-[color:var(--dima)] hover:bg-white/5"
+            className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full text-[color:var(--dima)] hover:bg-white/10"
             aria-label={ui.backToStartAria}
           >
-            <img src={dimaMLogo} alt="DIMA M Market" className="h-7 w-7 object-contain" />
+            <img src={dimaMLogo} alt="DIMA M Market" className="h-8 w-8 object-contain" />
           </a>
-          <div className="mx-1 hidden h-5 w-px bg-white/10 sm:block" />
+          <div className="mx-1 hidden h-5 w-px bg-white/20 sm:block" />
           <div className="hidden min-w-0 items-center gap-0.5 sm:flex">
             {NAV_ITEMS.map((it) => (
               <a
                 key={it.href}
                 href={it.href}
-                className="shrink-0 rounded-full px-3 py-2 font-mono-tight text-[10px] uppercase tracking-[0.25em] text-white/70 transition-colors hover:bg-white/5 hover:text-white sm:px-4"
+                className="shrink-0 rounded-full px-3 py-2 font-mono-tight text-[12px] font-bold uppercase tracking-[0.18em] text-white transition-colors hover:bg-white/10 hover:text-[color:var(--dima)] sm:px-4"
               >
                 {it.label[lang]}
               </a>
             ))}
           </div>
           <div className="hidden items-center gap-0.5 sm:flex">
-            <LanguageToggle className="px-3 py-2" />
+            <LanguageToggle />
           </div>
+
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
