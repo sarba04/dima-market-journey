@@ -583,7 +583,7 @@ export function PostHero() {
       </section>
 
       {/* Le fondateur */}
-      <section id="fondateur" className="relative border-t border-black/5 px-6 pb-20 pt-32 md:px-16 md:pb-24 md:pt-48">
+      <section id="fondateur" className="relative border-t border-black/5 px-6 pb-10 pt-24 md:px-16 md:pb-12 md:pt-32">
         <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-[0.85fr_1.15fr] md:items-center">
           <div className="reveal">
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl">
