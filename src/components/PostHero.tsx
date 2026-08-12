@@ -549,8 +549,6 @@ export function PostHero() {
         </div>
       </section>
 
-        </div>
-      </section>
 
       {/* Engagements */}
       <section id="engagements" className="relative border-y border-black/5 bg-black/[0.015] px-6 py-32 md:px-16 md:py-48">
