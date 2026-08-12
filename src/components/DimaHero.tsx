@@ -4,6 +4,7 @@ import { useReducedMotion } from "@/lib/useReducedMotion";
 import { splitChars } from "@/lib/splitText";
 import { useLanguage, type Lang } from "@/lib/language";
 import dimaMLogo from "@/assets/dima-m-logo-transparent.png";
+import { LanguageToggle } from "@/components/ExperienceLayer";
 
 type SceneCam = {
   fromScale: number;
@@ -426,10 +427,11 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
         <div className="flex items-center gap-3">
           <img src={dimaMLogo} alt="DIMA M Market" className="dima-logo-pulse h-11 w-11" />
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           <div ref={stepLabelRef} className="hidden font-mono-tight text-[12px] font-bold uppercase tracking-[0.3em] text-white/85 sm:block" dir="ltr">
             01 / {String(SCENES.length).padStart(2, "0")}
           </div>
+          <LanguageToggle className="pointer-events-auto" />
           <button
             type="button"
             onClick={() => window.dispatchEvent(new CustomEvent("dima:skipIntro"))}

@@ -648,7 +648,7 @@ export function ExperienceLayer() {
   return (
     <>
       <div className="grain-body" aria-hidden />
-      <IntroPreloader />
+      
       <ScrollProgress />
       <SceneTick />
       <ScrollReveal />
