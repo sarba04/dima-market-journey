@@ -300,22 +300,25 @@ export function FloatingNav() {
             <LanguageToggle />
           </div>
 
-          <button
-            type="button"
-            onClick={() => setOpen((o) => !o)}
-            aria-expanded={open}
-            aria-label={ui.openMenuAria}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/80 hover:bg-white/5 sm:hidden"
-          >
-            <span className="relative block h-3 w-4">
-              <span className={`absolute left-0 top-0 h-px w-4 bg-current transition-transform duration-300 ${open ? "translate-y-[6px] rotate-45" : ""}`} />
-              <span className={`absolute left-0 top-1/2 h-px w-4 -translate-y-1/2 bg-current transition-opacity duration-200 ${open ? "opacity-0" : "opacity-100"}`} />
-              <span className={`absolute bottom-0 left-0 h-px w-4 bg-current transition-transform duration-300 ${open ? "-translate-y-[6px] -rotate-45" : ""}`} />
-            </span>
-          </button>
+          <div className="flex items-center gap-1 sm:hidden">
+            <LanguageToggle className="!px-2 !py-1 text-[10px]" />
+            <button
+              type="button"
+              onClick={() => setOpen((o) => !o)}
+              aria-expanded={open}
+              aria-label={ui.openMenuAria}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white"
+            >
+              <span className="relative block h-3 w-4">
+                <span className={`absolute left-0 top-0 h-[2px] w-4 bg-current transition-transform duration-300 ${open ? "translate-y-[6px] rotate-45" : ""}`} />
+                <span className={`absolute left-0 top-1/2 h-[2px] w-4 -translate-y-1/2 bg-current transition-opacity duration-200 ${open ? "opacity-0" : "opacity-100"}`} />
+                <span className={`absolute bottom-0 left-0 h-[2px] w-4 bg-current transition-transform duration-300 ${open ? "-translate-y-[6px] -rotate-45" : ""}`} />
+              </span>
+            </button>
+          </div>
         </div>
         <div
-          className={`glass mt-2 overflow-hidden rounded-2xl sm:hidden ${
+          className={`glass-strong mt-2 overflow-hidden rounded-2xl sm:hidden ${
             open ? "max-h-96 opacity-100" : "pointer-events-none max-h-0 opacity-0"
           } transition-all duration-300`}
         >
@@ -325,11 +328,12 @@ export function FloatingNav() {
                 key={it.href}
                 href={it.href}
                 onClick={() => setOpen(false)}
-                className="rounded-xl px-4 py-3 font-mono-tight text-[11px] uppercase tracking-[0.3em] text-white/80 hover:bg-white/5 hover:text-white"
+                className="rounded-xl px-4 py-3 font-mono-tight text-[13px] font-bold uppercase tracking-[0.22em] text-white hover:bg-white/10 hover:text-[color:var(--dima)]"
               >
                 {it.label[lang]}
               </a>
             ))}
+
             <div className="mt-1 border-t border-white/10 px-4 py-3">
               <LanguageToggle />
             </div>
