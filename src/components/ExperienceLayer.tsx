@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Phone, MessageCircle, Languages } from "lucide-react";
+import { Phone, MessageCircle } from "lucide-react";
 import { ALL_IMAGES } from "@/lib/images";
 import { BUSINESS, whatsappHref } from "@/lib/business";
 import { SCENE_COUNT, SCENE_NAMES } from "./DimaHero";
