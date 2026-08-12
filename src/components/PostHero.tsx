@@ -142,8 +142,8 @@ const FAQ = [
   {
     q: { fr: "Quels sont vos horaires ?", ar: "ما هي أوقات عملكم؟" },
     a: {
-      fr: "Tous les jours de 7h30 à 23h00. Boulangerie ouverte dès 6h30.",
-      ar: "كل يوم من 7:30 صباحاً إلى 23:00 مساءً. المخبزة تفتح من الساعة 6:30 صباحاً.",
+      fr: "Tous les jours de 09h00 à 22h00.",
+      ar: "كل يوم من 09:00 صباحاً إلى 22:00 مساءً.",
     },
   },
   {
