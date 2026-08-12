@@ -361,31 +361,36 @@ const TEXT = {
 } as const;
 
 function RayonCard({ r, i }: { r: (typeof RAYONS)[number]; i: number }) {
-  const tiltRef = useTilt<HTMLElement>(6);
+  const tiltRef = useTilt<HTMLElement>(5);
   const { lang } = useLanguage();
   const otherLang = lang === "fr" ? "ar" : "fr";
   return (
     <article
       ref={tiltRef}
-      className={`reveal reveal-delay-${(i % 4) + 1} tilt-card group relative overflow-hidden rounded-2xl border border-black/5 bg-black/[0.02] hover:border-[color:var(--dima)]/40`}
+      className={`reveal reveal-delay-${(i % 4) + 1} tilt-card group relative overflow-hidden rounded-2xl border border-black/5 bg-black hover:border-[color:var(--dima)]/40`}
     >
-      <div className="parallax-frame relative aspect-[4/5] overflow-hidden">
+      <div className="parallax-frame relative aspect-[16/11] overflow-hidden sm:aspect-[4/3]">
         <ParallaxImage src={r.img} alt={r.name[lang]} className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
-        <div className="absolute left-5 top-5 font-mono-tight text-[10px] uppercase tracking-[0.35em] text-[color:var(--dima)]">
-          {r.name[otherLang]}
-        </div>
-        <div className="absolute right-5 top-5 font-mono-tight text-[10px] tracking-[0.3em] text-neutral-400">
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/5" />
+        <div className="absolute right-4 top-3 font-mono-tight text-[10px] tracking-[0.3em] text-white/50">
           {String(i + 1).padStart(2, "0")}
         </div>
-      </div>
-      <div className="p-6">
-        <h3 className="font-display text-3xl tracking-[-0.02em] text-neutral-900">{r.name[lang]}</h3>
-        <p className="mt-3 text-sm leading-relaxed text-neutral-600">{r.desc[lang]}</p>
+        <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+          <div className="font-mono-tight text-[9px] uppercase tracking-[0.35em] text-[color:var(--dima)]">
+            {r.name[otherLang]}
+          </div>
+          <h3 className="mt-1 font-display text-xl leading-tight tracking-[-0.02em] text-white sm:text-2xl">
+            {r.name[lang]}
+          </h3>
+          <p className="mt-1.5 line-clamp-2 text-[12px] leading-snug text-white/70 sm:text-[13px]">
+            {r.desc[lang]}
+          </p>
+        </div>
       </div>
     </article>
   );
 }
+
 
 // Scrolling word-band whose pace surges with scroll velocity and eases back
 // to a steady drift — a small living detail rather than a static loop.
