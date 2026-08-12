@@ -21,7 +21,6 @@ export const Route = createFileRoute("/api/chat")({
         if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
 
         const messages: ModelMessage[] = [
-          { role: "system", content: DIMA_SYSTEM_PROMPT },
           ...incoming
             .filter((m) => m && typeof m.content === "string" && m.content.trim().length > 0)
             .slice(-20)
@@ -35,6 +34,7 @@ export const Route = createFileRoute("/api/chat")({
           const gateway = createLovableAiGatewayProvider(key);
           const result = streamText({
             model: gateway("google/gemini-2.5-flash"),
+            instructions: DIMA_SYSTEM_PROMPT,
             messages,
             temperature: 0.7,
           });
