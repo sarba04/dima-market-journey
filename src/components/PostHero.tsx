@@ -142,8 +142,8 @@ const FAQ = [
   {
     q: { fr: "Quels sont vos horaires ?", ar: "ما هي أوقات عملكم؟" },
     a: {
-      fr: "Tous les jours de 7h30 à 23h00. Boulangerie ouverte dès 6h30.",
-      ar: "كل يوم من 7:30 صباحاً إلى 23:00 مساءً. المخبزة تفتح من الساعة 6:30 صباحاً.",
+      fr: "Tous les jours de 09h00 à 22h00.",
+      ar: "كل يوم من 09:00 صباحاً إلى 22:00 مساءً.",
     },
   },
   {
@@ -665,11 +665,16 @@ export function PostHero() {
               </a>
             </div>
           </div>
-          <div className="relative overflow-hidden rounded-3xl border border-black/10">
+          <a
+            href={BUSINESS.mapsLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative block overflow-hidden rounded-3xl border border-black/10"
+          >
             <iframe
               title={t.mapLabel}
               src={BUSINESS.mapsEmbedSrc}
-              className="h-full min-h-[420px] w-full grayscale-[0.6] contrast-[1.1]"
+              className="h-full min-h-[420px] w-full grayscale-[0.6] contrast-[1.1] transition-transform duration-700 group-hover:scale-[1.03]"
               loading="lazy"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
@@ -679,7 +684,7 @@ export function PostHero() {
               </div>
               <div className="font-display text-lg text-white">{t.addressLabel}</div>
             </div>
-          </div>
+          </a>
         </div>
       </section>
 
@@ -871,7 +876,7 @@ export function PostHero() {
                 {BUSINESS.hours.map(([d, h]) => (
                   <li key={d} className="flex justify-between gap-4">
                     <span>{lang === "ar" ? DAY_LABEL_AR[d] ?? d : d}</span>
-                    <span className={d === "Boulangerie" ? "text-[color:var(--dima)]" : "text-white/50"}>{h}</span>
+                    <span className="text-white/50">{h}</span>
                   </li>
                 ))}
               </ul>

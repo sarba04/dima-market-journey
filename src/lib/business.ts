@@ -5,15 +5,18 @@ export const BUSINESS = {
   whatsappNumber: "212751700790", // digits only, no +, no leading 0
   email: "hello@dima.market",
   addressLabel: "Tabriquet, Salé — à 1 min de la poste de Tabriquet",
+  // Coordonnées exactes du lieu Dima M (Google Maps)
+  mapLat: 34.0464556,
+  mapLng: -6.8055976,
   mapsEmbedSrc:
-    "https://www.openstreetmap.org/export/embed.html?bbox=-6.87%2C34.01%2C-6.77%2C34.08&layer=mapnik&marker=34.048%2C-6.816",
+    "https://maps.google.com/maps?q=34.0464556,-6.8055976&z=17&output=embed",
+  mapsLink: "https://www.google.com/maps/place/Dima+M/@34.0464553,-6.805598,17z",
   ratingValue: 4.9,
   reviewCountValue: 340,
   hours: [
-    ["Lundi — Vendredi", "07:30 — 23:00"],
-    ["Samedi", "07:30 — 23:30"],
-    ["Dimanche", "08:00 — 22:00"],
-    ["Boulangerie", "Dès 06:30"],
+    ["Lundi — Vendredi", "09:00 — 22:00"],
+    ["Samedi", "09:00 — 22:00"],
+    ["Dimanche", "09:00 — 22:00"],
   ] as const,
 };
 
