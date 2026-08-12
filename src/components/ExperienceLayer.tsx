@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Phone, MessageCircle, Languages } from "lucide-react";
+import { Phone, MessageCircle } from "lucide-react";
 import { ALL_IMAGES } from "@/lib/images";
 import { BUSINESS, whatsappHref } from "@/lib/business";
 import { SCENE_COUNT, SCENE_NAMES } from "./DimaHero";
@@ -45,23 +45,53 @@ const NAV_ITEMS = [
 ];
 
 /* ------------------------------------------------------------------ */
-/* Language toggle — small persistent switch between FR / AR           */
+/* Flags                                                               */
+/* ------------------------------------------------------------------ */
+function FlagFR({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 9 6" className={className} aria-hidden="true">
+      <rect width="3" height="6" fill="#0055A4" />
+      <rect x="3" width="3" height="6" fill="#FFFFFF" />
+      <rect x="6" width="3" height="6" fill="#EF4135" />
+    </svg>
+  );
+}
+
+function FlagMA({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 9 6" className={className} aria-hidden="true">
+      <rect width="9" height="6" fill="#C1272D" />
+      <path
+        d="M4.5 1.9l.44 1.35h1.42l-1.15.83.44 1.35-1.15-.83-1.15.83.44-1.35-1.15-.83h1.42z"
+        fill="none"
+        stroke="#006233"
+        strokeWidth="0.28"
+      />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Language toggle — flag-based, unmistakable                          */
 /* ------------------------------------------------------------------ */
 export function LanguageToggle({ className = "" }: { className?: string }) {
   const { lang, toggleLang } = useLanguage();
   const ui = UI_TEXT[lang];
+  const Flag = lang === "fr" ? FlagMA : FlagFR;
   return (
     <button
       type="button"
       onClick={toggleLang}
       aria-label={ui.langSwitchAria}
-      className={`pointer-events-auto inline-flex items-center gap-1.5 font-mono-tight text-[10px] uppercase tracking-[0.25em] text-white/70 transition-colors hover:text-[color:var(--dima)] ${className}`}
+      data-cursor="hover"
+      className={`pointer-events-auto inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 font-mono-tight text-[11px] font-bold uppercase tracking-[0.2em] text-white transition-colors hover:border-[color:var(--dima)] hover:text-[color:var(--dima)] ${className}`}
     >
-      <Languages className="h-3.5 w-3.5" strokeWidth={1.75} />
+      <Flag className="h-3.5 w-5 rounded-[2px] shadow-[0_0_0_1px_rgba(255,255,255,0.25)]" />
       {ui.langSwitchLabel}
     </button>
   );
 }
+
 
 /* ------------------------------------------------------------------ */
 /* Intro Preloader — cinematic splash, no counter                      */
@@ -242,49 +272,53 @@ export function FloatingNav() {
           visible ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-4"
         }`}
       >
-        <div className="glass flex items-center justify-between gap-1 rounded-full px-2 py-2">
+        <div className="glass-strong flex items-center justify-between gap-1 rounded-full px-2 py-2">
           <a
             href="#top"
             onClick={(e) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-[color:var(--dima)] hover:bg-white/5"
+            className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full text-[color:var(--dima)] hover:bg-white/10"
             aria-label={ui.backToStartAria}
           >
-            <img src={dimaMLogo} alt="DIMA M Market" className="h-7 w-7 object-contain" />
+            <img src={dimaMLogo} alt="DIMA M Market" className="h-8 w-8 object-contain" />
           </a>
-          <div className="mx-1 hidden h-5 w-px bg-white/10 sm:block" />
+          <div className="mx-1 hidden h-5 w-px bg-white/20 sm:block" />
           <div className="hidden min-w-0 items-center gap-0.5 sm:flex">
             {NAV_ITEMS.map((it) => (
               <a
                 key={it.href}
                 href={it.href}
-                className="shrink-0 rounded-full px-3 py-2 font-mono-tight text-[10px] uppercase tracking-[0.25em] text-white/70 transition-colors hover:bg-white/5 hover:text-white sm:px-4"
+                className="shrink-0 rounded-full px-3 py-2 font-mono-tight text-[12px] font-bold uppercase tracking-[0.18em] text-white transition-colors hover:bg-white/10 hover:text-[color:var(--dima)] sm:px-4"
               >
                 {it.label[lang]}
               </a>
             ))}
           </div>
           <div className="hidden items-center gap-0.5 sm:flex">
-            <LanguageToggle className="px-3 py-2" />
+            <LanguageToggle />
           </div>
-          <button
-            type="button"
-            onClick={() => setOpen((o) => !o)}
-            aria-expanded={open}
-            aria-label={ui.openMenuAria}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/80 hover:bg-white/5 sm:hidden"
-          >
-            <span className="relative block h-3 w-4">
-              <span className={`absolute left-0 top-0 h-px w-4 bg-current transition-transform duration-300 ${open ? "translate-y-[6px] rotate-45" : ""}`} />
-              <span className={`absolute left-0 top-1/2 h-px w-4 -translate-y-1/2 bg-current transition-opacity duration-200 ${open ? "opacity-0" : "opacity-100"}`} />
-              <span className={`absolute bottom-0 left-0 h-px w-4 bg-current transition-transform duration-300 ${open ? "-translate-y-[6px] -rotate-45" : ""}`} />
-            </span>
-          </button>
+
+          <div className="flex items-center gap-1 sm:hidden">
+            <LanguageToggle className="!px-2 !py-1 text-[10px]" />
+            <button
+              type="button"
+              onClick={() => setOpen((o) => !o)}
+              aria-expanded={open}
+              aria-label={ui.openMenuAria}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white"
+            >
+              <span className="relative block h-3 w-4">
+                <span className={`absolute left-0 top-0 h-[2px] w-4 bg-current transition-transform duration-300 ${open ? "translate-y-[6px] rotate-45" : ""}`} />
+                <span className={`absolute left-0 top-1/2 h-[2px] w-4 -translate-y-1/2 bg-current transition-opacity duration-200 ${open ? "opacity-0" : "opacity-100"}`} />
+                <span className={`absolute bottom-0 left-0 h-[2px] w-4 bg-current transition-transform duration-300 ${open ? "-translate-y-[6px] -rotate-45" : ""}`} />
+              </span>
+            </button>
+          </div>
         </div>
         <div
-          className={`glass mt-2 overflow-hidden rounded-2xl sm:hidden ${
+          className={`glass-strong mt-2 overflow-hidden rounded-2xl sm:hidden ${
             open ? "max-h-96 opacity-100" : "pointer-events-none max-h-0 opacity-0"
           } transition-all duration-300`}
         >
@@ -294,11 +328,12 @@ export function FloatingNav() {
                 key={it.href}
                 href={it.href}
                 onClick={() => setOpen(false)}
-                className="rounded-xl px-4 py-3 font-mono-tight text-[11px] uppercase tracking-[0.3em] text-white/80 hover:bg-white/5 hover:text-white"
+                className="rounded-xl px-4 py-3 font-mono-tight text-[13px] font-bold uppercase tracking-[0.22em] text-white hover:bg-white/10 hover:text-[color:var(--dima)]"
               >
                 {it.label[lang]}
               </a>
             ))}
+
             <div className="mt-1 border-t border-white/10 px-4 py-3">
               <LanguageToggle />
             </div>

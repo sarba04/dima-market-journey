@@ -136,7 +136,7 @@ const HERO_TEXT = {
     reducedMotionDesc:
       "Votre superette moderne a Tabriquet, Sale, alimentation, boulangerie, produits importes et boissons, servis avec exigence.",
     heroAria: "Visite immersive DIMA M Market",
-    skip: "Passer",
+    skip: "Passer la visite",
     scrollHint: "Scroll — pilotez la caméra",
     locationTag: "Tabriquet, Salé • MA",
   },
@@ -146,7 +146,7 @@ const HERO_TEXT = {
     reducedMotionDesc:
       "متجركم العصري في Tabriquet, Salé — مواد غذائية، مخبزة، منتجات مستوردة ومشروبات، بخدمة متميزة.",
     heroAria: "جولة تفاعلية في DIMA M Market",
-    skip: "تخطي",
+    skip: "تخطي الجولة",
     scrollHint: "مرروا الشاشة — تحكموا بالكاميرا",
     locationTag: "Tabriquet, Salé • MA",
   },
@@ -426,20 +426,22 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
         <div className="flex items-center gap-3">
           <img src={dimaMLogo} alt="DIMA M Market" className="dima-logo-pulse h-11 w-11" />
         </div>
-        <div className="flex items-center gap-5">
-          <div ref={stepLabelRef} className="font-mono-tight text-[11px] uppercase tracking-[0.35em] text-white/70" dir="ltr">
+        <div className="flex items-center gap-4">
+          <div ref={stepLabelRef} className="hidden font-mono-tight text-[12px] font-bold uppercase tracking-[0.3em] text-white/85 sm:block" dir="ltr">
             01 / {String(SCENES.length).padStart(2, "0")}
           </div>
           <button
             type="button"
             onClick={() => window.dispatchEvent(new CustomEvent("dima:skipIntro"))}
-            className="pointer-events-auto group flex items-center gap-2 font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/50 transition-colors hover:text-[color:var(--dima)]"
+            data-cursor="hover"
+            className="pointer-events-auto group flex items-center gap-2 rounded-full border border-white/60 bg-white/15 px-4 py-2.5 font-mono-tight text-[12px] font-bold uppercase tracking-[0.22em] text-white shadow-[0_10px_30px_rgba(0,0,0,0.45)] backdrop-blur-md transition-colors hover:border-[color:var(--dima)] hover:bg-[color:var(--dima)] hover:text-black sm:px-5"
           >
             {ht.skip}
-            <span className="transition-transform group-hover:translate-x-0.5">→</span>
+            <span className="transition-transform group-hover:translate-x-1">→</span>
           </button>
         </div>
       </div>
+
 
       {/* Bottom HUD */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-6 pb-6 md:px-10 md:pb-8">

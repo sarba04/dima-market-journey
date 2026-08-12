@@ -257,7 +257,7 @@ const TEXT = {
     engagementsHeadingEm: "Zéro compromis.",
     fondateurLabel: "Le fondateur",
     fondateurQuote:
-      "« J'ai ouvert DIMA M pour une raison simple : offrir à mon quartier un magasin où chacun se sent reçu, respecté, servi comme un proche.\n\nIci, chaque produit est choisi à la main. Chaque bonjour est sincère. Le commerce, c'est d'abord un lien humain. »",
+      "« Nous avons ouvert DIMA M pour une raison simple : offrir à notre quartier un magasin où chacun se sent reçu, respecté, servi comme un proche.\n\nIci, on choisit chaque produit à la main. Chaque bonjour est sincère. Le commerce, c'est d'abord un lien humain. »",
     fondateurName: "Mohammed El Abd",
     fondateurTitle: "Fondateur · DIMA M Market, Salé",
     visiterLabel: "Nous rendre visite",
@@ -318,7 +318,7 @@ const TEXT = {
     engagementsHeadingEm: "بدون تنازلات.",
     fondateurLabel: "كلمة المؤسس",
     fondateurQuote:
-      "« فتحتُ DIMA M لسبب بسيط: أن أقدّم لحيّي متجراً يشعر فيه كل شخص بالترحيب والاحترام، ويُعامَل كأنه من العائلة.\n\nهنا، كل منتج يُختار بيد أمينة. وكل تحية صادقة. فالتجارة، قبل كل شيء، علاقة إنسانية. »",
+      "« فتحنا DIMA M لسبب بسيط: أن نقدّم لحيّنا متجراً يشعر فيه كل شخص بالترحيب والاحترام، ويُعامَل كأنه من العائلة.\n\nهنا، نختار كل منتج بأيدينا. وكل تحية صادقة. فالتجارة، قبل كل شيء، علاقة إنسانية. »",
     fondateurName: "محمد العبد",
     fondateurTitle: "المؤسس · DIMA M Market, Salé",
     visiterLabel: "زوروا متجرنا",
@@ -361,31 +361,36 @@ const TEXT = {
 } as const;
 
 function RayonCard({ r, i }: { r: (typeof RAYONS)[number]; i: number }) {
-  const tiltRef = useTilt<HTMLElement>(6);
+  const tiltRef = useTilt<HTMLElement>(5);
   const { lang } = useLanguage();
   const otherLang = lang === "fr" ? "ar" : "fr";
   return (
     <article
       ref={tiltRef}
-      className={`reveal reveal-delay-${(i % 4) + 1} tilt-card group relative overflow-hidden rounded-2xl border border-black/5 bg-black/[0.02] hover:border-[color:var(--dima)]/40`}
+      className={`reveal reveal-delay-${(i % 4) + 1} tilt-card group relative overflow-hidden rounded-2xl border border-black/5 bg-black hover:border-[color:var(--dima)]/40`}
     >
-      <div className="parallax-frame relative aspect-[4/5] overflow-hidden">
+      <div className="parallax-frame relative aspect-[16/11] overflow-hidden">
         <ParallaxImage src={r.img} alt={r.name[lang]} className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
-        <div className="absolute left-5 top-5 font-mono-tight text-[10px] uppercase tracking-[0.35em] text-[color:var(--dima)]">
-          {r.name[otherLang]}
-        </div>
-        <div className="absolute right-5 top-5 font-mono-tight text-[10px] tracking-[0.3em] text-neutral-400">
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/5" />
+        <div className="absolute right-4 top-3 font-mono-tight text-[10px] tracking-[0.3em] text-white/50">
           {String(i + 1).padStart(2, "0")}
         </div>
-      </div>
-      <div className="p-6">
-        <h3 className="font-display text-3xl tracking-[-0.02em] text-neutral-900">{r.name[lang]}</h3>
-        <p className="mt-3 text-sm leading-relaxed text-neutral-600">{r.desc[lang]}</p>
+        <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+          <div className="font-mono-tight text-[9px] uppercase tracking-[0.35em] text-[color:var(--dima)]">
+            {r.name[otherLang]}
+          </div>
+          <h3 className="mt-1 font-display text-xl leading-tight tracking-[-0.02em] text-white sm:text-2xl">
+            {r.name[lang]}
+          </h3>
+          <p className="mt-1.5 line-clamp-2 text-[12px] leading-snug text-white/70 sm:text-[13px]">
+            {r.desc[lang]}
+          </p>
+        </div>
       </div>
     </article>
   );
 }
+
 
 // Scrolling word-band whose pace surges with scroll velocity and eases back
 // to a steady drift — a small living detail rather than a static loop.
@@ -520,29 +525,30 @@ export function PostHero() {
       </section>
 
       {/* Rayons */}
-      <section id="rayons" className="relative px-6 py-32 md:px-16 md:py-48">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-16 flex flex-wrap items-end justify-between gap-8">
+      <section id="rayons" className="relative flex min-h-[100svh] flex-col justify-center px-5 py-14 md:px-16 md:py-20">
+        <div className="mx-auto w-full max-w-7xl">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4 md:mb-8">
             <div>
-              <div className="reveal mb-4 flex items-center gap-3">
+              <div className="reveal mb-2 flex items-center gap-3">
                 <span className="h-px w-10 bg-[color:var(--dima)]" />
                 <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-neutral-500">
                   {t.rayonsLabel}
                 </span>
               </div>
-              <h2 className="reveal reveal-cinematic font-display text-[clamp(2.5rem,6vw,6rem)] leading-[0.95] tracking-[-0.03em] text-neutral-900">
+              <h2 className="reveal reveal-cinematic font-display text-[clamp(2rem,4.2vw,3.6rem)] leading-[0.95] tracking-[-0.03em] text-neutral-900">
                 {t.rayonsHeading}
               </h2>
             </div>
-            <p className="reveal reveal-delay-2 max-w-md text-neutral-600">{t.rayonsSubtitle}</p>
+            <p className="reveal reveal-delay-2 max-w-md text-sm text-neutral-600">{t.rayonsSubtitle}</p>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
             {RAYONS.map((r, i) => (
               <RayonCard key={r.name.fr} r={r} i={i} />
             ))}
           </div>
         </div>
       </section>
+
 
       {/* Engagements */}
       <section id="engagements" className="relative border-y border-black/5 bg-black/[0.015] px-6 py-32 md:px-16 md:py-48">
@@ -577,7 +583,7 @@ export function PostHero() {
       </section>
 
       {/* Le fondateur */}
-      <section id="fondateur" className="relative border-t border-black/5 px-6 pb-20 pt-32 md:px-16 md:pb-24 md:pt-48">
+      <section id="fondateur" className="relative border-t border-black/5 px-6 pb-10 pt-24 md:px-16 md:pb-12 md:pt-32">
         <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-[0.85fr_1.15fr] md:items-center">
           <div className="reveal">
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl">

@@ -110,6 +110,15 @@
   border: 1px solid oklch(1 0 0 / 0.08);
 }
 
+@utility glass-strong {
+  background: color-mix(in oklab, var(--background) 88%, transparent);
+  backdrop-filter: blur(26px) saturate(160%);
+  -webkit-backdrop-filter: blur(26px) saturate(160%);
+  border: 1px solid oklch(1 0 0 / 0.16);
+  box-shadow: 0 18px 50px oklch(0 0 0 / 0.55);
+}
+
+
 @utility dima-glow-text {
   color: var(--dima);
   text-shadow: 0 0 40px color-mix(in oklab, var(--dima-glow) 45%, transparent);
