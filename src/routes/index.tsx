@@ -34,6 +34,7 @@ function Index() {
         <ExperienceLayer />
         <DimaHero />
         <PostHero />
+        <ChatWidget />
       </main>
     </LanguageProvider>
   );
