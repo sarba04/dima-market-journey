@@ -648,7 +648,7 @@ export function ExperienceLayer() {
   return (
     <>
       <div className="grain-body" aria-hidden />
-      <LanguageToggle className="fixed right-4 top-4 z-[70] sm:right-6 sm:top-6" />
+      
       <ScrollProgress />
       <SceneTick />
       <ScrollReveal />
