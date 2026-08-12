@@ -410,9 +410,9 @@ export function DimaHero({ onComplete }: { onComplete?: () => void }) {
               alt=""
               className="scene-img"
               style={{
-                ["--focus-desktop" as string]: scene.focus?.desktop ?? "50% 50%",
-                ["--focus-mobile" as string]: scene.focus?.mobile ?? "50% 50%",
-              } as React.CSSProperties}
+                "--focus-desktop": scene.focus?.desktop ?? "50% 50%",
+                "--focus-mobile": scene.focus?.mobile ?? "50% 50%",
+              } as Record<string, string>}
               draggable={false}
               loading={i < 3 ? "eager" : "lazy"}
               decoding="async"
