@@ -257,7 +257,7 @@ const TEXT = {
     engagementsHeadingEm: "Zéro compromis.",
     fondateurLabel: "Le fondateur",
     fondateurQuote:
-      "« J'ai ouvert DIMA M pour une raison simple : offrir à mon quartier un magasin où chacun se sent reçu, respecté, servi comme un proche.\n\nIci, chaque produit est choisi à la main. Chaque bonjour est sincère. Le commerce, c'est d'abord un lien humain. »",
+      "« Nous avons ouvert DIMA M pour une raison simple : offrir à notre quartier un magasin où chacun se sent reçu, respecté, servi comme un proche.\n\nIci, on choisit chaque produit à la main. Chaque bonjour est sincère. Le commerce, c'est d'abord un lien humain. »",
     fondateurName: "Mohammed El Abd",
     fondateurTitle: "Fondateur · DIMA M Market, Salé",
     visiterLabel: "Nous rendre visite",
@@ -318,7 +318,7 @@ const TEXT = {
     engagementsHeadingEm: "بدون تنازلات.",
     fondateurLabel: "كلمة المؤسس",
     fondateurQuote:
-      "« فتحتُ DIMA M لسبب بسيط: أن أقدّم لحيّي متجراً يشعر فيه كل شخص بالترحيب والاحترام، ويُعامَل كأنه من العائلة.\n\nهنا، كل منتج يُختار بيد أمينة. وكل تحية صادقة. فالتجارة، قبل كل شيء، علاقة إنسانية. »",
+      "« فتحنا DIMA M لسبب بسيط: أن نقدّم لحيّنا متجراً يشعر فيه كل شخص بالترحيب والاحترام، ويُعامَل كأنه من العائلة.\n\nهنا، نختار كل منتج بأيدينا. وكل تحية صادقة. فالتجارة، قبل كل شيء، علاقة إنسانية. »",
     fondateurName: "محمد العبد",
     fondateurTitle: "المؤسس · DIMA M Market, Salé",
     visiterLabel: "زوروا متجرنا",

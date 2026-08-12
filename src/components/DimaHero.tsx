@@ -136,7 +136,7 @@ const HERO_TEXT = {
     reducedMotionDesc:
       "Votre superette moderne a Tabriquet, Sale, alimentation, boulangerie, produits importes et boissons, servis avec exigence.",
     heroAria: "Visite immersive DIMA M Market",
-    skip: "Passer",
+    skip: "Passer la visite",
     scrollHint: "Scroll — pilotez la caméra",
     locationTag: "Tabriquet, Salé • MA",
   },
@@ -146,7 +146,7 @@ const HERO_TEXT = {
     reducedMotionDesc:
       "متجركم العصري في Tabriquet, Salé — مواد غذائية، مخبزة، منتجات مستوردة ومشروبات، بخدمة متميزة.",
     heroAria: "جولة تفاعلية في DIMA M Market",
-    skip: "تخطي",
+    skip: "تخطي الجولة",
     scrollHint: "مرروا الشاشة — تحكموا بالكاميرا",
     locationTag: "Tabriquet, Salé • MA",
   },
