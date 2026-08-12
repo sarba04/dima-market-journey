@@ -871,7 +871,7 @@ export function PostHero() {
                 {BUSINESS.hours.map(([d, h]) => (
                   <li key={d} className="flex justify-between gap-4">
                     <span>{lang === "ar" ? DAY_LABEL_AR[d] ?? d : d}</span>
-                    <span className={d === "Boulangerie" ? "text-[color:var(--dima)]" : "text-white/50"}>{h}</span>
+                    <span className="text-white/50">{h}</span>
                   </li>
                 ))}
               </ul>
