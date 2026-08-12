@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DimaHero } from "@/components/DimaHero";
 import { PostHero } from "@/components/PostHero";
 import { ExperienceLayer } from "@/components/ExperienceLayer";
+import { ChatWidget } from "@/components/ChatWidget";
 import { LanguageProvider } from "@/lib/language";
 
 export const Route = createFileRoute("/")({
