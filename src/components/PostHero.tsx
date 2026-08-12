@@ -369,7 +369,7 @@ function RayonCard({ r, i }: { r: (typeof RAYONS)[number]; i: number }) {
       ref={tiltRef}
       className={`reveal reveal-delay-${(i % 4) + 1} tilt-card group relative overflow-hidden rounded-2xl border border-black/5 bg-black hover:border-[color:var(--dima)]/40`}
     >
-      <div className="parallax-frame relative aspect-[16/11] overflow-hidden sm:aspect-[4/3]">
+      <div className="parallax-frame relative aspect-[16/11] overflow-hidden">
         <ParallaxImage src={r.img} alt={r.name[lang]} className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/5" />
         <div className="absolute right-4 top-3 font-mono-tight text-[10px] tracking-[0.3em] text-white/50">
