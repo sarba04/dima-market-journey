@@ -385,12 +385,27 @@ export function PostHero() {
       if (disposed) return;
       gsap.registerPlugin(ScrollTrigger);
       const ctx = gsap.context(() => {
-        gsap.utils.toArray<HTMLElement>(".editorial-image img").forEach(image => gsap.fromTo(image, { yPercent: -4 }, { yPercent: 4, ease: "none", scrollTrigger: { trigger: image.parentElement, start: "top bottom", end: "bottom top", scrub: 0.6 } }));
+        gsap.utils.toArray<HTMLElement>(".editorial-image img").forEach(image => gsap.fromTo(image, { yPercent: -4, scale: 1.06 }, { yPercent: 4, scale: 1, ease: "none", scrollTrigger: { trigger: image.parentElement, start: "top bottom", end: "bottom top", scrub: 0.6 } }));
+        gsap.utils.toArray<HTMLElement>(".editorial-heading").forEach(heading => {
+          const accent = heading.querySelector(".heading-accent");
+          if (accent) gsap.fromTo(accent, { opacity: .3 }, { opacity: 1, scrollTrigger: { trigger: heading, start: "top 85%", end: "bottom 45%", scrub: .5 } });
+          gsap.fromTo(heading, { y: 42, rotateX: -12, transformPerspective: 900 }, { y: 0, rotateX: 0, duration: 1.2, ease: "power3.out", scrollTrigger: { trigger: heading, start: "top 90%", toggleActions: "play none none reverse" } });
+        });
+        const manifesto = gsap.timeline({ scrollTrigger: { trigger: ".manifesto-photo", start: "top 90%", end: "top 25%", scrub: .7 } });
+        manifesto.fromTo(".manifesto-photo", { clipPath: "inset(8% 14% 8% 14%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.out" });
+        gsap.fromTo(".department-photo", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: .85, stagger: .075, ease: "power3.inOut", scrollTrigger: { trigger: ".departments-grid", start: "top 90%", toggleActions: "play none none reverse" } });
+        gsap.utils.toArray<HTMLElement>(".commitment-row").forEach(row => {
+          gsap.fromTo(row, { x: ar ? -24 : 24, opacity: .25 }, { x: 0, opacity: 1, scrollTrigger: { trigger: row, start: "top 90%", end: "top 50%", scrub: .5 } });
+        });
+        gsap.fromTo(".family-stamp", { rotation: -13, scale: .8 }, { rotation: -5, scale: 1, scrollTrigger: { trigger: ".family-photo", start: "top 90%", end: "center 50%", scrub: .6 } });
+        gsap.fromTo(".family-copy blockquote", { opacity: .25 }, { opacity: 1, scrollTrigger: { trigger: ".family-copy", start: "top 90%", end: "bottom 65%", scrub: .7 } });
+        gsap.utils.toArray<HTMLElement>(".photo-strip-item img").forEach((image,i) => gsap.fromTo(image, { yPercent: i % 2 ? -12 : 12, scale: 1.15 }, { yPercent: i % 2 ? 8 : -8, scale: 1.15, ease: "none", scrollTrigger: { trigger: ".photo-strip", start: "top bottom", end: "bottom top", scrub: .6 } }));
+        gsap.fromTo(".footer-wordmark", { yPercent: 70 }, { yPercent: 0, ease: "power2.out", scrollTrigger: { trigger: ".market-footer", start: "top 80%", end: "bottom bottom", scrub: .7 } });
       }, root);
       cleanup = () => ctx.revert();
     })();
     return () => { disposed = true; cleanup(); };
-  }, [reduced]);
+  }, [reduced, ar]);
   return <div ref={root} className="market-body">
     <section id="manifeste" className="manifesto-section section-wrap">
       <div className="manifesto-meta"><span>{ar ? "متجر الحي · سلا" : "LE COMMERCE DE QUARTIER · SALÉ"}</span><span className="manifesto-hours" dir="ltr">09:00 — 22:00 / 7J·7</span></div>
