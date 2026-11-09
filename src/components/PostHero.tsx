@@ -1,16 +1,12 @@
-import { useEffect, useRef } from "react";
-import { ArrowUpRight, Phone, MessageCircle, MapPin, Plus, Nfc, Banknote, ShieldCheck } from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { ArrowUpRight, Phone, MessageCircle, MapPin, Plus, Nfc, Banknote } from "lucide-react";
 import { IMG } from "@/lib/images";
 import { BUSINESS, whatsappHref } from "@/lib/business";
 import { Button } from "@/components/ui/button";
-
-
-
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useLanguage } from "@/lib/language";
 import dimaMLogo from "@/assets/dima-m-logo-transparent.png";
 import meemLogo from "@/assets/meem-logo.png";
-
 
 const RAYONS = [
   {
@@ -163,7 +159,10 @@ const FAQ = [
     },
   },
   {
-    q: { fr: "Avez-vous des produits sans gluten / bio ?", ar: "هل لديكم منتجات خالية من الغلوتين / بيولوجية؟" },
+    q: {
+      fr: "Avez-vous des produits sans gluten / bio ?",
+      ar: "هل لديكم منتجات خالية من الغلوتين / بيولوجية؟",
+    },
     a: {
       fr: "Une sélection dédiée est disponible en rayon épicerie fine — demandez à notre équipe.",
       ar: "تتوفر تشكيلة خاصة في قسم المواد الغذائية الفاخرة — اسألوا فريقنا.",
@@ -172,8 +171,14 @@ const FAQ = [
 ];
 
 const TRUST_POINTS = [
-  { t: { fr: "06:30", ar: "06:30" }, d: { fr: "Boulangerie fraîche chaque matin", ar: "خبز طازج كل صباح" } },
-  { t: { fr: "07j/7", ar: "7/7" }, d: { fr: "Ouvert tous les jours", ar: "مفتوح كل أيام الأسبوع" } },
+  {
+    t: { fr: "06:30", ar: "06:30" },
+    d: { fr: "Boulangerie fraîche chaque matin", ar: "خبز طازج كل صباح" },
+  },
+  {
+    t: { fr: "07j/7", ar: "7/7" },
+    d: { fr: "Ouvert tous les jours", ar: "مفتوح كل أيام الأسبوع" },
+  },
   { t: { fr: "Local", ar: "محلي" }, d: { fr: "Livraison de proximité", ar: "توصيل من الجوار" } },
 ];
 
@@ -181,7 +186,11 @@ const PAYMENT_METHODS = [
   {
     name: { fr: "Visa", ar: "Visa" },
     desc: { fr: "Carte bancaire", ar: "بطاقة بنكية" },
-    mark: <span className="font-display text-xl font-bold italic tracking-tight text-payment-visa">VISA</span>,
+    mark: (
+      <span className="font-display text-xl font-bold italic tracking-tight text-payment-visa">
+        VISA
+      </span>
+    ),
   },
   {
     name: { fr: "Mastercard", ar: "Mastercard" },
@@ -212,7 +221,9 @@ const PAYMENT_METHODS = [
     desc: { fr: "Transfert mobile", ar: "تحويل عبر الهاتف" },
     mark: (
       <span className="rounded-md bg-payment-wafa px-2 py-1 text-center font-display text-[11px] font-bold leading-tight text-paper">
-        Wafa<br />cash
+        Wafa
+        <br />
+        cash
       </span>
     ),
   },
@@ -234,9 +245,9 @@ const PAYMENT_METHODS = [
 
 const DAY_LABEL_AR: Record<string, string> = {
   "Lundi — Vendredi": "الاثنين — الجمعة",
-  "Samedi": "السبت",
-  "Dimanche": "الأحد",
-  "Boulangerie": "المخبزة",
+  Samedi: "السبت",
+  Dimanche: "الأحد",
+  Boulangerie: "المخبزة",
 };
 
 const TEXT = {
@@ -271,8 +282,10 @@ const TEXT = {
     addressLabel: BUSINESS.addressLabel,
     paiementLabel: "Paiement",
     paiementHeading: "Payez comme vous le souhaitez.",
-    paiementSubtitle: "Toutes les méthodes courantes acceptées en caisse. Rapidement, sans complication.",
-    paiementTrust: "Paiements 100% sécurisés — Commerce agréé · RC Salé — Conforme réglementation ANSS Maroc.",
+    paiementSubtitle:
+      "Toutes les méthodes courantes acceptées en caisse. Rapidement, sans complication.",
+    paiementTrust:
+      "Paiements 100% sécurisés — Commerce agréé · RC Salé — Conforme réglementation ANSS Maroc.",
     avisPre: "Ils reviennent. ",
     avisEm: "Souvent.",
     faqLabel: "FAQ",
@@ -333,7 +346,8 @@ const TEXT = {
     paiementLabel: "الدفع",
     paiementHeading: "ادفعوا بالطريقة التي تناسبكم.",
     paiementSubtitle: "جميع وسائل الدفع الشائعة مقبولة في الصندوق. بسرعة وبدون تعقيد.",
-    paiementTrust: "دفع آمن 100% — تجارة معتمدة · السجل التجاري بـ Salé — مطابق لتنظيم ANSS بالمغرب.",
+    paiementTrust:
+      "دفع آمن 100% — تجارة معتمدة · السجل التجاري بـ Salé — مطابق لتنظيم ANSS بالمغرب.",
     avisPre: "يعودون. ",
     avisEm: "دائماً.",
     faqLabel: "الأسئلة الشائعة",
@@ -341,10 +355,12 @@ const TEXT = {
     faqHeadingLine2: "التي يطرحونها علينا.",
     ctaHeadingLine1: "مرّوا",
     ctaHeadingEm: "لزيارتنا.",
-    ctaParagraph: "كأس شاي، نصيحة، أو اكتشاف جديد: في DIMA M Market لا نكتفي بالبيع — نستقبلكم كضيوف.",
+    ctaParagraph:
+      "كأس شاي، نصيحة، أو اكتشاف جديد: في DIMA M Market لا نكتفي بالبيع — نستقبلكم كضيوف.",
     appelerLeMagasin: "اتصل بالمتجر",
     explorerLesRayons: "اكتشف أقسامنا",
-    footerDesc: "متجر عصري في Tabriquet, Salé. مواد غذائية، مخبزة، ومنتجات مستوردة — بخدمة متميزة كل يوم.",
+    footerDesc:
+      "متجر عصري في Tabriquet, Salé. مواد غذائية، مخبزة، ومنتجات مستوردة — بخدمة متميزة كل يوم.",
     whatsappShort: "واتساب",
     appeler: "اتصال",
     itineraire: "الاتجاهات",
@@ -362,13 +378,164 @@ const TEXT = {
   },
 } as const;
 
-function SectionLabel({ n, children }: { n: string; children: React.ReactNode }) {
-  return <div className="section-label"><span dir="ltr">{n} /</span>{children}</div>;
+/** Eight-pointed star (khatam), the geometric seed of Moroccan zellige. */
+export function Khatam({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={`khatam ${className}`} aria-hidden="true">
+      <rect x="5" y="5" width="14" height="14" />
+      <rect x="5" y="5" width="14" height="14" transform="rotate(45 12 12)" />
+    </svg>
+  );
 }
+
+/** Decorative barcode, generated from a short code so every label is unique. */
+function Barcode({ code, className = "" }: { code: string; className?: string }) {
+  const { bars, width } = useMemo(() => {
+    const out: { x: number; w: number }[] = [];
+    let x = 0;
+    for (const ch of `*${code}*`) {
+      const c = ch.charCodeAt(0);
+      for (let k = 0; k < 6; k++) {
+        const w = 1 + ((c >> k) & 1) + ((c >> (k + 1)) & 1 & (k % 2));
+        if (k % 2 === 0) out.push({ x, w });
+        x += w;
+      }
+      x += 1;
+    }
+    return { bars: out, width: x };
+  }, [code]);
+  return (
+    <svg
+      viewBox={`0 0 ${width} 24`}
+      preserveAspectRatio="none"
+      className={`barcode ${className}`}
+      aria-hidden="true"
+    >
+      {bars.map((b) => (
+        <rect key={b.x} x={b.x} y="0" width={b.w} height="24" />
+      ))}
+    </svg>
+  );
+}
+
+function SectionLabel({ n, children }: { n: string; children: ReactNode }) {
+  return (
+    <div className="section-label">
+      <span className="section-label-n" dir="ltr">
+        {n}
+      </span>
+      <span className="section-label-rule" aria-hidden="true" />
+      {children}
+    </div>
+  );
+}
+
 function MovingBand() {
   const { lang } = useLanguage();
-  return <div className="moving-band" aria-hidden="true"><div className="moving-band-track" dir="ltr">{[0,1,2,3].map(i => <span key={i}>DIMA M MARKET <span className="band-star">✳</span> {lang === "fr" ? "LE QUOTIDIEN, AUTREMENT." : "يومكم، بروح مختلفة."} <span className="band-star">✳</span> </span>)}</div></div>;
+  const phrase = lang === "fr" ? "LE QUOTIDIEN, AUTREMENT." : "يومكم، بروح مختلفة.";
+  return (
+    <div className="moving-band" aria-hidden="true">
+      <div className="moving-band-track" dir="ltr">
+        {[0, 1, 2, 3].map((i) => (
+          <span key={i}>
+            DIMA M MARKET <Khatam className="band-star" /> <span lang={lang}>{phrase}</span>{" "}
+            <Khatam className="band-star" /> 09:00 — 22:00 <Khatam className="band-star" />{" "}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
 }
+
+/** Aisle directory: hovering an aisle on desktop floats its photo beside the cursor. */
+function AisleDirectory() {
+  const { lang } = useLanguage();
+  const ar = lang === "ar";
+  const [hovered, setHovered] = useState<number | null>(null);
+  const preview = useRef<HTMLDivElement>(null);
+  const list = useRef<HTMLOListElement>(null);
+  useEffect(() => {
+    const el = list.current,
+      card = preview.current;
+    if (!el || !card || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    const target = { x: 0, y: 0 },
+      pos = { x: 0, y: 0 };
+    let raf = 0,
+      running = false;
+    const loop = () => {
+      pos.x += (target.x - pos.x) * 0.14;
+      pos.y += (target.y - pos.y) * 0.14;
+      const tilt = Math.max(-8, Math.min(8, (target.x - pos.x) * 0.08));
+      card.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0) rotate(${tilt}deg)`;
+      raf = running ? requestAnimationFrame(loop) : 0;
+    };
+    const move = (e: PointerEvent) => {
+      const r = el.getBoundingClientRect();
+      target.x = e.clientX - r.left;
+      target.y = e.clientY - r.top;
+      if (!running) {
+        running = true;
+        pos.x = target.x;
+        pos.y = target.y;
+        raf = requestAnimationFrame(loop);
+      }
+    };
+    const leave = () => {
+      running = false;
+    };
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerleave", leave);
+    return () => {
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerleave", leave);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+  return (
+    <div className="aisle-directory">
+      <ol ref={list} className="aisle-list" onPointerLeave={() => setHovered(null)}>
+        {RAYONS.map((r, i) => (
+          <li
+            key={r.name.fr}
+            className={`aisle-row ${hovered === i ? "is-hovered" : ""}`}
+            onPointerEnter={() => setHovered(i)}
+          >
+            <span className="aisle-code" dir="ltr">
+              {ar ? "ممر" : "ALLÉE"} {String(i + 1).padStart(2, "0")}
+            </span>
+            <span className="aisle-thumb">
+              <img src={r.img} alt="" loading="lazy" />
+            </span>
+            <span className="aisle-names">
+              <h3>{r.name[lang]}</h3>
+              <span className="aisle-other" lang={ar ? "fr" : "ar"} dir={ar ? "ltr" : "rtl"}>
+                {r.name[ar ? "fr" : "ar"]}
+              </span>
+            </span>
+            <p>{r.desc[lang]}</p>
+            <ArrowUpRight className="aisle-arrow" size={22} aria-hidden="true" />
+          </li>
+        ))}
+      </ol>
+      <div
+        ref={preview}
+        className={`aisle-preview ${hovered !== null ? "is-visible" : ""}`}
+        aria-hidden="true"
+      >
+        {RAYONS.map((r, i) => (
+          <img
+            key={r.name.fr}
+            src={r.img}
+            alt=""
+            loading="lazy"
+            className={hovered === i ? "is-active" : ""}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function PostHero() {
   const { lang } = useLanguage();
   const t = TEXT[lang];
@@ -385,50 +552,667 @@ export function PostHero() {
       if (disposed) return;
       gsap.registerPlugin(ScrollTrigger);
       const ctx = gsap.context(() => {
-        gsap.utils.toArray<HTMLElement>(".editorial-image img").forEach(image => gsap.fromTo(image, { yPercent: -4, scale: 1.06 }, { yPercent: 4, scale: 1, ease: "none", scrollTrigger: { trigger: image.parentElement, start: "top bottom", end: "bottom top", scrub: 0.6 } }));
-        gsap.utils.toArray<HTMLElement>(".editorial-heading").forEach(heading => {
-          const accent = heading.querySelector(".heading-accent");
-          if (accent) gsap.fromTo(accent, { opacity: .3 }, { opacity: 1, scrollTrigger: { trigger: heading, start: "top 85%", end: "bottom 45%", scrub: .5 } });
-          gsap.fromTo(heading, { y: 42, rotateX: -12, transformPerspective: 900 }, { y: 0, rotateX: 0, duration: 1.2, ease: "power3.out", scrollTrigger: { trigger: heading, start: "top 90%", toggleActions: "play none none reverse" } });
+        gsap.utils.toArray<HTMLElement>(".editorial-image img").forEach((image) =>
+          gsap.fromTo(
+            image,
+            { yPercent: -5, scale: 1.08 },
+            {
+              yPercent: 5,
+              scale: 1,
+              ease: "none",
+              scrollTrigger: {
+                trigger: image.parentElement,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 0.6,
+              },
+            },
+          ),
+        );
+        gsap.utils.toArray<HTMLElement>(".editorial-heading").forEach((heading) => {
+          gsap.fromTo(
+            heading.querySelectorAll(".heading-line > span"),
+            { yPercent: 108 },
+            {
+              yPercent: 0,
+              duration: 1.1,
+              stagger: 0.09,
+              ease: "expo.out",
+              scrollTrigger: {
+                trigger: heading,
+                start: "top 88%",
+                toggleActions: "play none none reverse",
+              },
+            },
+          );
         });
-        const manifesto = gsap.timeline({ scrollTrigger: { trigger: ".manifesto-photo", start: "top 90%", end: "top 25%", scrub: .7 } });
-        manifesto.fromTo(".manifesto-photo", { clipPath: "inset(8% 14% 8% 14%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.out" });
-        gsap.fromTo(".department-photo", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: .85, stagger: .075, ease: "power3.inOut", scrollTrigger: { trigger: ".departments-grid", start: "top 90%", toggleActions: "play none none reverse" } });
-        gsap.utils.toArray<HTMLElement>(".commitment-row").forEach(row => {
-          gsap.fromTo(row, { x: ar ? -24 : 24, opacity: .25 }, { x: 0, opacity: 1, scrollTrigger: { trigger: row, start: "top 90%", end: "top 50%", scrub: .5 } });
-        });
-        gsap.fromTo(".family-stamp", { rotation: -13, scale: .8 }, { rotation: -5, scale: 1, scrollTrigger: { trigger: ".family-photo", start: "top 90%", end: "center 50%", scrub: .6 } });
-        gsap.fromTo(".family-copy blockquote", { opacity: .25 }, { opacity: 1, scrollTrigger: { trigger: ".family-copy", start: "top 90%", end: "bottom 65%", scrub: .7 } });
-        gsap.utils.toArray<HTMLElement>(".photo-strip-item img").forEach((image,i) => gsap.fromTo(image, { yPercent: i % 2 ? -12 : 12, scale: 1.15 }, { yPercent: i % 2 ? 8 : -8, scale: 1.15, ease: "none", scrollTrigger: { trigger: ".photo-strip", start: "top bottom", end: "bottom top", scrub: .6 } }));
-        gsap.fromTo(".footer-wordmark", { yPercent: 70 }, { yPercent: 0, ease: "power2.out", scrollTrigger: { trigger: ".market-footer", start: "top 80%", end: "bottom bottom", scrub: .7 } });
+        gsap.fromTo(
+          ".heading-pill",
+          { clipPath: "inset(0% 100% 0% 0% round 999px)" },
+          {
+            clipPath: "inset(0% 0% 0% 0% round 999px)",
+            duration: 1.3,
+            ease: "expo.inOut",
+            delay: 0.25,
+            scrollTrigger: {
+              trigger: ".manifesto-heading",
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+        gsap.fromTo(
+          ".manifesto-photo",
+          { clipPath: "inset(10% 18% 10% 18% round 28px)" },
+          {
+            clipPath: "inset(0% 0% 0% 0% round 0px)",
+            ease: "none",
+            scrollTrigger: {
+              trigger: ".manifesto-photo",
+              start: "top 95%",
+              end: "top 20%",
+              scrub: 0.7,
+            },
+          },
+        );
+        gsap.fromTo(
+          ".manifesto-photo .store-sign",
+          { rotate: -9, y: -40 },
+          {
+            rotate: -3,
+            y: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: ".manifesto-photo",
+              start: "top 90%",
+              end: "center 50%",
+              scrub: 0.6,
+            },
+          },
+        );
+        gsap.fromTo(
+          ".aisle-row",
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            stagger: 0.07,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: ".aisle-list",
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+        gsap.fromTo(
+          ".shelf-tag",
+          { y: -90, rotate: (i: number) => (i % 2 ? 9 : -9), opacity: 0 },
+          {
+            y: 0,
+            rotate: (i: number) => (i % 2 ? 1.6 : -1.6),
+            opacity: 1,
+            duration: 1.5,
+            stagger: 0.12,
+            ease: "elastic.out(1, 0.5)",
+            scrollTrigger: {
+              trigger: ".shelf",
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+        gsap.fromTo(
+          ".shelf-photo",
+          { clipPath: "circle(0% at 50% 50%)" },
+          {
+            clipPath: "circle(75% at 50% 50%)",
+            ease: "none",
+            scrollTrigger: {
+              trigger: ".shelf-photo",
+              start: "top 95%",
+              end: "top 35%",
+              scrub: 0.6,
+            },
+          },
+        );
+        gsap.fromTo(
+          ".family-stamp",
+          { rotation: -16, scale: 0.7 },
+          {
+            rotation: -6,
+            scale: 1,
+            scrollTrigger: {
+              trigger: ".family-photo",
+              start: "top 90%",
+              end: "center 50%",
+              scrub: 0.6,
+            },
+          },
+        );
+        gsap.fromTo(
+          ".family-copy blockquote",
+          { opacity: 0.2 },
+          {
+            opacity: 1,
+            scrollTrigger: {
+              trigger: ".family-copy",
+              start: "top 90%",
+              end: "bottom 65%",
+              scrub: 0.7,
+            },
+          },
+        );
+        gsap.utils.toArray<HTMLElement>(".photo-strip-item img").forEach((image, i) =>
+          gsap.fromTo(
+            image,
+            { yPercent: i % 2 ? -12 : 12, scale: 1.18 },
+            {
+              yPercent: i % 2 ? 8 : -8,
+              scale: 1.18,
+              ease: "none",
+              scrollTrigger: {
+                trigger: ".photo-strip",
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 0.6,
+              },
+            },
+          ),
+        );
+        gsap.fromTo(
+          ".receipt",
+          { yPercent: -14, clipPath: "inset(0px -60px 900px -60px)" },
+          {
+            yPercent: 0,
+            clipPath: "inset(-10px -60px -80px -60px)",
+            duration: 1.6,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ".receipt-slot",
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+        gsap.fromTo(
+          ".review-item",
+          { y: 60, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            stagger: 0.1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: ".review-grid",
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+        gsap.fromTo(
+          ".footer-wordmark",
+          { yPercent: 60 },
+          {
+            yPercent: 0,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ".market-footer",
+              start: "top 80%",
+              end: "bottom bottom",
+              scrub: 0.7,
+            },
+          },
+        );
       }, root);
-      cleanup = () => ctx.revert();
+      // Lazy images and web fonts change the page height: keep every trigger aligned.
+      let timer = 0;
+      const refresh = () => {
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => ScrollTrigger.refresh(), 180);
+      };
+      const observer = new ResizeObserver(refresh);
+      if (root.current) observer.observe(root.current);
+      void document.fonts?.ready.then(refresh);
+      cleanup = () => {
+        observer.disconnect();
+        window.clearTimeout(timer);
+        ctx.revert();
+      };
     })();
-    return () => { disposed = true; cleanup(); };
+    return () => {
+      disposed = true;
+      cleanup();
+    };
   }, [reduced, ar]);
-  return <div ref={root} className="market-body">
-    <section id="manifeste" className="manifesto-section section-wrap">
-      <div className="manifesto-meta"><span>{ar ? "متجر الحي · سلا" : "LE COMMERCE DE QUARTIER · SALÉ"}</span><span className="manifesto-hours" dir="ltr">09:00 — 22:00 / 7J·7</span></div>
-      <div className="manifesto-grid">
-        <div><SectionLabel n="01">{t.manifesteLabel}</SectionLabel><h2 className="editorial-heading reveal">{ar ? "قريب منكم." : "LE QUOTIDIEN."}<br /><span className="heading-accent">{ar ? "مختلف دائماً." : "RIEN D’ORDINAIRE."}</span></h2></div>
-        <div className="manifesto-aside reveal"><p>{t.manifestoP1}</p><p>{t.manifestoP2}</p><Button asChild variant="link" className="editorial-link"><a href="#rayons">{t.explorerLesRayons}<ArrowUpRight /></a></Button></div>
-      </div>
-      <div className="manifesto-photo editorial-image reveal"><img src={IMG.interiorCounter} alt={ar ? "داخل متجر DIMA M" : "L’intérieur du magasin DIMA M Market"} loading="lazy" /><div className="image-caption"><span>{ar ? "مكانكم في الحي" : "VOTRE ADRESSE, DANS LE QUARTIER."}</span><span dir="ltr">DIMA M — TABRIQUET</span></div></div>
-    </section>
-    <MovingBand />
-    <section id="rayons" className="departments-section section-wrap">
-      <div className="section-heading-row"><div><SectionLabel n="02">{t.rayonsLabel}</SectionLabel><h2 className="editorial-heading reveal">{ar ? "كل شيء." : "TOUT."}<br /><span className="heading-accent">{ar ? "في مكان واحد." : "AU MÊME ENDROIT."}</span></h2></div><p className="section-side-copy">{t.rayonsSubtitle}</p></div>
-      <div className="departments-grid">{RAYONS.map((r,i) => <article key={r.name.fr} className="department group"><div className="department-photo"><img src={r.img} alt={r.name[lang]} loading="lazy" /><span className="department-index" dir="ltr">0{i+1}</span></div><div className="department-title"><h3>{r.name[lang]}</h3><span className="department-other" dir={ar ? "ltr" : "rtl"}>{r.name[ar ? "fr" : "ar"]}</span></div><p>{r.desc[lang]}</p></article>)}</div>
-    </section>
-    <section id="engagements" className="commitments-section section-wrap">
-      <div className="commitments-grid"><div><SectionLabel n="03">{t.engagementsLabel}</SectionLabel><h2 className="editorial-heading reveal">{ar ? "اهتمام أكثر." : "UN PEU PLUS"}<br /><span>{ar ? "كل يوم." : "D’ATTENTION."}</span></h2><div className="commitment-photo editorial-image reveal"><img src={IMG.customers} alt={ar ? "النصيحة في المتجر" : "Un échange entre l’équipe et les clients"} loading="lazy" /></div></div><div className="commitments-list">{ENGAGEMENTS.map(e => <article key={e.n} className="commitment-row reveal"><span className="commitment-number">{e.n}</span><div><h3>{e.t[lang]}</h3><p>{e.d[lang]}</p></div><ArrowUpRight size={22} /></article>)}</div></div>
-    </section>
-    <section id="fondateur" className="family-section section-wrap"><div className="family-grid"><div className="family-photo editorial-image reveal"><img src={IMG.staffEpicerie} alt={ar ? "فريق DIMA M" : "L’équipe de DIMA M Market"} loading="lazy" /><span className="family-stamp" dir="ltr">DIMA M<br />C’EST NOUS.</span></div><div className="family-copy"><SectionLabel n="04">{ar ? "متجر عائلي" : "UNE HISTOIRE DE FAMILLE"}</SectionLabel><span className="quote-mark" aria-hidden="true">“</span><blockquote className="reveal">{t.fondateurQuote.replace(/^« /,'').replace(/ »$/,'')}</blockquote><div className="founder-signature"><span>{t.fondateurName}</span><small>{t.fondateurTitle}</small></div></div></div></section>
-    <section className="photo-strip" aria-label={ar ? "المتجر في صور" : "Le magasin en images"}>{[IMG.facadeEntrance,IMG.bakery,IMG.staffHygiene,IMG.aisleDrinks].map((src,i) => <div className="photo-strip-item" key={src}><img src={src} loading="lazy" alt={[ar ? "الواجهة" : "La façade",ar ? "المخبزة" : "La boulangerie",ar ? "الفريق" : "L’équipe",ar ? "المشروبات" : "Les boissons"][i]} /><span dir="ltr">DIMA M / 0{i+1}</span></div>)}</section>
-    <section id="visiter" className="visit-section section-wrap"><div className="visit-grid"><div><SectionLabel n="05">{t.visiterLabel}</SectionLabel><h2 className="editorial-heading reveal">{ar ? "مرّوا" : "À DEUX PAS."}<br /><span className="heading-accent">{ar ? "لزيارتنا." : "ON VOUS ATTEND."}</span></h2><p className="visit-address"><MapPin size={20} />{t.addressLabel}</p><div className="hours-list">{BUSINESS.hours.map(([day,h],i) => <div key={day}><span>{ar ? DAY_LABEL_AR[day] : day}</span><strong dir="ltr">{h}</strong></div>)}</div><div className="visit-actions"><Button asChild><a href={whatsappHref(t.whatsappOrderMsg)} target="_blank" rel="noopener noreferrer"><MessageCircle />{t.commanderWhatsapp}<ArrowUpRight /></a></Button><Button asChild variant="outline"><a href={BUSINESS.phoneHref}><Phone /><span dir="ltr">{BUSINESS.phoneDisplay}</span></a></Button></div></div><div className="visit-map"><iframe title={t.mapLabel} src={BUSINESS.mapsEmbedSrc} loading="lazy" allowFullScreen /><Button asChild className="map-directions"><a href={BUSINESS.mapsLink} target="_blank" rel="noopener noreferrer">{t.itineraire}<ArrowUpRight /></a></Button></div></div></section>
-    <section className="payment-section section-wrap"><div><SectionLabel n="06">{t.paiementLabel}</SectionLabel><h2>{t.paiementHeading}</h2><p>{t.paiementSubtitle}</p></div><div className="payment-list">{PAYMENT_METHODS.map(m => <div key={m.name.fr}><span className="payment-symbol">{m.mark}</span><span>{m.name[lang]}</span></div>)}</div></section>
-    <section className="reviews-section section-wrap"><div className="section-heading-row"><h2 className="editorial-heading reveal">{ar ? "يعودون." : "ILS REVIENNENT."}<br /><span className="heading-accent">{ar ? "دائماً." : "ET ÇA NOUS TOUCHE."}</span></h2><div className="review-rating"><strong>{BUSINESS.ratingValue}<small>/5</small></strong><span>{BUSINESS.reviewCountValue} {t.trustReviewsShort.replace('+ ','')}</span></div></div><div className="review-grid">{AVIS.map(a => <blockquote key={a.n} className="review-item reveal"><span className="review-stars">{a.r}</span><p>« {a.t[lang]} »</p><footer>{a.n}</footer></blockquote>)}</div></section>
-    <section className="faq-section section-wrap"><div><SectionLabel n="07">{t.faqLabel}</SectionLabel><h2 className="editorial-heading">{ar ? "لديكم" : "UNE QUESTION ?"}<br /><span className="heading-accent">{ar ? "سؤال؟" : "TOUT SIMPLEMENT."}</span></h2></div><div className="faq-list">{FAQ.map(f => <details key={f.q.fr}><summary>{f.q[lang]}<Plus size={20} /></summary><p>{f.a[lang]}</p></details>)}</div></section>
-    <footer id="contact" className="market-footer section-wrap"><div className="footer-invitation"><h2>{ar ? "نراكم قريباً." : "À TRÈS VITE."}</h2><Button asChild className="footer-cta"><a href={whatsappHref(t.whatsappContactMsg)} target="_blank" rel="noopener noreferrer">{t.whatsappShort}<ArrowUpRight /></a></Button></div><div className="footer-grid"><div className="footer-brand"><img src={dimaMLogo} alt="DIMA M Market" /><p>{t.footerDesc}</p></div><div><h3>{t.explorer}</h3>{[["#manifeste",t.navManifeste],["#rayons",t.navRayons],["#engagements",t.navEngagements],["#visiter",t.navVisiter]].map(([href,label]) => <a key={href} href={href}>{label}</a>)}</div><div><h3>{t.horaires}</h3><span>{ar ? "كل يوم" : "Tous les jours"}</span><strong dir="ltr">09:00 — 22:00</strong><a href={BUSINESS.mapsLink} target="_blank" rel="noopener noreferrer">{t.addressLabel}<ArrowUpRight size={14} /></a></div><div><h3>{t.contact}</h3><a href={BUSINESS.phoneHref} dir="ltr">{BUSINESS.phoneDisplay}</a><a href={`mailto:${BUSINESS.email}`} dir="ltr">{BUSINESS.email}</a><a href={whatsappHref(t.whatsappContactMsg)} target="_blank" rel="noopener noreferrer">WhatsApp<ArrowUpRight size={14} /></a></div></div><div className="footer-bottom"><span>{t.copyright(new Date().getFullYear())}</span><a href="https://www.agencemeem.com" target="_blank" rel="noopener noreferrer" className="agency-credit" dir="ltr"><span>{ar ? "الموقع من إنجاز" : "Site créé par"}</span><img src={meemLogo} alt="Agence MEEM" loading="lazy" /><ArrowUpRight size={14} /></a></div><div className="footer-wordmark" dir="ltr">DIMA M<span>®</span></div></footer>
-  </div>;
+
+  return (
+    <div ref={root} className="market-body">
+      {/* 01 — Manifesto */}
+      <section id="manifeste" className="manifesto-section section-wrap">
+        <div className="manifesto-meta">
+          <span>
+            <Khatam />
+            {ar ? "متجر الحي · سلا" : "LE COMMERCE DE QUARTIER · SALÉ"}
+          </span>
+          <span className="manifesto-hours" dir="ltr">
+            09:00 — 22:00 / 7J·7
+          </span>
+        </div>
+        <div className="manifesto-grid">
+          <SectionLabel n="01">{t.manifesteLabel}</SectionLabel>
+          <h2 className="editorial-heading manifesto-heading">
+            <span className="heading-line">
+              <span>
+                {ar ? "قريب منكم." : "LE QUOTIDIEN."}
+                <span className="heading-pill" aria-hidden="true">
+                  <img src={IMG.bakery} alt="" loading="lazy" />
+                </span>
+              </span>
+            </span>
+            <span className="heading-line">
+              <span className="heading-accent">{ar ? "مختلف دائماً." : "RIEN D’ORDINAIRE."}</span>
+            </span>
+          </h2>
+          <div className="manifesto-aside reveal">
+            <p className="manifesto-lede">
+              {t.manifestoPre}
+              <em>{t.manifestoEm}</em>
+              {t.manifestoPost}
+            </p>
+            <div>
+              <p>{t.manifestoP1}</p>
+              <p>{t.manifestoP2}</p>
+              <Button asChild variant="link" className="editorial-link">
+                <a href="#rayons">
+                  {t.explorerLesRayons}
+                  <ArrowUpRight />
+                </a>
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="manifesto-photo editorial-image">
+          <img
+            src={IMG.interiorCounter}
+            alt={ar ? "داخل متجر DIMA M" : "L’intérieur du magasin DIMA M Market"}
+            loading="lazy"
+          />
+          <div className="store-sign" aria-hidden="true">
+            <span lang="fr" dir="ltr">
+              Bienvenue
+            </span>
+            <span lang="ar" dir="rtl">
+              مرحباً
+            </span>
+          </div>
+          <div className="image-caption">
+            <span>{ar ? "مكانكم في الحي" : "VOTRE ADRESSE, DANS LE QUARTIER."}</span>
+            <span dir="ltr">DIMA M — TABRIQUET</span>
+          </div>
+        </div>
+      </section>
+
+      <MovingBand />
+
+      {/* 02 — Aisles */}
+      <section id="rayons" className="aisles-section section-wrap">
+        <div className="section-heading-row">
+          <div>
+            <SectionLabel n="02">{t.rayonsLabel}</SectionLabel>
+            <h2 className="editorial-heading">
+              <span className="heading-line">
+                <span>{ar ? "كل شيء." : "TOUT."}</span>
+              </span>
+              <span className="heading-line">
+                <span className="heading-accent">{ar ? "في مكان واحد." : "AU MÊME ENDROIT."}</span>
+              </span>
+            </h2>
+          </div>
+          <p className="section-side-copy">{t.rayonsSubtitle}</p>
+        </div>
+        <AisleDirectory />
+      </section>
+
+      {/* 03 — Commitments as shelf labels */}
+      <section id="engagements" className="commitments-section section-wrap">
+        <div className="commitments-head">
+          <div>
+            <SectionLabel n="03">{t.engagementsLabel}</SectionLabel>
+            <h2 className="editorial-heading">
+              <span className="heading-line">
+                <span>{ar ? "اهتمام أكثر." : "UN PEU PLUS"}</span>
+              </span>
+              <span className="heading-line">
+                <span className="heading-accent">{ar ? "كل يوم." : "D’ATTENTION."}</span>
+              </span>
+            </h2>
+          </div>
+          <div className="shelf-photo editorial-image">
+            <img
+              src={IMG.customers}
+              alt={ar ? "النصيحة في المتجر" : "Un échange entre l’équipe et les clients"}
+              loading="lazy"
+            />
+          </div>
+        </div>
+        <div className="shelf">
+          <div className="shelf-tags">
+            {ENGAGEMENTS.map((e) => (
+              <article key={e.n} className="shelf-tag">
+                <span className="shelf-tag-hole" aria-hidden="true" />
+                <div className="shelf-tag-top">
+                  <span>{ar ? "التزام" : "ENGAGEMENT"}</span>
+                  <span dir="ltr">DIMA M</span>
+                </div>
+                <h3>{e.t[lang]}</h3>
+                <p>{e.d[lang]}</p>
+                <div className="shelf-tag-foot">
+                  <div>
+                    <Barcode code={`DM${e.n}`} />
+                    <span dir="ltr">6 118000 {e.n}0 7</span>
+                  </div>
+                  <span className="shelf-tag-price" dir="ltr">
+                    {e.n}
+                    <small>/04</small>
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className="shelf-edge" aria-hidden="true" />
+        </div>
+      </section>
+
+      {/* 04 — Family */}
+      <section id="fondateur" className="family-section section-wrap">
+        <div className="family-grid">
+          <div className="family-photo editorial-image">
+            <img
+              src={IMG.staffEpicerie}
+              alt={ar ? "فريق DIMA M" : "L’équipe de DIMA M Market"}
+              loading="lazy"
+            />
+            <span className="family-stamp" dir="ltr">
+              DIMA M<br />
+              C’EST NOUS.
+            </span>
+          </div>
+          <div className="family-copy">
+            <SectionLabel n="04">{ar ? "متجر عائلي" : "UNE HISTOIRE DE FAMILLE"}</SectionLabel>
+            <span className="quote-mark" aria-hidden="true">
+              “
+            </span>
+            <blockquote>{t.fondateurQuote.replace(/^« /, "").replace(/ »$/, "")}</blockquote>
+            <div className="founder-signature">
+              <span>{t.fondateurName}</span>
+              <small>{t.fondateurTitle}</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="photo-strip" aria-label={ar ? "المتجر في صور" : "Le magasin en images"}>
+        {[IMG.facadeEntrance, IMG.bakery, IMG.staffHygiene, IMG.aisleDrinks].map((src, i) => (
+          <figure className="photo-strip-item" key={src}>
+            <img
+              src={src}
+              loading="lazy"
+              alt={
+                [
+                  ar ? "الواجهة" : "La façade",
+                  ar ? "المخبزة" : "La boulangerie",
+                  ar ? "الفريق" : "L’équipe",
+                  ar ? "المشروبات" : "Les boissons",
+                ][i]
+              }
+            />
+            <figcaption dir="ltr">DIMA M / 0{i + 1}</figcaption>
+          </figure>
+        ))}
+      </section>
+
+      {/* 05 — Visit, with the opening hours printed as a till receipt */}
+      <section id="visiter" className="visit-section section-wrap">
+        <div className="visit-grid">
+          <div className="visit-copy">
+            <SectionLabel n="05">{t.visiterLabel}</SectionLabel>
+            <h2 className="editorial-heading">
+              <span className="heading-line">
+                <span>{ar ? "مرّوا" : "À DEUX PAS."}</span>
+              </span>
+              <span className="heading-line">
+                <span className="heading-accent">{ar ? "لزيارتنا." : "ON VOUS ATTEND."}</span>
+              </span>
+            </h2>
+            <p className="visit-address">
+              <MapPin size={20} aria-hidden="true" />
+              {t.addressLabel}
+            </p>
+            <div className="visit-actions">
+              <Button asChild className="btn-signal">
+                <a
+                  href={whatsappHref(t.whatsappOrderMsg)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <MessageCircle />
+                  {t.commanderWhatsapp}
+                  <ArrowUpRight />
+                </a>
+              </Button>
+              <Button asChild variant="outline" className="btn-quiet">
+                <a href={BUSINESS.phoneHref}>
+                  <Phone />
+                  <span dir="ltr">{BUSINESS.phoneDisplay}</span>
+                </a>
+              </Button>
+            </div>
+            <div className="receipt-slot">
+              <div className="receipt">
+                <div className="receipt-head">
+                  <img src={dimaMLogo} alt="" />
+                  <strong dir="ltr">DIMA M MARKET</strong>
+                  <span>{t.addressLabel}</span>
+                  <span dir="ltr">TEL {BUSINESS.phoneDisplay}</span>
+                </div>
+                <div className="receipt-rule" />
+                <div className="receipt-title">{t.horaires}</div>
+                {BUSINESS.hours.map(([day, h]) => (
+                  <div className="receipt-row" key={day}>
+                    <span>{ar ? DAY_LABEL_AR[day] : day}</span>
+                    <span className="receipt-dots" />
+                    <strong dir="ltr">{h}</strong>
+                  </div>
+                ))}
+                <div className="receipt-rule" />
+                <div className="receipt-row">
+                  <span>{TRUST_POINTS[2].d[lang]}</span>
+                  <span className="receipt-dots" />
+                  <strong>{TRUST_POINTS[2].t[lang]}</strong>
+                </div>
+                <div className="receipt-row receipt-total">
+                  <span>{ar ? "المجموع" : "TOTAL"}</span>
+                  <span className="receipt-dots" />
+                  <strong dir="ltr">7/7</strong>
+                </div>
+                <Barcode code="DIMAM-SALE" className="receipt-barcode" />
+                <span className="receipt-thanks">
+                  {ar ? "شكراً لزيارتكم" : "MERCI DE VOTRE VISITE"}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="visit-map">
+            <iframe title={t.mapLabel} src={BUSINESS.mapsEmbedSrc} loading="lazy" allowFullScreen />
+            <div className="visit-map-pin" aria-hidden="true">
+              <span dir="ltr">
+                {BUSINESS.mapLat.toFixed(4)}° N · {Math.abs(BUSINESS.mapLng).toFixed(4)}° W
+              </span>
+            </div>
+            <Button asChild className="map-directions btn-signal">
+              <a href={BUSINESS.mapsLink} target="_blank" rel="noopener noreferrer">
+                {t.itineraire}
+                <ArrowUpRight />
+              </a>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="payment-section section-wrap">
+        <div>
+          <SectionLabel n="06">{t.paiementLabel}</SectionLabel>
+          <h2>{t.paiementHeading}</h2>
+          <p>{t.paiementSubtitle}</p>
+        </div>
+        <ul className="payment-list">
+          {PAYMENT_METHODS.map((m) => (
+            <li key={m.name.fr}>
+              <span className="payment-symbol">{m.mark}</span>
+              <span>{m.name[lang]}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="reviews-section section-wrap">
+        <div className="section-heading-row">
+          <h2 className="editorial-heading">
+            <span className="heading-line">
+              <span>{ar ? "يعودون." : "ILS REVIENNENT."}</span>
+            </span>
+            <span className="heading-line">
+              <span className="heading-accent">{ar ? "دائماً." : "ET ÇA NOUS TOUCHE."}</span>
+            </span>
+          </h2>
+          <div className="review-rating">
+            <strong dir="ltr">
+              {BUSINESS.ratingValue}
+              <small>/5</small>
+            </strong>
+            <span>
+              {BUSINESS.reviewCountValue} {t.trustReviewsShort.replace("+ ", "")}
+            </span>
+          </div>
+        </div>
+        <div className="review-grid">
+          {AVIS.map((a, i) => (
+            <blockquote
+              key={a.n}
+              className="review-item"
+              style={{ ["--tilt" as string]: `${[-1.4, 1, -0.6, 1.5][i]}deg` }}
+            >
+              <span className="review-stars" aria-label="5/5">
+                {a.r}
+              </span>
+              <p>« {a.t[lang]} »</p>
+              <footer>{a.n}</footer>
+            </blockquote>
+          ))}
+        </div>
+      </section>
+
+      <section className="faq-section section-wrap">
+        <div>
+          <SectionLabel n="07">{t.faqLabel}</SectionLabel>
+          <h2 className="editorial-heading">
+            <span className="heading-line">
+              <span>{ar ? "لديكم" : "UNE QUESTION ?"}</span>
+            </span>
+            <span className="heading-line">
+              <span className="heading-accent">{ar ? "سؤال؟" : "TOUT SIMPLEMENT."}</span>
+            </span>
+          </h2>
+        </div>
+        <div className="faq-list">
+          {FAQ.map((f, i) => (
+            <details key={f.q.fr}>
+              <summary>
+                <span className="faq-n" dir="ltr">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                {f.q[lang]}
+                <Plus size={20} aria-hidden="true" />
+              </summary>
+              <p>{f.a[lang]}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <footer id="contact" className="market-footer section-wrap">
+        <div className="footer-invitation">
+          <h2>{ar ? "نراكم قريباً." : "À TRÈS VITE."}</h2>
+          <Button asChild className="footer-cta btn-signal">
+            <a href={whatsappHref(t.whatsappContactMsg)} target="_blank" rel="noopener noreferrer">
+              {t.whatsappShort}
+              <ArrowUpRight />
+            </a>
+          </Button>
+        </div>
+        <div className="footer-grid">
+          <div className="footer-brand">
+            <img src={dimaMLogo} alt="DIMA M Market" />
+            <p>{t.footerDesc}</p>
+            <span className="footer-tagline">{t.tagline}</span>
+          </div>
+          <div>
+            <h3>{t.explorer}</h3>
+            {[
+              ["#manifeste", t.navManifeste],
+              ["#rayons", t.navRayons],
+              ["#engagements", t.navEngagements],
+              ["#visiter", t.navVisiter],
+            ].map(([href, label]) => (
+              <a key={href} href={href}>
+                {label}
+              </a>
+            ))}
+          </div>
+          <div>
+            <h3>{t.horaires}</h3>
+            <span>{ar ? "كل يوم" : "Tous les jours"}</span>
+            <strong dir="ltr">09:00 — 22:00</strong>
+            <a href={BUSINESS.mapsLink} target="_blank" rel="noopener noreferrer">
+              {t.addressLabel}
+              <ArrowUpRight size={14} />
+            </a>
+          </div>
+          <div>
+            <h3>{t.contact}</h3>
+            <a href={BUSINESS.phoneHref} dir="ltr">
+              {BUSINESS.phoneDisplay}
+            </a>
+            <a href={`mailto:${BUSINESS.email}`} dir="ltr">
+              {BUSINESS.email}
+            </a>
+            <a href={whatsappHref(t.whatsappContactMsg)} target="_blank" rel="noopener noreferrer">
+              WhatsApp
+              <ArrowUpRight size={14} />
+            </a>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <span>{t.copyright(new Date().getFullYear())}</span>
+          <a
+            href="https://www.agencemeem.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="agency-credit"
+            dir="ltr"
+          >
+            <span>{ar ? "الموقع من إنجاز" : "Site créé par"}</span>
+            <img src={meemLogo} alt="Agence MEEM" loading="lazy" />
+            <ArrowUpRight size={14} />
+          </a>
+        </div>
+        <div className="footer-wordmark" dir="ltr" aria-hidden="true">
+          DIMA M<span>®</span>
+        </div>
+      </footer>
+    </div>
+  );
 }
