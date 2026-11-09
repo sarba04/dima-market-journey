@@ -1,661 +1,82 @@
 import { useEffect, useRef, useState } from "react";
-import { Phone, MessageCircle } from "lucide-react";
-import { ALL_IMAGES } from "@/lib/images";
+import { ArrowUp, ArrowUpRight, Menu, X, Phone, MessageCircle } from "lucide-react";
 import { BUSINESS, whatsappHref } from "@/lib/business";
-import { SCENE_COUNT, SCENE_NAMES } from "./DimaHero";
 import { useLanguage } from "@/lib/language";
-import dimaMLogo from "@/assets/dima-m-logo-transparent.png";
+import { Button } from "@/components/ui/button";
+import logo from "@/assets/dima-m-logo-transparent.png";
 
-const UI_TEXT = {
-  fr: {
-    ready: "Prêt",
-    preparing: "Préparation de la visite",
-    enter: "Entrer dans l'expérience",
-    navAria: "Navigation principale",
-    backToStartAria: "Retour au début",
-    openMenuAria: "Ouvrir le menu",
-    backToTopAria: "Revenir au début",
-    callAria: "Appeler DIMA M Market",
-    whatsappAria: "Contacter DIMA M Market sur WhatsApp",
-    whatsappMsg: "Bonjour, je vous contacte depuis le site DIMA M Market.",
-    langSwitchLabel: "العربية",
-    langSwitchAria: "Passer au site en arabe",
-  },
-  ar: {
-    ready: "جاهز",
-    preparing: "تحضير الجولة",
-    enter: "ادخل إلى التجربة",
-    navAria: "القائمة الرئيسية",
-    backToStartAria: "العودة إلى البداية",
-    openMenuAria: "فتح القائمة",
-    backToTopAria: "العودة إلى الأعلى",
-    callAria: "الاتصال بـ DIMA M Market",
-    whatsappAria: "التواصل مع DIMA M Market عبر واتساب",
-    whatsappMsg: "مرحباً، أتواصل معكم من موقع DIMA M Market.",
-    langSwitchLabel: "Français",
-    langSwitchAria: "Switch site to French",
-  },
-} as const;
-
-const NAV_ITEMS = [
-  { label: { fr: "Manifeste", ar: "فلسفتنا" }, href: "#manifeste" },
-  { label: { fr: "Rayons", ar: "أقسامنا" }, href: "#rayons" },
-  { label: { fr: "Engagements", ar: "التزاماتنا" }, href: "#engagements" },
-  { label: { fr: "Visiter", ar: "زيارة" }, href: "#visiter" },
+const NAV = [
+  { href: "#manifeste", fr: "L’esprit DIMA", ar: "روح ديما" },
+  { href: "#rayons", fr: "Nos rayons", ar: "أقسامنا" },
+  { href: "#engagements", fr: "Nos engagements", ar: "التزاماتنا" },
+  { href: "#visiter", fr: "Nous trouver", ar: "موقعنا" },
 ];
-
-/* ------------------------------------------------------------------ */
-/* Flags                                                               */
-/* ------------------------------------------------------------------ */
-function FlagFR({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 9 6" className={className} aria-hidden="true">
-      <rect width="3" height="6" fill="#0055A4" />
-      <rect x="3" width="3" height="6" fill="#FFFFFF" />
-      <rect x="6" width="3" height="6" fill="#EF4135" />
-    </svg>
-  );
-}
-
-function FlagMA({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 9 6" className={className} aria-hidden="true">
-      <rect width="9" height="6" fill="#C1272D" />
-      <path
-        d="M4.5 1.9l.44 1.35h1.42l-1.15.83.44 1.35-1.15-.83-1.15.83.44-1.35-1.15-.83h1.42z"
-        fill="none"
-        stroke="#006233"
-        strokeWidth="0.28"
-      />
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Language toggle — flag-based, unmistakable                          */
-/* ------------------------------------------------------------------ */
 export function LanguageToggle({ className = "" }: { className?: string }) {
   const { lang, toggleLang } = useLanguage();
-  const ui = UI_TEXT[lang];
-  const Flag = lang === "fr" ? FlagMA : FlagFR;
-  return (
-    <button
-      type="button"
-      onClick={toggleLang}
-      aria-label={ui.langSwitchAria}
-      data-cursor="hover"
-      className={`pointer-events-auto inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 font-mono-tight text-[11px] font-bold uppercase tracking-[0.2em] text-white transition-colors hover:border-[color:var(--dima)] hover:text-[color:var(--dima)] ${className}`}
-    >
-      <Flag className="h-3.5 w-5 rounded-[2px] shadow-[0_0_0_1px_rgba(255,255,255,0.25)]" />
-      {ui.langSwitchLabel}
-    </button>
-  );
+  return <Button variant="outline" onClick={toggleLang} aria-label={lang === "fr" ? "Passer au site en arabe" : "Passer au site en français"} className={`language-toggle ${className}`}><span aria-hidden="true">{lang === "fr" ? "🇲🇦" : "🇫🇷"}</span><span>{lang === "fr" ? "العربية" : "Français"}</span></Button>;
 }
-
-
-/* ------------------------------------------------------------------ */
-/* Intro Preloader — cinematic splash, no counter                      */
-/* ------------------------------------------------------------------ */
-export function IntroPreloader() {
-  const [loaded, setLoaded] = useState(0);
-  const [ready, setReady] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
-  const { lang } = useLanguage();
-  const ui = UI_TEXT[lang];
-
-  useEffect(() => {
-    let cancelled = false;
-    let count = 0;
-    const finish = () => {
-      if (cancelled) return;
-      setReady(true);
-      setLoaded(ALL_IMAGES.length);
-    };
-    // Hard cap so a slow image never traps the visitor on the splash.
-    const hardTimeout = setTimeout(finish, 2500);
-    ALL_IMAGES.forEach((src) => {
-      const im = new Image();
-      im.decoding = "async";
-      im.onload = im.onerror = () => {
-        if (cancelled) return;
-        count++;
-        setLoaded(count);
-        if (count >= ALL_IMAGES.length) {
-          clearTimeout(hardTimeout);
-          setTimeout(finish, 200);
-        }
-      };
-      im.src = src;
-    });
-    // Auto-dismiss shortly after ready — no click needed.
-    return () => {
-      cancelled = true;
-      clearTimeout(hardTimeout);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!ready) return;
-    const t = setTimeout(() => setDismissed(true), 600);
-    return () => clearTimeout(t);
-  }, [ready]);
-
-
-  useEffect(() => {
-    if (!dismissed) {
-      document.documentElement.style.overflow = "hidden";
-      document.body.style.overflow = "hidden";
-    } else {
-      document.documentElement.style.overflow = "";
-      document.body.style.overflow = "";
-    }
-  }, [dismissed]);
-
-  const pct = loaded / ALL_IMAGES.length;
-
-  return (
-    <div
-      aria-hidden={dismissed}
-      onClick={() => ready && setDismissed(true)}
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background transition-opacity duration-700 ${
-        dismissed ? "pointer-events-none opacity-0" : "opacity-100"
-      } ${ready ? "cursor-pointer" : ""}`}
-    >
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.08]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
-          maskImage: "radial-gradient(ellipse at center, black 20%, transparent 70%)",
-        }}
-      />
-
-      <LanguageToggle className="absolute right-6 top-6 sm:right-8 sm:top-8" />
-
-      <div className="relative flex flex-col items-center px-6">
-        <img src={dimaMLogo} alt="DIMA M Market" className="dima-logo-pulse h-20 w-20" />
-
-        <div className="mt-14 h-[2px] w-56 overflow-hidden bg-white/10 sm:w-72">
-          <div
-            className="h-full bg-[color:var(--dima)] transition-[width] duration-300 ease-out"
-            style={{ width: `${pct * 100}%` }}
-          />
-        </div>
-
-        <div className="mt-5 font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/40">
-          {ready ? ui.ready : ui.preparing}
-        </div>
-
-        <div
-          className={`mt-12 transition-all duration-500 ${
-            ready ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0"
-          }`}
-        >
-          <div className="group flex items-center gap-4 border border-white/20 px-6 py-3 hover:border-[color:var(--dima)] sm:px-8 sm:py-4">
-            <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-white/80 group-hover:text-[color:var(--dima)]">
-              {ui.enter}
-            </span>
-            <span className="h-px w-6 bg-white/40 group-hover:bg-[color:var(--dima)] sm:w-8" />
-            <span className="text-white/80 group-hover:text-[color:var(--dima)]">→</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Top scroll progress bar (page-wide)                                 */
-/* ------------------------------------------------------------------ */
-export function ScrollProgress() {
-  const barRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    let raf = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const h = document.documentElement;
-        const max = h.scrollHeight - h.clientHeight;
-        const p = max > 0 ? h.scrollTop / max : 0;
-        if (barRef.current) barRef.current.style.transform = `scaleX(${p})`;
-      });
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  return (
-    <div className="pointer-events-none fixed inset-x-0 top-0 z-[80] h-[2px] bg-white/5">
-      <div
-        ref={barRef}
-        className="h-full origin-left bg-[color:var(--dima)] scale-x-0"
-        style={{ transformOrigin: "0 50%" }}
-      />
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Floating Nav — appears after hero                                   */
-/* ------------------------------------------------------------------ */
 export function FloatingNav() {
   const [visible, setVisible] = useState(false);
   const [open, setOpen] = useState(false);
+  const [current, setCurrent] = useState("");
   const { lang } = useLanguage();
-  const ui = UI_TEXT[lang];
-
   useEffect(() => {
-    const onDone = () => setVisible(true);
-    const onScene = (e: Event) => {
-      const d = (e as CustomEvent).detail as { idx: number };
-      if (d.idx >= SCENE_COUNT - 1) setVisible(true);
+    const done = () => setVisible(true);
+    const enter = () => { setVisible(false); setOpen(false); };
+    const onScroll = () => {
+      const tour = document.querySelector(".tour");
+      if (tour) setVisible(tour.getBoundingClientRect().bottom <= 100);
     };
-    window.addEventListener("dima:heroDone", onDone);
-    window.addEventListener("dima:scene", onScene);
-    return () => {
-      window.removeEventListener("dima:heroDone", onDone);
-      window.removeEventListener("dima:scene", onScene);
-    };
+    const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) setCurrent(`#${e.target.id}`); }); }, { rootMargin: "-15% 0px -65% 0px" });
+    NAV.forEach(n => { const el = document.querySelector(n.href); if (el) io.observe(el); });
+    window.addEventListener("dima:heroDone", done);
+    window.addEventListener("dima:heroEnter", enter);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    const escape = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", escape);
+    onScroll();
+    return () => { io.disconnect(); window.removeEventListener("dima:heroDone", done); window.removeEventListener("dima:heroEnter", enter); window.removeEventListener("scroll", onScroll); window.removeEventListener("keydown", escape); };
   }, []);
-
-  return (
-    <>
-      <nav
-        aria-label={ui.navAria}
-        className={`fixed left-1/2 top-4 z-[90] w-[calc(100%-1.5rem)] max-w-[min(96vw,760px)] -translate-x-1/2 transition-all duration-500 sm:top-6 ${
-          visible ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-4"
-        }`}
-      >
-        <div className="glass-strong flex items-center justify-between gap-1 rounded-full px-2 py-2">
-          <a
-            href="#top"
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full text-[color:var(--dima)] hover:bg-white/10"
-            aria-label={ui.backToStartAria}
-          >
-            <img src={dimaMLogo} alt="DIMA M Market" className="h-8 w-8 object-contain" />
-          </a>
-          <div className="mx-1 hidden h-5 w-px bg-white/20 sm:block" />
-          <div className="hidden min-w-0 items-center gap-0.5 sm:flex">
-            {NAV_ITEMS.map((it) => (
-              <a
-                key={it.href}
-                href={it.href}
-                className="shrink-0 rounded-full px-3 py-2 font-mono-tight text-[12px] font-bold uppercase tracking-[0.18em] text-white transition-colors hover:bg-white/10 hover:text-[color:var(--dima)] sm:px-4"
-              >
-                {it.label[lang]}
-              </a>
-            ))}
-          </div>
-          <div className="hidden items-center gap-0.5 sm:flex">
-            <LanguageToggle />
-          </div>
-
-          <div className="flex items-center gap-1 sm:hidden">
-            <LanguageToggle className="!px-2 !py-1 text-[10px]" />
-            <button
-              type="button"
-              onClick={() => setOpen((o) => !o)}
-              aria-expanded={open}
-              aria-label={ui.openMenuAria}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white"
-            >
-              <span className="relative block h-3 w-4">
-                <span className={`absolute left-0 top-0 h-[2px] w-4 bg-current transition-transform duration-300 ${open ? "translate-y-[6px] rotate-45" : ""}`} />
-                <span className={`absolute left-0 top-1/2 h-[2px] w-4 -translate-y-1/2 bg-current transition-opacity duration-200 ${open ? "opacity-0" : "opacity-100"}`} />
-                <span className={`absolute bottom-0 left-0 h-[2px] w-4 bg-current transition-transform duration-300 ${open ? "-translate-y-[6px] -rotate-45" : ""}`} />
-              </span>
-            </button>
-          </div>
-        </div>
-        <div
-          className={`glass-strong mt-2 overflow-hidden rounded-2xl sm:hidden ${
-            open ? "max-h-96 opacity-100" : "pointer-events-none max-h-0 opacity-0"
-          } transition-all duration-300`}
-        >
-          <div className="flex flex-col p-2">
-            {NAV_ITEMS.map((it) => (
-              <a
-                key={it.href}
-                href={it.href}
-                onClick={() => setOpen(false)}
-                className="rounded-xl px-4 py-3 font-mono-tight text-[13px] font-bold uppercase tracking-[0.22em] text-white hover:bg-white/10 hover:text-[color:var(--dima)]"
-              >
-                {it.label[lang]}
-              </a>
-            ))}
-
-            <div className="mt-1 border-t border-white/10 px-4 py-3">
-              <LanguageToggle />
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <button
-        type="button"
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        aria-label={ui.backToTopAria}
-        className={`fixed bottom-5 right-5 z-[90] flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-background/70 backdrop-blur-md transition-all duration-500 hover:border-[color:var(--dima)] hover:text-[color:var(--dima)] sm:bottom-6 sm:right-6 sm:h-12 sm:w-12 ${
-          visible ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
-      >
-        <span className="text-lg leading-none">↑</span>
-      </button>
-    </>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Scene HUD                                                           */
-/* ------------------------------------------------------------------ */
-export function SceneHUD() {
-  const { lang } = useLanguage();
-  const [scene, setScene] = useState<{ idx: number; name: string }>({
-    idx: 0,
-    name: SCENE_NAMES[lang][0],
-  });
-  const [inHero, setInHero] = useState(true);
-
-  useEffect(() => {
-    setScene((s) => (s.idx === 0 ? { idx: 0, name: SCENE_NAMES[lang][0] } : s));
-  }, [lang]);
-
-  useEffect(() => {
-    const onScene = (e: Event) => {
-      const d = (e as CustomEvent).detail as { idx: number; name: string };
-      setScene({ idx: d.idx, name: d.name });
-    };
-    const onDone = () => setInHero(false);
-    const onEnter = () => setInHero(true);
-    window.addEventListener("dima:scene", onScene);
-    window.addEventListener("dima:heroDone", onDone);
-    window.addEventListener("dima:heroEnter", onEnter);
-    return () => {
-      window.removeEventListener("dima:scene", onScene);
-      window.removeEventListener("dima:heroDone", onDone);
-      window.removeEventListener("dima:heroEnter", onEnter);
-    };
-  }, []);
-
-  return (
-    <div
-      className={`pointer-events-none fixed bottom-20 left-4 z-[85] max-w-[calc(100%-2rem)] transition-all duration-500 sm:bottom-24 sm:left-6 md:bottom-28 md:left-10 ${
-        inHero ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-      }`}
-    >
-      <div className="glass flex items-center gap-3 rounded-full px-3 py-2 sm:px-4">
-        <div className="flex gap-[3px]">
-          {Array.from({ length: SCENE_COUNT }).map((_, i) => (
-            <span
-              key={i}
-              className="h-[3px] w-1.5 rounded-full transition-colors duration-300 sm:w-2"
-              style={{
-                backgroundColor:
-                  i <= scene.idx ? "var(--dima)" : "rgba(255,255,255,0.15)",
-              }}
-            />
-          ))}
-        </div>
-        <span className="truncate font-mono-tight text-[9px] uppercase tracking-[0.3em] text-white/80 sm:text-[10px]">
-          {scene.name}
-        </span>
+  return <>
+    <nav className={`market-nav ${visible ? "nav-visible" : ""}`} aria-label={lang === "fr" ? "Navigation principale" : "القائمة الرئيسية"} inert={!visible}>
+      <div className="market-nav-inner">
+        <a href="#top" className="nav-brand" aria-label={lang === "fr" ? "Retour au début" : "العودة إلى البداية"}><img src={logo} alt="DIMA M Market" /><span dir="ltr">DIMA M<span>MARKET</span></span></a>
+        <div className="nav-desktop">{NAV.map(n => <Button asChild variant="ghost" key={n.href} className={`nav-link ${current === n.href ? "nav-link-active" : ""}`}><a href={n.href}>{n[lang]}</a></Button>)}</div>
+        <div className="flex items-center gap-2"><LanguageToggle /><Button asChild className="nav-directions"><a href={BUSINESS.mapsLink} target="_blank" rel="noopener noreferrer">{lang === "fr" ? "Itinéraire" : "الاتجاهات"}<ArrowUpRight /></a></Button><Button variant="ghost" size="icon" className="nav-menu" aria-label={lang === "fr" ? "Ouvrir le menu" : "فتح القائمة"} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</Button></div>
       </div>
-    </div>
-  );
+      {open && <div className="nav-mobile" id="mobile-navigation">{NAV.map((n,i) => <a href={n.href} key={n.href} onClick={() => setOpen(false)}><span className="nav-mobile-index">0{i+1}</span>{n[lang]}<ArrowUpRight /></a>)}</div>}
+    </nav>
+    {visible && <Button variant="outline" size="icon" className="back-top" aria-label={lang === "fr" ? "Revenir au début" : "العودة إلى الأعلى"} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}><ArrowUp /></Button>}
+  </>;
 }
-
-/* ------------------------------------------------------------------ */
-/* Custom Magnetic Cursor (desktop only)                               */
-/* ------------------------------------------------------------------ */
-export function CustomCursor() {
-  const dotRef = useRef<HTMLDivElement | null>(null);
-  const ringRef = useRef<HTMLDivElement | null>(null);
-
+function SceneTick() {
+  const audio = useRef<AudioContext | null>(null);
   useEffect(() => {
-    const isTouch =
-      window.matchMedia("(pointer: coarse)").matches ||
-      window.matchMedia("(hover: none)").matches ||
-      window.innerWidth < 900 ||
-      "ontouchstart" in window;
-    if (isTouch) return;
-
-    let mx = window.innerWidth / 2;
-    let my = window.innerHeight / 2;
-    let rx = mx;
-    let ry = my;
-    let dx = mx;
-    let dy = my;
-    let hovering = false;
-
-    const onMove = (e: MouseEvent) => {
-      mx = e.clientX;
-      my = e.clientY;
-      const target = e.target as HTMLElement | null;
-      const interactive = !!target?.closest(
-        "a,button,[role=button],input,textarea,select,summary,[data-cursor='hover']"
-      );
-      hovering = interactive;
-      if (ringRef.current) ringRef.current.dataset.hover = interactive ? "1" : "0";
-    };
-    document.addEventListener("mousemove", onMove);
-
-    let raf = 0;
+    const warm = () => { try { audio.current ??= new AudioContext(); void audio.current.resume().catch(() => {}); } catch {} };
     const tick = () => {
-      dx += (mx - dx) * 0.35;
-      dy += (my - dy) * 0.35;
-      rx += (mx - rx) * 0.14;
-      ry += (my - ry) * 0.14;
-      if (dotRef.current)
-        dotRef.current.style.transform = `translate3d(${dx}px, ${dy}px, 0) translate(-50%, -50%)`;
-      if (ringRef.current) {
-        const s = hovering ? 1.9 : 1;
-        ringRef.current.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%) scale(${s})`;
-      }
-      raf = requestAnimationFrame(tick);
+      const ctx = audio.current;
+      if (!ctx || ctx.state !== "running" || document.hidden) return;
+      const o = ctx.createOscillator(), g = ctx.createGain(), now = ctx.currentTime;
+      o.frequency.setValueAtTime(1200, now); o.frequency.exponentialRampToValueAtTime(700, now + 0.06);
+      g.gain.setValueAtTime(0.012, now); g.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
+      o.connect(g).connect(ctx.destination); o.start(now); o.stop(now + 0.08);
     };
-    raf = requestAnimationFrame(tick);
-
-    document.documentElement.style.cursor = "none";
-    return () => {
-      cancelAnimationFrame(raf);
-      document.removeEventListener("mousemove", onMove);
-      document.documentElement.style.cursor = "";
-    };
-  }, []);
-
-  return (
-    <>
-      <div
-        ref={dotRef}
-        className="pointer-events-none fixed left-0 top-0 z-[120] h-1.5 w-1.5 rounded-full bg-[color:var(--dima)]"
-        style={{ mixBlendMode: "difference" }}
-      />
-      <div
-        ref={ringRef}
-        data-hover="0"
-        className="pointer-events-none fixed left-0 top-0 z-[119] h-9 w-9 rounded-full border border-white/60 transition-[border-color,background-color,width,height] duration-200 data-[hover='1']:border-[color:var(--dima)] data-[hover='1']:bg-[color:var(--dima)]/10"
-        style={{ mixBlendMode: "difference" }}
-      />
-    </>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Quick Contact — persistent call/WhatsApp escape hatch, visible from */
-/* the very start so an impatient visitor is never trapped in the      */
-/* cinematic scroll without a way to act.                              */
-/* ------------------------------------------------------------------ */
-export function QuickContact() {
-  const [show, setShow] = useState(false);
-  const { lang } = useLanguage();
-  const ui = UI_TEXT[lang];
-
-  useEffect(() => {
-    const t = setTimeout(() => setShow(true), 1400);
-    return () => clearTimeout(t);
-  }, []);
-
-  return (
-    <div
-      className={`fixed bottom-5 left-5 z-[90] flex gap-2 transition-all duration-700 sm:bottom-6 sm:left-6 ${
-        show ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-3"
-      }`}
-    >
-      <a
-        href={BUSINESS.phoneHref}
-        aria-label={ui.callAria}
-        data-cursor="hover"
-        className="glass flex h-11 w-11 items-center justify-center rounded-full text-white/80 transition-colors hover:text-[color:var(--dima)] sm:h-12 sm:w-12"
-      >
-        <Phone className="h-4 w-4" strokeWidth={1.75} />
-      </a>
-      <a
-        href={whatsappHref(ui.whatsappMsg)}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={ui.whatsappAria}
-        data-cursor="hover"
-        className="glass flex h-11 w-11 items-center justify-center rounded-full text-white/80 transition-colors hover:text-[color:var(--dima)] sm:h-12 sm:w-12"
-      >
-        <MessageCircle className="h-4 w-4" strokeWidth={1.75} />
-      </a>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Auto Scene Tick — silent WebAudio, no UI, tiny click on each scene  */
-/* ------------------------------------------------------------------ */
-export function SceneTick() {
-  const ctxRef = useRef<AudioContext | null>(null);
-
-  useEffect(() => {
-    const ensure = () => {
-      if (ctxRef.current) return ctxRef.current;
-      const AC =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext })
-          .webkitAudioContext;
-      if (!AC) return null;
-      try {
-        ctxRef.current = new AC();
-      } catch {
-        return null;
-      }
-      return ctxRef.current;
-    };
-
-    // Warm-up on first user gesture (required by browser autoplay policy).
-    // Scroll/wheel/touch all count — the hero is scroll-driven, so this fires immediately.
-    const warm = () => {
-      const ctx = ensure();
-      if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
-    };
-    const warmOpts = { once: true, passive: true } as AddEventListenerOptions;
-    window.addEventListener("pointerdown", warm, warmOpts);
-    window.addEventListener("touchstart", warm, warmOpts);
-    window.addEventListener("wheel", warm, warmOpts);
-    window.addEventListener("scroll", warm, warmOpts);
-    window.addEventListener("keydown", warm, { once: true });
-
-    const onScene = () => {
-      // Lazily ensure + resume in case gesture happened before mount
-      const ctx = ensure();
-      if (!ctx) return;
-      if (ctx.state === "suspended") ctx.resume().catch(() => {});
-      if (ctx.state !== "running") return;
-      const t = ctx.currentTime;
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.type = "sine";
-      o.frequency.setValueAtTime(1480, t);
-      o.frequency.exponentialRampToValueAtTime(880, t + 0.12);
-      g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(0.018, t + 0.006);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
-      o.connect(g).connect(ctx.destination);
-      o.start(t);
-      o.stop(t + 0.16);
-    };
-
-    const onVis = () => {
-      const ctx = ctxRef.current;
-      if (!ctx) return;
-      if (document.hidden) ctx.suspend().catch(() => {});
-      else ctx.resume().catch(() => {});
-    };
-
-    window.addEventListener("dima:scene", onScene);
-    document.addEventListener("visibilitychange", onVis);
-    return () => {
-      window.removeEventListener("dima:scene", onScene);
-      document.removeEventListener("visibilitychange", onVis);
-      window.removeEventListener("pointerdown", warm);
-      window.removeEventListener("touchstart", warm);
-      window.removeEventListener("wheel", warm);
-      window.removeEventListener("scroll", warm);
-      window.removeEventListener("keydown", warm);
-    };
-  }, []);
-
-  return null;
-}
-
-/* ------------------------------------------------------------------ */
-/* Scroll Reveal observer — adds .is-visible to any .reveal element    */
-/* ------------------------------------------------------------------ */
-export function ScrollReveal() {
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            e.target.classList.add("is-visible");
-            io.unobserve(e.target);
-          }
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
-    );
-    const scan = () => {
-      document.querySelectorAll<HTMLElement>(".reveal:not(.is-visible)").forEach((el) => io.observe(el));
-    };
-    scan();
-    const mo = new MutationObserver(scan);
-    mo.observe(document.body, { childList: true, subtree: true });
-    return () => {
-      io.disconnect();
-      mo.disconnect();
-    };
+    window.addEventListener("pointerdown", warm, { once: true }); window.addEventListener("keydown", warm, { once: true }); window.addEventListener("wheel", warm, { once: true, passive: true });
+    window.addEventListener("dima:scene", tick);
+    return () => { window.removeEventListener("pointerdown", warm); window.removeEventListener("keydown", warm); window.removeEventListener("wheel", warm); window.removeEventListener("dima:scene", tick); void audio.current?.close().catch(() => {}); audio.current = null; };
   }, []);
   return null;
 }
-
-/* ------------------------------------------------------------------ */
-/* Composite                                                           */
-/* ------------------------------------------------------------------ */
+function ScrollReveal() {
+  useEffect(() => {
+    const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("is-visible"); io.unobserve(e.target); } }); }, { threshold: 0.08 });
+    const scan = () => document.querySelectorAll(".reveal:not(.is-visible)").forEach(el => io.observe(el));
+    scan(); const mo = new MutationObserver(scan); mo.observe(document.body, { childList: true, subtree: true });
+    return () => { io.disconnect(); mo.disconnect(); };
+  }, []);
+  return null;
+}
 export function ExperienceLayer() {
-  return (
-    <>
-      <div className="grain-body" aria-hidden />
-      
-      <ScrollProgress />
-      <SceneTick />
-      <ScrollReveal />
-      <FloatingNav />
-      <SceneHUD />
-      <QuickContact />
-      <CustomCursor />
-    </>
-  );
+  const { lang } = useLanguage();
+  return <><FloatingNav /><SceneTick /><ScrollReveal /><div className="quick-contact"><Button asChild variant="outline" size="icon"><a href={BUSINESS.phoneHref} aria-label={lang === "fr" ? "Appeler le magasin" : "اتصل بالمتجر"}><Phone /></a></Button><Button asChild variant="outline" size="icon"><a href={whatsappHref(lang === "fr" ? "Bonjour, je vous contacte depuis le site DIMA M Market." : "مرحباً، أتواصل معكم من موقع DIMA M Market.")} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><MessageCircle /></a></Button></div></>;
 }
