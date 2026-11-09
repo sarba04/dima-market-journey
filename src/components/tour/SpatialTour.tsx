@@ -51,7 +51,7 @@ function PhotoSpace({ index, progress }: { index: number; progress: MutableRefOb
     // Peripheral curvature gives actual perspective/parallax during camera travel.
     uniforms.uDepth.value = index < 2 ? 1.2 : 3.4 + Math.abs(sample.yaw)*2;
   });
-  return <mesh ref={mesh} position={[stop.x,0,stop.z-12]} renderOrder={index}>
+  return <mesh ref={mesh} position={[stop.x,0,stop.z-12]} renderOrder={-index}>
     <planeGeometry args={[width,height,48,12]} />
     <shaderMaterial vertexShader={vertex} fragmentShader={fragment} uniforms={uniforms} transparent depthWrite={false} side={THREE.DoubleSide} />
   </mesh>;
