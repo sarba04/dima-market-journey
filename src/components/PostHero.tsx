@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
-import { Nfc, Banknote, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, Phone, MessageCircle, MapPin, Plus, Nfc, Banknote, ShieldCheck } from "lucide-react";
 import { IMG } from "@/lib/images";
 import { BUSINESS, whatsappHref } from "@/lib/business";
-import { CountUp } from "./CountUp";
-import { ParallaxImage } from "./ParallaxImage";
-import { CinematicGallery } from "./CinematicGallery";
-import { useTilt } from "@/hooks/use-tilt";
+import { Button } from "@/components/ui/button";
+
+
+
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useLanguage } from "@/lib/language";
 import dimaMLogo from "@/assets/dima-m-logo-transparent.png";
@@ -362,601 +362,58 @@ const TEXT = {
   },
 } as const;
 
-function RayonCard({ r, i }: { r: (typeof RAYONS)[number]; i: number }) {
-  const tiltRef = useTilt<HTMLElement>(5);
+function SectionLabel({ n, children }: { n: string; children: React.ReactNode }) {
+  return <div className="section-label"><span dir="ltr">{n} /</span>{children}</div>;
+}
+function MovingBand() {
   const { lang } = useLanguage();
-  const otherLang = lang === "fr" ? "ar" : "fr";
-  return (
-    <article
-      ref={tiltRef}
-      className={`reveal reveal-delay-${(i % 4) + 1} tilt-card group relative overflow-hidden rounded-2xl border border-black/5 bg-black hover:border-[color:var(--dima)]/40`}
-    >
-      <div className="parallax-frame relative aspect-[16/11] overflow-hidden">
-        <ParallaxImage src={r.img} alt={r.name[lang]} className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/5" />
-        <div className="absolute right-4 top-3 font-mono-tight text-[10px] tracking-[0.3em] text-white/50">
-          {String(i + 1).padStart(2, "0")}
-        </div>
-        <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
-          <div className="font-mono-tight text-[9px] uppercase tracking-[0.35em] text-[color:var(--dima)]">
-            {r.name[otherLang]}
-          </div>
-          <h3 className="mt-1 font-display text-xl leading-tight tracking-[-0.02em] text-white sm:text-2xl">
-            {r.name[lang]}
-          </h3>
-          <p className="mt-1.5 line-clamp-2 text-[12px] leading-snug text-white/70 sm:text-[13px]">
-            {r.desc[lang]}
-          </p>
-        </div>
-      </div>
-    </article>
-  );
+  return <div className="moving-band" aria-hidden="true"><div className="moving-band-track" dir="ltr">{[0,1,2,3].map(i => <span key={i}>DIMA M MARKET <span className="band-star">✳</span> {lang === "fr" ? "LE QUOTIDIEN, AUTREMENT." : "يومكم، بروح مختلفة."} <span className="band-star">✳</span> </span>)}</div></div>;
 }
-
-
-// Scrolling word-band whose pace surges with scroll velocity and eases back
-// to a steady drift — a small living detail rather than a static loop.
-function MarqueeRow() {
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const reducedMotion = useReducedMotion();
-
-  useEffect(() => {
-    if (reducedMotion || typeof window === "undefined") return;
-    let ctx: { revert: () => void } | null = null;
-    let raf = 0;
-
-    (async () => {
-      const gsapMod = await import("gsap");
-      const gsap = gsapMod.default ?? gsapMod;
-      const track = trackRef.current;
-      if (!track) return;
-
-      ctx = gsap.context(() => {
-        const tween = gsap.to(track, { xPercent: -50, duration: 34, ease: "none", repeat: -1 });
-
-        let lastY = window.scrollY;
-        let lastT = performance.now();
-
-        const tick = () => {
-          const now = performance.now();
-          const dt = Math.max(16, now - lastT);
-          const velocity = Math.abs(window.scrollY - lastY) / dt;
-          lastY = window.scrollY;
-          lastT = now;
-
-          const target = 1 + Math.min(5, velocity * 40);
-          const current = tween.timeScale();
-          tween.timeScale(current + (target - current) * 0.08);
-          raf = requestAnimationFrame(tick);
-        };
-        raf = requestAnimationFrame(tick);
-      });
-    })();
-
-    return () => {
-      cancelAnimationFrame(raf);
-      ctx?.revert();
-    };
-  }, [reducedMotion]);
-
-  return (
-    <div
-      ref={trackRef}
-      className="flex w-max items-center gap-16 whitespace-nowrap font-display text-[clamp(3rem,10vw,10rem)] leading-none tracking-[-0.04em] text-black/[0.06]"
-      dir="ltr"
-    >
-      {Array.from({ length: 2 }).map((_, i) => (
-        <div key={i} className="flex items-center gap-16">
-          <span>DIMA M Market</span>
-          <Dot />
-          <span className="dima-glow-text">Alimentation</span>
-          <Dot />
-          <span>Bricolage</span>
-          <Dot />
-          <span className="dima-glow-text">Hygiène</span>
-          <Dot />
-          <span>Boulangerie</span>
-          <Dot />
-          <span className="dima-glow-text">دائماً</span>
-          <Dot />
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export function PostHero() {
   const { lang } = useLanguage();
   const t = TEXT[lang];
-
-  return (
-    <div className="relative bg-white text-neutral-900">
-      {/* Trust bar — surfaces real proof points immediately, right where the
-          cinematic hero hands off, instead of burying them at page bottom. */}
-      <section className="relative border-t border-black/5 px-6 py-10 md:px-16">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 sm:grid-cols-4 sm:gap-4">
-          <div className="reveal text-center sm:text-left">
-            <div className="font-display text-2xl tracking-[-0.02em] text-[color:var(--dima)] sm:text-3xl">
-              <CountUp to={BUSINESS.ratingValue} decimals={1} />/5
-            </div>
-            <div className="mt-1 font-mono-tight text-[9px] uppercase tracking-[0.25em] text-neutral-500 sm:text-[10px]">
-              <CountUp to={BUSINESS.reviewCountValue} suffix={t.trustReviews} />
-            </div>
-          </div>
-          {TRUST_POINTS.map((p, i) => (
-            <div key={p.d.fr} className={`reveal reveal-delay-${((i + 1) % 4) + 1} text-center sm:text-left`}>
-              <div className="font-display text-2xl tracking-[-0.02em] text-[color:var(--dima)] sm:text-3xl">
-                {p.t[lang]}
-              </div>
-              <div className="mt-1 font-mono-tight text-[9px] uppercase tracking-[0.25em] text-neutral-500 sm:text-[10px]">
-                {p.d[lang]}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Manifesto */}
-      <section id="manifeste" className="relative border-t border-black/5 px-6 py-32 md:px-16 md:py-48">
-        <div className="mx-auto max-w-6xl">
-          <div className="reveal mb-10 flex items-center gap-3">
-            <span className="h-px w-10 bg-[color:var(--dima)]" />
-            <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-neutral-500">
-              {t.manifesteLabel}
-            </span>
-          </div>
-          <h2 className="reveal reveal-delay-1 font-display text-[clamp(2.5rem,7vw,7rem)] leading-[0.95] tracking-[-0.03em] text-neutral-900">
-            {t.manifestoPre}
-            <em className="not-italic dima-glow-text">{t.manifestoEm}</em>
-            {t.manifestoPost}
-          </h2>
-          <div className="mt-16 grid gap-12 md:grid-cols-2">
-            <p className="reveal reveal-delay-2 text-lg leading-relaxed text-neutral-600 md:text-xl">
-              {t.manifestoP1}
-            </p>
-            <p className="reveal reveal-delay-3 text-lg leading-relaxed text-neutral-600 md:text-xl">
-              {t.manifestoP2}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Numbers */}
-      <section className="relative overflow-hidden border-y border-black/5 py-16">
-        <MarqueeRow />
-      </section>
-
-      {/* Rayons */}
-      <section id="rayons" className="relative flex min-h-[100svh] flex-col justify-center px-5 py-14 md:px-16 md:py-20">
-        <div className="mx-auto w-full max-w-7xl">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-4 md:mb-8">
-            <div>
-              <div className="reveal mb-2 flex items-center gap-3">
-                <span className="h-px w-10 bg-[color:var(--dima)]" />
-                <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-neutral-500">
-                  {t.rayonsLabel}
-                </span>
-              </div>
-              <h2 className="reveal reveal-cinematic font-display text-[clamp(2rem,4.2vw,3.6rem)] leading-[0.95] tracking-[-0.03em] text-neutral-900">
-                {t.rayonsHeading}
-              </h2>
-            </div>
-            <p className="reveal reveal-delay-2 max-w-md text-sm text-neutral-600">{t.rayonsSubtitle}</p>
-          </div>
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-            {RAYONS.map((r, i) => (
-              <RayonCard key={r.name.fr} r={r} i={i} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* Engagements */}
-      <section id="engagements" className="relative border-y border-black/5 bg-black/[0.015] px-6 py-32 md:px-16 md:py-48">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-16">
-            <div className="reveal mb-4 flex items-center gap-3">
-              <span className="h-px w-10 bg-[color:var(--dima)]" />
-              <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-neutral-500">
-                {t.engagementsLabel}
-              </span>
-            </div>
-            <h2 className="reveal reveal-cinematic font-display text-[clamp(2.5rem,6vw,6rem)] leading-[0.95] tracking-[-0.03em] text-neutral-900">
-              {t.engagementsHeadingLine1} <br />
-              <em className="not-italic text-neutral-400">{t.engagementsHeadingEm}</em>
-            </h2>
-          </div>
-          <div className="grid gap-px overflow-hidden rounded-2xl bg-black/10 md:grid-cols-2 lg:grid-cols-4">
-            {ENGAGEMENTS.map((e, i) => (
-              <div key={e.n} className={`reveal reveal-delay-${(i % 4) + 1} group bg-white p-8 transition-colors hover:bg-black/[0.03]`}>
-                <div className="mb-8 flex items-center justify-between">
-                  <span className="font-mono-tight text-xs tracking-[0.3em] text-[color:var(--dima)]">
-                    {e.n}
-                  </span>
-                  <span className="h-2 w-2 rounded-full bg-[color:var(--dima)] shadow-[0_0_18px_var(--dima)] transition-transform duration-500 group-hover:scale-150" />
-                </div>
-                <h3 className="font-display text-2xl leading-tight tracking-[-0.02em] text-neutral-900">{e.t[lang]}</h3>
-                <p className="mt-4 text-sm leading-relaxed text-neutral-600">{e.d[lang]}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Le fondateur */}
-      <section id="fondateur" className="relative border-t border-black/5 px-6 pb-10 pt-24 md:px-16 md:pb-12 md:pt-32">
-        <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-[0.85fr_1.15fr] md:items-center">
-          <div className="reveal">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl">
-              <img
-                src={IMG.staffEpicerie}
-                alt={`${t.fondateurName}, ${t.fondateurTitle}`}
-                className="h-full w-full object-cover"
-              />
-            </div>
-          </div>
-          <div className="reveal reveal-delay-2">
-            <div className="mb-4 flex items-center gap-3">
-              <span className="h-px w-10 bg-[color:var(--dima)]" />
-              <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-neutral-500">
-                {t.fondateurLabel}
-              </span>
-            </div>
-            <blockquote className="whitespace-pre-line font-display text-2xl leading-snug tracking-[-0.01em] text-neutral-900 md:text-3xl">
-              {t.fondateurQuote}
-            </blockquote>
-            <div className="mt-8">
-              <div className="font-display text-xl text-neutral-900">{t.fondateurName}</div>
-              <div className="mt-1 font-mono-tight text-[10px] uppercase tracking-[0.3em] text-[color:var(--dima)]">
-                {t.fondateurTitle}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <CinematicGallery />
-
-      {/* Horaires + Localisation */}
-      <section id="visiter" className="relative border-t border-black/5 px-6 py-32 md:px-16 md:py-48">
-        <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-2">
-          <div>
-            <div className="reveal mb-4 flex items-center gap-3">
-              <span className="h-px w-10 bg-[color:var(--dima)]" />
-              <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-neutral-500">
-                {t.visiterLabel}
-              </span>
-            </div>
-            <h2 className="reveal reveal-cinematic font-display text-[clamp(2.5rem,6vw,5rem)] leading-[0.95] tracking-[-0.03em] text-neutral-900">
-              {t.visiterHeading}
-            </h2>
-            <div className="mt-12 space-y-4 border-t border-black/10">
-              {BUSINESS.hours.map(([d, h]) => (
-                <div
-                  key={d}
-                  className="flex items-baseline justify-between border-b border-black/10 pb-4 pt-2"
-                >
-                  <span className="font-mono-tight text-xs uppercase tracking-[0.3em] text-neutral-500">
-                    {lang === "ar" ? DAY_LABEL_AR[d] ?? d : d}
-                  </span>
-                  <span className="font-display text-2xl text-neutral-900">{h}</span>
-                </div>
-              ))}
-            </div>
-            <div className="mt-12 grid gap-4 sm:grid-cols-2">
-              <a
-                href={BUSINESS.phoneHref}
-                className="group relative flex items-center justify-between rounded-xl border border-black/10 bg-black/[0.02] px-5 py-4 transition-colors hover:border-[color:var(--dima)]/60"
-              >
-                <span>
-                  <div className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-neutral-500">
-                    {t.telephone}
-                  </div>
-                  <div className="mt-1 font-display text-xl text-neutral-900" dir="ltr">{BUSINESS.phoneDisplay}</div>
-                </span>
-                <Arrow />
-              </a>
-              <a
-                href={whatsappHref(t.whatsappOrderMsg)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative flex items-center justify-between rounded-xl border border-[color:var(--dima)]/40 bg-[color:var(--dima)]/10 px-5 py-4 transition-colors hover:bg-[color:var(--dima)]/20"
-              >
-                <span>
-                  <div className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-[color:var(--dima)]">
-                    {t.livraison}
-                  </div>
-                  <div className="mt-1 font-display text-xl text-neutral-900">{t.commanderWhatsapp}</div>
-                </span>
-                <Arrow />
-              </a>
-            </div>
-          </div>
-          <div className="group relative overflow-hidden rounded-3xl border border-black/10">
-            <iframe
-              title={t.mapLabel}
-              src={BUSINESS.mapsEmbedSrc}
-              className="h-full min-h-[420px] w-full grayscale-[0.6] contrast-[1.1]"
-              loading="lazy"
-            />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent" />
-            <div className="pointer-events-none absolute left-6 top-6 rounded-xl glass px-4 py-3">
-              <div className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/60">
-                {t.mapLabel}
-              </div>
-              <div className="font-display text-lg text-white">{t.addressLabel}</div>
-            </div>
-            <a
-              href={BUSINESS.mapsLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group/btn absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-full bg-[color:var(--dima)] px-5 py-3 font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white shadow-lg transition-transform hover:scale-105"
-            >
-              {t.itineraire}
-              <Arrow />
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Moyens de paiement */}
-      <section className="relative border-t border-black/5 bg-black/[0.015] px-6 py-32 md:px-16 md:py-48">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-16 max-w-2xl">
-            <div className="reveal mb-4 flex items-center gap-3">
-              <span className="h-px w-10 bg-[color:var(--dima)]" />
-              <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-neutral-500">
-                {t.paiementLabel}
-              </span>
-            </div>
-            <h2 className="reveal reveal-cinematic font-display text-[clamp(2.25rem,5vw,4rem)] leading-[0.95] tracking-[-0.03em] text-neutral-900">
-              {t.paiementHeading}
-            </h2>
-            <p className="reveal reveal-delay-2 mt-6 text-lg leading-relaxed text-neutral-600">
-              {t.paiementSubtitle}
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
-            {PAYMENT_METHODS.map((m, i) => (
-              <div
-                key={m.name.fr}
-                className={`reveal reveal-delay-${(i % 4) + 1} card-lift flex flex-col items-center gap-4 rounded-2xl border border-black/10 bg-white px-4 py-6 text-center`}
-              >
-                <div className="flex h-10 items-center justify-center">{m.mark}</div>
-                <div>
-                  <div className="font-display text-base text-neutral-900">{m.name[lang]}</div>
-                  <div className="mt-1 font-mono-tight text-[9px] uppercase tracking-[0.25em] text-neutral-400">
-                    {m.desc[lang]}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="reveal reveal-delay-3 mt-12 flex flex-wrap items-center gap-3 border-t border-black/10 pt-8 text-neutral-500">
-            <ShieldCheck className="h-5 w-5 shrink-0 text-[color:var(--dima)]" strokeWidth={1.75} />
-            <p className="font-mono-tight text-[11px] uppercase tracking-[0.2em]">{t.paiementTrust}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Avis */}
-      <section className="relative border-y border-black/5 bg-black/[0.015] px-6 py-32 md:px-16 md:py-48">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-16 flex flex-wrap items-end justify-between gap-6">
-            <h2 className="reveal reveal-cinematic font-display text-[clamp(2.5rem,6vw,5rem)] leading-[0.95] tracking-[-0.03em] text-neutral-900">
-              {t.avisPre}
-              <em className="not-italic dima-glow-text">{t.avisEm}</em>
-            </h2>
-            <div className="reveal reveal-delay-2 font-mono-tight text-[11px] uppercase tracking-[0.3em] text-neutral-500">
-              <CountUp to={BUSINESS.ratingValue} decimals={1} /> / 5 — <CountUp to={BUSINESS.reviewCountValue} suffix={t.trustReviewsShort} />
-            </div>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {AVIS.map((a, i) => (
-              <blockquote
-                key={a.n}
-                className={`reveal reveal-delay-${(i % 4) + 1} card-lift rounded-2xl border border-black/10 bg-white p-6`}
-              >
-                <div className="text-[color:var(--dima)]">{a.r}</div>
-                <p className="mt-4 text-neutral-800">« {a.t[lang]} »</p>
-                <footer className="mt-6 font-mono-tight text-[10px] uppercase tracking-[0.3em] text-neutral-500" dir="ltr">
-                  {a.n}
-                </footer>
-              </blockquote>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="relative px-6 py-32 md:px-16 md:py-48">
-        <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-[1fr_1.4fr]">
-          <div>
-            <div className="reveal mb-4 flex items-center gap-3">
-              <span className="h-px w-10 bg-[color:var(--dima)]" />
-              <span className="font-mono-tight text-[10px] uppercase tracking-[0.4em] text-neutral-500">
-                {t.faqLabel}
-              </span>
-            </div>
-            <h2 className="reveal reveal-cinematic font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.95] tracking-[-0.03em] text-neutral-900">
-              {t.faqHeadingLine1} <br /> {t.faqHeadingLine2}
-            </h2>
-          </div>
-          <div className="divide-y divide-black/10 border-y border-black/10">
-            {FAQ.map((f, i) => (
-              <details key={f.q.fr} className={`reveal reveal-delay-${(i % 4) + 1} group py-6`}>
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-6">
-                  <span className="font-display text-xl text-neutral-900 md:text-2xl">{f.q[lang]}</span>
-                  <span className="mt-1 font-mono-tight text-xs text-[color:var(--dima)] transition-transform group-open:rotate-45">
-                    +
-                  </span>
-                </summary>
-                <p className="mt-4 max-w-2xl text-neutral-600">{f.a[lang]}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA + Footer */}
-      <section id="contact" className="relative overflow-hidden border-t border-black/5 px-6 py-32 md:px-16 md:py-48">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-16 lg:grid-cols-2 lg:items-end">
-            <h2 className="reveal reveal-cinematic font-display text-[clamp(3rem,10vw,10rem)] leading-[0.9] tracking-[-0.04em] text-neutral-900">
-              {t.ctaHeadingLine1} <br />
-              <em className="not-italic dima-glow-text">{t.ctaHeadingEm}</em>
-            </h2>
-            <div>
-              <p className="reveal reveal-delay-2 text-lg text-neutral-600">{t.ctaParagraph}</p>
-              <div className="mt-8 flex flex-wrap gap-4">
-                <a
-                  href={whatsappHref(t.whatsappOrderMsg)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="cta-glow inline-flex items-center gap-3 rounded-full bg-[color:var(--dima)] px-6 py-3 text-sm font-medium text-[color:var(--ink)] transition-transform hover:scale-[1.03]"
-                >
-                  {t.commanderWhatsapp} <Arrow dark />
-                </a>
-                <a
-                  href={BUSINESS.phoneHref}
-                  className="inline-flex items-center gap-3 rounded-full border border-black/15 px-6 py-3 text-sm font-medium text-neutral-900 transition-colors hover:bg-black/5"
-                >
-                  {t.appelerLeMagasin} <Arrow />
-                </a>
-                <a
-                  href="#rayons"
-                  className="link-sweep inline-flex items-center gap-2 self-center px-2 text-sm font-medium text-neutral-600 hover:text-neutral-900"
-                >
-                  {t.explorerLesRayons}
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <footer className="relative border-t border-white/10 bg-[color:var(--ink)]">
-        <div className="mx-auto max-w-7xl px-6 py-16 md:px-16 md:py-20">
-          <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
-            <div>
-              <div className="flex items-center gap-3">
-                <img src={dimaMLogo} alt="DIMA M Market" className="h-12 w-12" />
-              </div>
-              <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/60">{t.footerDesc}</p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a
-                  href={whatsappHref(t.whatsappContactMsg)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-[color:var(--dima)] px-4 py-2 text-xs font-medium text-[color:var(--ink)] transition-transform hover:scale-[1.03]"
-                >
-                  {t.whatsappShort}
-                </a>
-                <a
-                  href={BUSINESS.phoneHref}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-white/10"
-                >
-                  {t.appeler}
-                </a>
-                <a
-                  href="#visiter"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-white/10"
-                >
-                  {t.itineraire}
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <div className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/40">
-                {t.explorer}
-              </div>
-              <ul className="mt-5 space-y-3 text-sm text-white/70">
-                <li><a href="#manifeste" className="hover:text-[color:var(--dima)]">{t.navManifeste}</a></li>
-                <li><a href="#rayons" className="hover:text-[color:var(--dima)]">{t.navRayons}</a></li>
-                <li><a href="#engagements" className="hover:text-[color:var(--dima)]">{t.navEngagements}</a></li>
-                <li><a href="#visiter" className="hover:text-[color:var(--dima)]">{t.navVisiter}</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <div className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/40">
-                {t.horaires}
-              </div>
-              <ul className="mt-5 space-y-3 text-sm text-white/70">
-                {BUSINESS.hours.map(([d, h]) => (
-                  <li key={d} className="flex justify-between gap-4">
-                    <span>{lang === "ar" ? DAY_LABEL_AR[d] ?? d : d}</span>
-                    <span className="text-white/50">{h}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <div className="font-mono-tight text-[10px] uppercase tracking-[0.35em] text-white/40">
-                {t.contact}
-              </div>
-              <ul className="mt-5 space-y-3 text-sm text-white/70">
-                <li>{t.addressLabel}</li>
-                <li><a href={BUSINESS.phoneHref} className="hover:text-[color:var(--dima)]" dir="ltr">{BUSINESS.phoneDisplay}</a></li>
-                <li><a href={`mailto:${BUSINESS.email}`} className="hover:text-[color:var(--dima)]" dir="ltr">{BUSINESS.email}</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-14 flex flex-col items-start gap-6 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-            <a
-              href="https://www.agencemeem.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center gap-3"
-              dir="ltr"
-            >
-              <span className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/40 transition-colors group-hover:text-white/70">
-                {lang === "ar" ? "الموقع من إنجاز" : "Site créé par"}
-              </span>
-              <img
-                src={meemLogo}
-                alt="Agence MEEM"
-                loading="lazy"
-                decoding="async"
-                className="h-6 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100 md:h-7"
-              />
-            </a>
-
-            <div className="flex flex-col items-start gap-2 sm:items-end">
-              <span className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/40">
-                {t.copyright(new Date().getFullYear())}
-              </span>
-              <span className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/40">
-                {t.tagline}
-              </span>
-            </div>
-          </div>
-
-        </div>
-      </footer>
-    </div>
-  );
-}
-
-function Arrow({ dark = false }: { dark?: boolean }) {
-  const { dir } = useLanguage();
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      className={`${dark ? "text-[color:var(--ink)]" : "text-neutral-900"} ${dir === "rtl" ? "-scale-x-100" : ""}`}
-    >
-      <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function Dot() {
-  return <span className="inline-block h-2 w-2 rounded-full bg-[color:var(--dima)]" />;
+  const ar = lang === "ar";
+  const root = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  useEffect(() => {
+    if (reduced) return;
+    let disposed = false;
+    let cleanup = () => {};
+    (async () => {
+      const { default: gsap } = await import("gsap");
+      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+      if (disposed) return;
+      gsap.registerPlugin(ScrollTrigger);
+      const ctx = gsap.context(() => {
+        gsap.utils.toArray<HTMLElement>(".editorial-image img").forEach(image => gsap.fromTo(image, { yPercent: -4 }, { yPercent: 4, ease: "none", scrollTrigger: { trigger: image.parentElement, start: "top bottom", end: "bottom top", scrub: 0.6 } }));
+      }, root);
+      cleanup = () => ctx.revert();
+    })();
+    return () => { disposed = true; cleanup(); };
+  }, [reduced]);
+  return <div ref={root} className="market-body">
+    <section id="manifeste" className="manifesto-section section-wrap">
+      <div className="manifesto-meta"><span>{ar ? "متجر الحي · سلا" : "LE COMMERCE DE QUARTIER · SALÉ"}</span><span className="manifesto-hours" dir="ltr">09:00 — 22:00 / 7J·7</span></div>
+      <div className="manifesto-grid">
+        <div><SectionLabel n="01">{t.manifesteLabel}</SectionLabel><h2 className="editorial-heading reveal">{ar ? "قريب منكم." : "LE QUOTIDIEN."}<br /><span className="heading-accent">{ar ? "مختلف دائماً." : "RIEN D’ORDINAIRE."}</span></h2></div>
+        <div className="manifesto-aside reveal"><p>{t.manifestoP1}</p><p>{t.manifestoP2}</p><Button asChild variant="link" className="editorial-link"><a href="#rayons">{t.explorerLesRayons}<ArrowUpRight /></a></Button></div>
+      </div>
+      <div className="manifesto-photo editorial-image reveal"><img src={IMG.interiorCounter} alt={ar ? "داخل متجر DIMA M" : "L’intérieur du magasin DIMA M Market"} loading="lazy" /><div className="image-caption"><span>{ar ? "مكانكم في الحي" : "VOTRE ADRESSE, DANS LE QUARTIER."}</span><span dir="ltr">DIMA M — TABRIQUET</span></div></div>
+    </section>
+    <MovingBand />
+    <section id="rayons" className="departments-section section-wrap">
+      <div className="section-heading-row"><div><SectionLabel n="02">{t.rayonsLabel}</SectionLabel><h2 className="editorial-heading reveal">{ar ? "كل شيء." : "TOUT."}<br /><span className="heading-accent">{ar ? "في مكان واحد." : "AU MÊME ENDROIT."}</span></h2></div><p className="section-side-copy">{t.rayonsSubtitle}</p></div>
+      <div className="departments-grid">{RAYONS.map((r,i) => <article key={r.name.fr} className="department group"><div className="department-photo"><img src={r.img} alt={r.name[lang]} loading="lazy" /><span className="department-index" dir="ltr">0{i+1}</span><ArrowUpRight className="department-arrow" /></div><div className="department-title"><h3>{r.name[lang]}</h3><span className="department-other" dir={ar ? "ltr" : "rtl"}>{r.name[ar ? "fr" : "ar"]}</span></div><p>{r.desc[lang]}</p></article>)}</div>
+    </section>
+    <section id="engagements" className="commitments-section section-wrap">
+      <div className="commitments-grid"><div><SectionLabel n="03">{t.engagementsLabel}</SectionLabel><h2 className="editorial-heading reveal">{ar ? "اهتمام أكثر." : "UN PEU PLUS"}<br /><span>{ar ? "كل يوم." : "D’ATTENTION."}</span></h2><div className="commitment-photo editorial-image reveal"><img src={IMG.customers} alt={ar ? "النصيحة في المتجر" : "Un échange entre l’équipe et les clients"} loading="lazy" /></div></div><div className="commitments-list">{ENGAGEMENTS.map(e => <article key={e.n} className="commitment-row reveal"><span className="commitment-number">{e.n}</span><div><h3>{e.t[lang]}</h3><p>{e.d[lang]}</p></div><ArrowUpRight size={22} /></article>)}</div></div>
+    </section>
+    <section id="fondateur" className="family-section section-wrap"><div className="family-grid"><div className="family-photo editorial-image reveal"><img src={IMG.staffEpicerie} alt={ar ? "فريق DIMA M" : "L’équipe de DIMA M Market"} loading="lazy" /><span className="family-stamp" dir="ltr">DIMA M<br />C’EST NOUS.</span></div><div className="family-copy"><SectionLabel n="04">{ar ? "متجر عائلي" : "UNE HISTOIRE DE FAMILLE"}</SectionLabel><span className="quote-mark" aria-hidden="true">“</span><blockquote className="reveal">{t.fondateurQuote.replace(/^« /,'').replace(/ »$/,'')}</blockquote><div className="founder-signature"><span>{t.fondateurName}</span><small>{t.fondateurTitle}</small></div></div></div></section>
+    <section className="photo-strip" aria-label={ar ? "المتجر في صور" : "Le magasin en images"}>{[IMG.facadeEntrance,IMG.bakery,IMG.staffHygiene,IMG.aisleDrinks].map((src,i) => <div className="photo-strip-item" key={src}><img src={src} loading="lazy" alt={[ar ? "الواجهة" : "La façade",ar ? "المخبزة" : "La boulangerie",ar ? "الفريق" : "L’équipe",ar ? "المشروبات" : "Les boissons"][i]} /><span dir="ltr">DIMA M / 0{i+1}</span></div>)}</section>
+    <section id="visiter" className="visit-section section-wrap"><div className="visit-grid"><div><SectionLabel n="05">{t.visiterLabel}</SectionLabel><h2 className="editorial-heading reveal">{ar ? "مرّوا" : "À DEUX PAS."}<br /><span className="heading-accent">{ar ? "لزيارتنا." : "ON VOUS ATTEND."}</span></h2><p className="visit-address"><MapPin size={20} />{t.addressLabel}</p><div className="hours-list">{BUSINESS.hours.map(([day,h],i) => <div key={day}><span>{ar ? DAY_LABEL_AR[day] : day}</span><strong dir="ltr">{h}</strong></div>)}</div><div className="visit-actions"><Button asChild><a href={whatsappHref(t.whatsappOrderMsg)} target="_blank" rel="noopener noreferrer"><MessageCircle />{t.commanderWhatsapp}<ArrowUpRight /></a></Button><Button asChild variant="outline"><a href={BUSINESS.phoneHref}><Phone /><span dir="ltr">{BUSINESS.phoneDisplay}</span></a></Button></div></div><div className="visit-map"><iframe title={t.mapLabel} src={BUSINESS.mapsEmbedSrc} loading="lazy" allowFullScreen /><Button asChild className="map-directions"><a href={BUSINESS.mapsLink} target="_blank" rel="noopener noreferrer">{t.itineraire}<ArrowUpRight /></a></Button></div></div></section>
+    <section className="payment-section section-wrap"><div><SectionLabel n="06">{t.paiementLabel}</SectionLabel><h2>{t.paiementHeading}</h2><p>{t.paiementSubtitle}</p></div><div className="payment-list">{PAYMENT_METHODS.map(m => <div key={m.name.fr}><span className="payment-symbol">{m.mark}</span><span>{m.name[lang]}</span></div>)}</div></section>
+    <section className="reviews-section section-wrap"><div className="section-heading-row"><h2 className="editorial-heading reveal">{ar ? "يعودون." : "ILS REVIENNENT."}<br /><span className="heading-accent">{ar ? "دائماً." : "ET ÇA NOUS TOUCHE."}</span></h2><div className="review-rating"><strong>{BUSINESS.ratingValue}<small>/5</small></strong><span>{BUSINESS.reviewCountValue} {t.trustReviewsShort.replace('+ ','')}</span></div></div><div className="review-grid">{AVIS.map(a => <blockquote key={a.n} className="review-item reveal"><span className="review-stars">{a.r}</span><p>« {a.t[lang]} »</p><footer>{a.n}</footer></blockquote>)}</div></section>
+    <section className="faq-section section-wrap"><div><SectionLabel n="07">{t.faqLabel}</SectionLabel><h2 className="editorial-heading">{ar ? "لديكم" : "UNE QUESTION ?"}<br /><span className="heading-accent">{ar ? "سؤال؟" : "TOUT SIMPLEMENT."}</span></h2></div><div className="faq-list">{FAQ.map(f => <details key={f.q.fr}><summary>{f.q[lang]}<Plus size={20} /></summary><p>{f.a[lang]}</p></details>)}</div></section>
+    <footer id="contact" className="market-footer section-wrap"><div className="footer-invitation"><h2>{ar ? "نراكم قريباً." : "À TRÈS VITE."}</h2><Button asChild className="footer-cta"><a href={whatsappHref(t.whatsappContactMsg)} target="_blank" rel="noopener noreferrer">{t.whatsappShort}<ArrowUpRight /></a></Button></div><div className="footer-grid"><div className="footer-brand"><img src={dimaMLogo} alt="DIMA M Market" /><p>{t.footerDesc}</p></div><div><h3>{t.explorer}</h3>{[["#manifeste",t.navManifeste],["#rayons",t.navRayons],["#engagements",t.navEngagements],["#visiter",t.navVisiter]].map(([href,label]) => <a key={href} href={href}>{label}</a>)}</div><div><h3>{t.horaires}</h3><span>{ar ? "كل يوم" : "Tous les jours"}</span><strong dir="ltr">09:00 — 22:00</strong><a href={BUSINESS.mapsLink} target="_blank" rel="noopener noreferrer">{t.addressLabel}<ArrowUpRight size={14} /></a></div><div><h3>{t.contact}</h3><a href={BUSINESS.phoneHref} dir="ltr">{BUSINESS.phoneDisplay}</a><a href={`mailto:${BUSINESS.email}`} dir="ltr">{BUSINESS.email}</a><a href={whatsappHref(t.whatsappContactMsg)} target="_blank" rel="noopener noreferrer">WhatsApp<ArrowUpRight size={14} /></a></div></div><div className="footer-bottom"><span>{t.copyright(new Date().getFullYear())}</span><a href="https://www.agencemeem.com" target="_blank" rel="noopener noreferrer" className="agency-credit" dir="ltr"><span>{ar ? "الموقع من إنجاز" : "Site créé par"}</span><img src={meemLogo} alt="Agence MEEM" loading="lazy" /><ArrowUpRight size={14} /></a></div><div className="footer-wordmark" dir="ltr">DIMA M<span>®</span></div></footer>
+  </div>;
 }

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, X, ArrowUp } from "lucide-react";
 import { useLanguage } from "@/lib/language";
+import { Button } from "@/components/ui/button";
 import { BUSINESS } from "@/lib/business";
 import dimaMLogo from "@/assets/dima-m-logo-transparent.png";
 
@@ -110,11 +111,11 @@ export function ChatWidget() {
   return (
     <>
       {/* Launcher */}
-      <button
+      <Button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? t.close : t.open}
-        className="fixed bottom-5 right-5 z-[95] flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-[color:var(--dima)] text-black shadow-[0_10px_40px_-8px_rgba(0,0,0,0.8)] transition-transform duration-300 hover:scale-105 active:scale-95 sm:bottom-8 sm:right-8"
+        className="chat-launcher fixed bottom-5 right-5 z-[95] flex h-14 w-14 items-center justify-center rounded-full border border-foreground/15 bg-[color:var(--dima)] text-primary-foreground shadow-lg transition-transform duration-300 hover:scale-105 active:scale-95 sm:bottom-8 sm:right-8"
       >
         {pulse && !open && (
           <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--dima)] opacity-40" />
@@ -122,27 +123,30 @@ export function ChatWidget() {
         <span className="relative">
           {open ? <X className="h-6 w-6" strokeWidth={1.75} /> : <MessageCircle className="h-6 w-6" strokeWidth={1.75} />}
         </span>
-      </button>
+      </Button>
 
       {/* Panel */}
       <div
         dir={dir}
-        className={`fixed bottom-24 right-3 z-[96] flex w-[calc(100vw-1.5rem)] max-w-[400px] flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a0a]/95 backdrop-blur-xl transition-all duration-400 sm:bottom-28 sm:right-8 ${
+        className={`fixed bottom-24 right-3 z-[96] flex w-[calc(100vw-1.5rem)] max-w-[400px] flex-col overflow-hidden rounded-lg border border-foreground/10 bg-popover/95 backdrop-blur-xl transition-all duration-400 sm:bottom-28 sm:right-8 ${
           open
             ? "pointer-events-auto translate-y-0 opacity-100"
             : "pointer-events-none translate-y-4 opacity-0"
         }`}
         style={{ height: "min(560px, calc(100dvh - 8rem))" }}
+        inert={!open}
+        role="dialog"
+        aria-label={t.title}
         aria-hidden={!open}
       >
         {/* Header */}
-        <div className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5">
+        <div className="flex items-center gap-3 border-b border-foreground/10 px-4 py-3">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/5">
             <img src={dimaMLogo} alt="DIMA M Market" className="h-6 w-6 object-contain" />
           </span>
           <div className="min-w-0">
-            <div className="font-display text-sm text-white">{t.title}</div>
-            <div className="flex items-center gap-1.5 font-mono-tight text-[9px] uppercase tracking-[0.25em] text-white/40">
+            <div className="font-display text-sm text-foreground">{t.title}</div>
+            <div className="flex items-center gap-1.5 font-mono-tight text-[9px] uppercase tracking-[0.25em] text-foreground/40">
               <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--dima)]" />
               {t.status}
             </div>
@@ -151,19 +155,19 @@ export function ChatWidget() {
 
         {/* Transcript */}
         <div ref={scrollRef} className="scrollbar-none flex-1 space-y-4 overflow-y-auto px-4 py-4">
-          <div className="max-w-[92%] text-[13px] leading-relaxed text-white/75">{t.intro}</div>
+          <div className="max-w-[92%] text-[13px] leading-relaxed text-foreground/75">{t.intro}</div>
 
           {messages.length === 0 && (
             <div className="flex flex-wrap gap-2 pt-1">
               {t.suggestions.map((s) => (
-                <button
+                <Button
                   key={s}
                   type="button"
                   onClick={() => void send(s)}
-                  className="rounded-full border border-white/15 px-3 py-1.5 text-[11px] text-white/60 transition-colors hover:border-[color:var(--dima)] hover:text-[color:var(--dima)]"
+                  className="rounded-full border border-foreground/15 px-3 py-1.5 text-[11px] text-foreground/60 transition-colors hover:border-[color:var(--dima)] hover:text-[color:var(--dima)]"
                 >
                   {s}
-                </button>
+                </Button>
               ))}
             </div>
           )}
@@ -171,19 +175,19 @@ export function ChatWidget() {
           {messages.map((m) =>
             m.role === "user" ? (
               <div key={m.id} className="flex justify-end">
-                <div className="max-w-[85%] whitespace-pre-wrap rounded-2xl bg-[color:var(--dima)] px-3.5 py-2 text-[13px] leading-relaxed text-black">
+                <div className="max-w-[85%] whitespace-pre-wrap rounded-lg bg-[color:var(--dima)] px-3.5 py-2 text-[13px] leading-relaxed text-primary-foreground">
                   {m.content}
                 </div>
               </div>
             ) : (
-              <div key={m.id} className="max-w-[92%] whitespace-pre-wrap text-[13px] leading-relaxed text-white/85">
+              <div key={m.id} className="max-w-[92%] whitespace-pre-wrap text-[13px] leading-relaxed text-foreground/85">
                 {m.content}
               </div>
             ),
           )}
 
           {loading && (
-            <div className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-white/35">
+            <div className="font-mono-tight text-[10px] uppercase tracking-[0.3em] text-foreground/35">
               {t.thinking}
             </div>
           )}
@@ -195,7 +199,7 @@ export function ChatWidget() {
             e.preventDefault();
             void send(input);
           }}
-          className="flex items-end gap-2 border-t border-white/10 p-3"
+          className="flex items-end gap-2 border-t border-foreground/10 p-3"
         >
           <textarea
             ref={inputRef}
@@ -209,16 +213,16 @@ export function ChatWidget() {
               }
             }}
             placeholder={t.placeholder}
-            className="max-h-28 min-h-[42px] flex-1 resize-none rounded-2xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-[13px] text-white placeholder:text-white/30 focus:border-[color:var(--dima)] focus:outline-none"
+            className="max-h-28 min-h-[42px] flex-1 resize-none rounded-lg border border-foreground/10 bg-foreground/5 px-3.5 py-2.5 text-[13px] text-foreground placeholder:text-foreground/30 focus:border-[color:var(--dima)] focus:outline-none"
           />
-          <button
+          <Button
             type="submit"
             disabled={loading || !input.trim()}
             aria-label={t.send}
-            className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-[color:var(--dima)] text-black transition-opacity disabled:opacity-30"
+            className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-[color:var(--dima)] text-primary-foreground transition-opacity disabled:opacity-30"
           >
             <ArrowUp className="h-4 w-4" strokeWidth={2.25} />
-          </button>
+          </Button>
         </form>
       </div>
     </>
