@@ -374,6 +374,7 @@ body { letter-spacing: 0; }
 .heading-accent { display:inline-block; }
 .department-photo { transform:translateZ(0); }
 .family-copy blockquote { will-change:opacity; }
+.market-body { overflow:clip; }
 @media(max-width:767px) {
  .spatial-visit .tour-copy { bottom:210px;height:210px; }
  .spatial-visit .tour-title { font-size:60px; }
