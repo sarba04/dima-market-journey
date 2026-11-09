@@ -54,7 +54,7 @@ function PhotoSpace({ index, progress }: { index: number; progress: MutableRefOb
   });
   return <mesh ref={mesh} position={[stop.x,0,stop.z-18]} renderOrder={-index}>
     <planeGeometry args={[width,height,48,12]} />
-    <shaderMaterial vertexShader={vertex} fragmentShader={fragment} uniforms={uniforms} transparent depthWrite={false} side={THREE.DoubleSide} />
+    <shaderMaterial vertexShader={vertex} fragmentShader={fragment} uniforms={uniforms} toneMapped={false} transparent depthWrite={false} side={THREE.DoubleSide} />
   </mesh>;
 }
 function CameraRig({ progress, onReady }: Pick<Props,"progress"|"onReady">) {
@@ -91,7 +91,7 @@ export default function SpatialTour({ progress, onReady, onFailure }: Props) {
     window.addEventListener("dima:heroProgress",progressEvent);
     return () => { document.removeEventListener("visibilitychange",visibility); window.removeEventListener("dima:heroProgress",progressEvent); };
   }, []);
-  return <Canvas camera={{ position:[0,0,0], fov:65, near:.1, far:220 }} dpr={1} frameloop={live ? "always" : "demand"} gl={{ antialias:true, alpha:true, powerPreference:"high-performance" }} onCreated={({ gl }) => {
+  return <Canvas camera={{ position:[0,0,0], fov:65, near:.1, far:220 }} dpr={[1,2]} frameloop={live ? "always" : "demand"} gl={{ antialias:true, alpha:true, powerPreference:"high-performance", toneMapping:THREE.NoToneMapping }} onCreated={({ gl }) => {
     gl.setClearColor(0,0);
     gl.domElement.addEventListener("webglcontextlost", onFailure, { once:true });
   }} fallback={null}>
