@@ -45,7 +45,7 @@ function PhotoSpace({ index, progress }: { index: number; progress: MutableRefOb
     const fade = THREE.MathUtils.smoothstep(relative, 0.22, 0.62);
     uniforms.uOpacity.value = 1-fade;
     mesh.current.visible = relative > -1.35 && relative < 0.62;
-    mesh.current.scale.setScalar(relative < 0 ? 1-relative : Math.max(.72, 1-relative));
+    mesh.current.scale.setScalar(relative < 0 ? 1-relative : Math.max(.85, 1-relative*.25));
     mesh.current.rotation.y = stop.yaw * .25;
     mesh.current.position.x = stop.x;
     mesh.current.position.y = index === 6 || index === 8 ? -0.9 : 0;
