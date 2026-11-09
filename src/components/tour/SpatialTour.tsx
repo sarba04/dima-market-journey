@@ -35,23 +35,23 @@ function PhotoSpace({ index, progress }: { index: number; progress: MutableRefOb
   useEffect(() => { texture.colorSpace=THREE.SRGBColorSpace; texture.anisotropy=4; }, [texture]);
   const image = texture.image as { width: number; height: number };
   const ratio = image.width / image.height;
-  const height = 17;
+  const height = 26;
   const width = Math.max(height * ratio, viewport.aspect * 18);
   useFrame(() => {
     const sample = tourSample(progress.current);
     const relative = progress.current * (TOUR_PATH.length-1) - index;
     if (!mesh.current) return;
     // Broad photo shells overlap in depth; they disappear before the lens crosses them.
-    const fade = THREE.MathUtils.smoothstep(relative, 0.48, 0.88);
+    const fade = THREE.MathUtils.smoothstep(relative, 0.62, 0.97);
     uniforms.uOpacity.value = 1-fade;
-    mesh.current.visible = relative > -1.35 && relative < 0.88;
+    mesh.current.visible = relative > -1.35 && relative < 0.97;
     mesh.current.rotation.y = stop.yaw * .25;
     mesh.current.position.x = stop.x;
     mesh.current.position.y = index === 6 || index === 8 ? -0.9 : 0;
     // Peripheral curvature gives actual perspective/parallax during camera travel.
     uniforms.uDepth.value = index < 2 ? 1.2 : 3.4 + Math.abs(sample.yaw)*2;
   });
-  return <mesh ref={mesh} position={[stop.x,0,stop.z-12]} renderOrder={-index}>
+  return <mesh ref={mesh} position={[stop.x,0,stop.z-18]} renderOrder={-index}>
     <planeGeometry args={[width,height,48,12]} />
     <shaderMaterial vertexShader={vertex} fragmentShader={fragment} uniforms={uniforms} transparent depthWrite={false} side={THREE.DoubleSide} />
   </mesh>;
