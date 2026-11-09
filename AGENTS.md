@@ -11,5 +11,6 @@
 
 ## Frontend architecture
 - Keep canonical store information in `src/lib/business.ts`; presentation must reuse it rather than introduce competing contact or hours values.
-- The scroll tour uses a native sticky stage and a scoped GSAP timeline; emit the existing `dima:scene`, `dima:heroProgress`, `dima:heroDone`, and `dima:heroEnter` events so navigation and scene ticks stay synchronized.
+- The scroll tour uses a native sticky stage, a scoped GSAP progress timeline and a lazy R3F photographic scene driven by `src/lib/tour-path.ts`; emit existing `dima:*` events for navigation and audio. This is an artistic photo-depth interpretation, not a measured reconstruction.
+- Keep the spatial route client-rendered and WebGL behind a photo fallback/error boundary; use fixed DPR and refs for continuous camera movement to avoid SSR and per-frame React rendering.
 - Define visual roles in `src/styles.css` and use the shared Button for interactive controls; keep French/Arabic copy intact and Arabic text unsplit for correct shaping.
