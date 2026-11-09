@@ -6,6 +6,7 @@ import { ChatWidget } from "@/components/ChatWidget";
 import { LanguageProvider } from "@/lib/language";
 
 export const Route = createFileRoute("/")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "DIMA M Market — Une supérette. Une expérience." },

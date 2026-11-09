@@ -356,3 +356,33 @@ body { letter-spacing: 0; }
 .tour-bottom { bottom:86px; }
 @media(max-width:767px) { .tour-bottom { bottom:82px; }.department h3 { font-size:19px; }.departments-section { padding-bottom:60px; } }
 @media(max-height:600px) { .tour-bottom { bottom:72px; }.tour-chapters { display:none; }.tour-bottom-note { display:none; }.tour-bottom-heading { margin-bottom:8px; } }
+
+/* Spatial photographic cinematography: WebGL stays full-bleed, DOM remains usable. */
+.spatial-canvas,.spatial-fallback { position:absolute;inset:0; }
+.spatial-canvas { opacity:0;transition:opacity .8s ease; }
+.spatial-canvas-ready { opacity:1; }
+.spatial-fallback { transition:opacity .8s ease; }
+.spatial-fallback-hidden { opacity:0; }
+.spatial-canvas canvas { display:block;touch-action:pan-y; }
+.spatial-visit .tour-copy { top:auto;bottom:220px;height:250px;pointer-events:none; }
+.spatial-visit .tour-caption { perspective:1000px; }
+.spatial-visit .tour-title { font-size:88px; }
+.spatial-visit .tour-title-secondary { font-size:50px; }
+.spatial-visit .tour-title span { transform-origin:bottom; }
+.spatial-visit .tour-shade { background:linear-gradient(180deg,color-mix(in oklab,var(--ink) 35%,transparent),transparent 32%,transparent 52%,color-mix(in oklab,var(--ink) 70%,transparent)); }
+.editorial-heading { perspective:900px;transform-origin:bottom; }
+.heading-accent { display:inline-block; }
+.department-photo { transform:translateZ(0); }
+.family-copy blockquote { will-change:opacity; }
+.market-body { overflow:clip; }
+@media(max-width:767px) {
+ .spatial-visit .tour-copy { bottom:210px;height:210px; }
+ .spatial-visit .tour-title { font-size:60px; }
+ .spatial-visit .tour-title-secondary { font-size:35px; }
+ .spatial-visit .tour-caption p { max-width:280px;font-size:12px; }
+ [dir="rtl"] .spatial-visit .tour-title { font-size:38px; }
+ [dir="rtl"] .spatial-visit .tour-title-secondary { font-size:27px; }
+ [dir="rtl"] .spatial-visit .tour-title[dir="ltr"] { font-size:60px; }
+}
+@media(max-height:600px) { .spatial-visit .tour-copy { bottom:155px;height:170px; }.spatial-visit .tour-title { font-size:58px; }.spatial-visit .tour-title-secondary { font-size:32px; }.spatial-visit .tour-caption p { margin-top:12px; }.spatial-visit .tour-eyebrow { margin-bottom:12px; } }
+@media(prefers-reduced-motion:reduce) { .spatial-visit .tour-copy { bottom:160px; }.spatial-fallback { transition:none; } }
