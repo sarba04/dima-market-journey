@@ -90,9 +90,9 @@ export function DimaHero() {
         captions.forEach((caption, i) => {
           if (i > 0) {
             gsap.set(caption, { autoAlpha: 0 });
-            tl.to(captions[i - 1], { autoAlpha: 0, duration: 0.2 }, i - .62)
-              .to(caption, { autoAlpha: 1, duration: 0.2 }, i - .4);
-            tl.fromTo(caption.querySelectorAll(".tour-title span"), { yPercent: 105, rotateX: -35, opacity: 0 }, { yPercent: 0, rotateX: 0, opacity: 1, stagger: .045, duration: .3, ease: "power3.out" }, i - .4);
+            tl.to(captions[i - 1], { autoAlpha: 0, duration: 0.15 }, i - .8)
+              .to(caption, { autoAlpha: 1, duration: 0.15 }, i - .65);
+            tl.fromTo(caption.querySelectorAll(".tour-title span"), { yPercent: 105, rotateX: -35, opacity: 0 }, { yPercent: 0, rotateX: 0, opacity: 1, stagger: .025, duration: .18, ease: "power3.out" }, i - .65);
           }
         });
       }, stage);
