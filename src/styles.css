@@ -32,6 +32,12 @@
   --color-dima-glow: var(--dima-glow);
   --color-ink: var(--ink);
   --color-paper: var(--paper);
+  --color-payment-visa: oklch(0.28 0.14 280);
+  --color-payment-mastercard-red: oklch(0.59 0.23 27);
+  --color-payment-mastercard-gold: oklch(0.76 0.17 70);
+  --color-payment-cmi: oklch(0.45 0.17 255);
+  --color-payment-wafa: oklch(0.72 0.18 55);
+  --color-payment-cashplus: oklch(0.53 0.20 25);
   --color-editorial: var(--editorial);
   --color-editorial-muted: var(--editorial-muted);
   --color-editorial-line: var(--editorial-line);
@@ -345,3 +351,8 @@ body { letter-spacing: 0; }
 @media(max-height:650px) and (min-width:768px) { .tour-copy { top:27%; }.tour-title { font-size:86px; }.tour-title-secondary { font-size:50px; }.tour-eyebrow { margin-bottom:12px; }.tour-caption p { margin-top:14px;font-size:13px; }.tour-bottom { bottom:12px; }.tour-chapter { height:32px;width:48px; } }
 @media(max-width:767px) and (max-height:600px) { .tour-copy { top:27%; }.tour-title { font-size:62px; }.tour-title-secondary { font-size:34px; }.tour-caption p { font-size:11px;margin-top:12px; }.tour-bottom-heading { margin-bottom:8px; }.tour-chapter { height:24px; }.tour-top { padding-top:12px; }.tour-bottom { bottom:12px; } }
 @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; }.moving-band-track { animation:none; }.reveal:not(.is-visible) { opacity:1;transform:none; }.tour-scroll-arrow { animation:none; } }
+
+/* Keep the tour controls above persistent contact actions. */
+.tour-bottom { bottom:86px; }
+@media(max-width:767px) { .tour-bottom { bottom:82px; }.department h3 { font-size:19px; }.departments-section { padding-bottom:60px; } }
+@media(max-height:600px) { .tour-bottom { bottom:72px; }.tour-chapters { display:none; }.tour-bottom-note { display:none; }.tour-bottom-heading { margin-bottom:8px; } }

@@ -181,28 +181,28 @@ const PAYMENT_METHODS = [
   {
     name: { fr: "Visa", ar: "Visa" },
     desc: { fr: "Carte bancaire", ar: "بطاقة بنكية" },
-    mark: <span className="font-display text-xl font-bold italic tracking-tight text-[#1A1F71]">VISA</span>,
+    mark: <span className="font-display text-xl font-bold italic tracking-tight text-payment-visa">VISA</span>,
   },
   {
     name: { fr: "Mastercard", ar: "Mastercard" },
     desc: { fr: "Carte bancaire", ar: "بطاقة بنكية" },
     mark: (
       <span className="relative flex h-7 w-11 items-center justify-center">
-        <span className="absolute left-0 h-7 w-7 rounded-full bg-[#EB001B]" />
-        <span className="absolute right-0 h-7 w-7 rounded-full bg-[#F79E1B] mix-blend-multiply" />
+        <span className="absolute left-0 h-7 w-7 rounded-full bg-payment-mastercard-red" />
+        <span className="absolute right-0 h-7 w-7 rounded-full bg-payment-mastercard-gold mix-blend-multiply" />
       </span>
     ),
   },
   {
     name: { fr: "Sans contact", ar: "بدون تلامس" },
     desc: { fr: "NFC / Apple Pay", ar: "NFC / Apple Pay" },
-    mark: <Nfc className="h-7 w-7 text-neutral-700" strokeWidth={1.5} />,
+    mark: <Nfc className="h-7 w-7 text-editorial" strokeWidth={1.5} />,
   },
   {
     name: { fr: "CMI", ar: "CMI" },
     desc: { fr: "Monétique MA", ar: "الأداء الإلكتروني" },
     mark: (
-      <span className="rounded-md bg-[#0B4EA2] px-2.5 py-1 font-display text-sm font-bold text-white">
+      <span className="rounded-md bg-payment-cmi px-2.5 py-1 font-display text-sm font-bold text-paper">
         CMI
       </span>
     ),
@@ -211,7 +211,7 @@ const PAYMENT_METHODS = [
     name: { fr: "Wafacash", ar: "Wafacash" },
     desc: { fr: "Transfert mobile", ar: "تحويل عبر الهاتف" },
     mark: (
-      <span className="rounded-md bg-[#F58220] px-2 py-1 text-center font-display text-[11px] font-bold leading-tight text-white">
+      <span className="rounded-md bg-payment-wafa px-2 py-1 text-center font-display text-[11px] font-bold leading-tight text-paper">
         Wafa<br />cash
       </span>
     ),
@@ -220,7 +220,7 @@ const PAYMENT_METHODS = [
     name: { fr: "CashPlus", ar: "CashPlus" },
     desc: { fr: "Transfert mobile", ar: "تحويل عبر الهاتف" },
     mark: (
-      <span className="rounded-md bg-[#C8102E] px-2 py-1 font-display text-xs font-bold text-white">
+      <span className="rounded-md bg-payment-cashplus px-2 py-1 font-display text-xs font-bold text-paper">
         Cash Plus
       </span>
     ),
@@ -228,7 +228,7 @@ const PAYMENT_METHODS = [
   {
     name: { fr: "Espèces", ar: "نقداً" },
     desc: { fr: "En caisse", ar: "عند الأداء" },
-    mark: <Banknote className="h-7 w-7 text-neutral-700" strokeWidth={1.5} />,
+    mark: <Banknote className="h-7 w-7 text-editorial" strokeWidth={1.5} />,
   },
 ];
 
@@ -403,7 +403,7 @@ export function PostHero() {
     <MovingBand />
     <section id="rayons" className="departments-section section-wrap">
       <div className="section-heading-row"><div><SectionLabel n="02">{t.rayonsLabel}</SectionLabel><h2 className="editorial-heading reveal">{ar ? "كل شيء." : "TOUT."}<br /><span className="heading-accent">{ar ? "في مكان واحد." : "AU MÊME ENDROIT."}</span></h2></div><p className="section-side-copy">{t.rayonsSubtitle}</p></div>
-      <div className="departments-grid">{RAYONS.map((r,i) => <article key={r.name.fr} className="department group"><div className="department-photo"><img src={r.img} alt={r.name[lang]} loading="lazy" /><span className="department-index" dir="ltr">0{i+1}</span><ArrowUpRight className="department-arrow" /></div><div className="department-title"><h3>{r.name[lang]}</h3><span className="department-other" dir={ar ? "ltr" : "rtl"}>{r.name[ar ? "fr" : "ar"]}</span></div><p>{r.desc[lang]}</p></article>)}</div>
+      <div className="departments-grid">{RAYONS.map((r,i) => <article key={r.name.fr} className="department group"><div className="department-photo"><img src={r.img} alt={r.name[lang]} loading="lazy" /><span className="department-index" dir="ltr">0{i+1}</span></div><div className="department-title"><h3>{r.name[lang]}</h3><span className="department-other" dir={ar ? "ltr" : "rtl"}>{r.name[ar ? "fr" : "ar"]}</span></div><p>{r.desc[lang]}</p></article>)}</div>
     </section>
     <section id="engagements" className="commitments-section section-wrap">
       <div className="commitments-grid"><div><SectionLabel n="03">{t.engagementsLabel}</SectionLabel><h2 className="editorial-heading reveal">{ar ? "اهتمام أكثر." : "UN PEU PLUS"}<br /><span>{ar ? "كل يوم." : "D’ATTENTION."}</span></h2><div className="commitment-photo editorial-image reveal"><img src={IMG.customers} alt={ar ? "النصيحة في المتجر" : "Un échange entre l’équipe et les clients"} loading="lazy" /></div></div><div className="commitments-list">{ENGAGEMENTS.map(e => <article key={e.n} className="commitment-row reveal"><span className="commitment-number">{e.n}</span><div><h3>{e.t[lang]}</h3><p>{e.d[lang]}</p></div><ArrowUpRight size={22} /></article>)}</div></div>
